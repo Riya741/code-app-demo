@@ -32,7 +32,7 @@ How the acceptance criteria in every spec are verified, and what "done" means.
 - **Source:** `package.json`
 
 #### QA-TEST-005: Typecheck script
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** `npm run typecheck` SHALL type-check app and server.
 - **Source:** `package.json`
 

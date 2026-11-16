@@ -1,7 +1,7 @@
 # Tasks — Quality, Testing and Definition of Done
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 9 tasks — ✅ 2 · 🔄 0 · ⬜ 6 · ⛔ 1
+**Summary:** 9 tasks — ✅ 3 · 🔄 0 · ⬜ 5 · ⛔ 1
 
 - [x] **QA-T00** ESLint configuration and SDD process documents (constitution, steering, specs, templates).
   - Status: ✅ Done · Covers: QA-TRACE-002, QA-GATE-001, QA-DOD-001..005
@@ -13,8 +13,9 @@
   - Status: ⬜ Not started · Covers: QA-TEST-003 · Depends on: QA-T01, DATA-T09
 - [ ] **QA-T04** Playwright E2E smoke flows with axe scans in both themes.
   - Status: ⬜ Not started · Covers: QA-TEST-004 · Depends on: QA-T03
-- [ ] **QA-T05** `typecheck` script.
-  - Status: ⬜ Not started · Covers: QA-TEST-005
+- [x] **QA-T05** `typecheck` script.
+  - Status: ✅ Done · Covers: QA-TEST-005 · Files: `package.json`
+  - Verified 2026-11-16: `npm run typecheck` (app with `tsconfig.app.json`, server + Vite config with `tsconfig.node.json`) exits 0.
 - [ ] **QA-T06** Enable `strictNullChecks`, then `strict`, for `src/`.
   - Status: ⬜ Not started · Covers: QA-GATE-002 · Depends on: QA-T05
 - [ ] **QA-T07** CI pipeline running lint, typecheck and tests.

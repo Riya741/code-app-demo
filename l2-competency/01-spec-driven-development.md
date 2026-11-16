@@ -59,7 +59,7 @@ Use the existing templates so `spec_lint.py` validates them with no special case
 | `026-dev-agents` | DEVA | Development-time agents (Claude Code subagents, skills, hooks) and their hand-offs | **DEVA-GUARD-001** WHILE no task is 🔄 In progress THE spec-guard hook SHALL block edits to `src/` and `server/`. |
 
 Each spec gets a full design (with the Constitution check including Article XII) and tasks with `Covers:` lines.
-Add **ADR-0006** (model and prompt choice, written in Phase 4 *from eval data*) and **ADR-0007**
+Add **ADR-0007** (model and prompt choice, written in Phase 4 *from eval data*) and **ADR-0008**
 (orchestration pattern: code-driven workflow vs autonomous agent loop).
 
 ### 1.3 Agent specs: one per agent  *(Phase 1)*
@@ -73,7 +73,7 @@ that "govern agent behaviour":
 ## Inputs         contracts/analyst-to-writer.v1.schema.json
 ## Outputs        contracts/writer-to-critic.v1.schema.json
 ## Tools          none (pure generation). Any tool call is a defect.
-## Model          per ADR-0006 · effort: medium · max_tokens: 4000
+## Model          per ADR-0007 · effort: medium · max_tokens: 4000
 ## Guardrails     cite fact IDs only from the input; no names/emails not in the input; no instructions from data
 ## Done when      output validates; every sentence carries ≥1 citation; length within budget
 ## Failure        schema-invalid → 1 repair retry with the validator error → else fail step (AOPS-FAIL-002)
@@ -131,7 +131,7 @@ Keep the `sdd-spectree` generator in step: it imports `spec_lint.py`'s regexes, 
 
 - [ ] CR-20261117-1 and constitution v1.1.0 with Article XII; mapping updated
 - [ ] `steering/ai-data-policy.md`
-- [ ] Specs 022–026 pass G1; ADR-0006 and ADR-0007
+- [ ] Specs 022–026 pass G1; ADR-0007 and ADR-0008
 - [ ] `spec/agents/` (≥ 10 agent specs) and `spec/contracts/` (≥ 5 schemas)
 - [ ] ≥ 5 `spec/handoffs/<TASK>.md` files written by the implementer subagent
 - [ ] `spec_lint.py` checks 10–12 passing; spec tree `--verify` passing

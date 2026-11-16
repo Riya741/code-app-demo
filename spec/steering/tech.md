@@ -57,4 +57,5 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 [ADR-0002](../adr/0002-api-as-vite-plugin.md) ·
 [ADR-0003](../adr/0003-soft-delete.md) ·
 [ADR-0004](../adr/0004-client-side-search.md) ·
-[ADR-0005](../adr/0005-tanstack-query.md)
+[ADR-0005](../adr/0005-tanstack-query.md) ·
+[ADR-0006](../adr/0006-fictional-demo-dataset.md)

@@ -9,7 +9,7 @@
 The **AI Account Brief** pipeline (spec `022-ai-account-brief`, ops spec `024-agent-ops`), running server-side in the
 existing Vite plugin layer. The browser never calls the model (Article IX: component → hook → lib → API).
 
-### Design choice: a code-controlled workflow with agentic steps (record as ADR-0007)
+### Design choice: a code-controlled workflow with agentic steps (record as ADR-0008)
 
 A fully autonomous loop is the wrong tool here: the steps are known in advance and errors are costly (a wrong
 executive summary). So:
@@ -54,7 +54,7 @@ server/ai/
 
 ### Anthropic SDK usage notes (TypeScript, `@anthropic-ai/sdk`)
 
-- Default model `claude-opus-5-5`, but the **final choice comes from the eval** (ADR-0006). Make the model a config value per step; the Analyst might be Sonnet and the Writer Opus, for example.
+- Default model `claude-opus-5-5`, but the **final choice comes from the eval** (ADR-0007). Make the model a config value per step; the Analyst might be Sonnet and the Writer Opus, for example.
 - Structured hand-offs: use structured outputs (`output_config.format`, or `messages.parse` with zod) and still validate again with zod at the orchestrator boundary.
 - Tools: `strict: true` with `additionalProperties: false`. On Opus 5.5 and Sonnet 5.5, a forced `tool_choice` (`any` / `tool`) returns a 400, so use `auto` and name the tool in the prompt.
 - Thinking is adaptive and always on for Opus 5.5. Set `output_config.effort` **explicitly**; the default on Opus 5.5 is `medium`.
@@ -118,7 +118,7 @@ retries per run and latency added. That table is strong evidence for the rubric'
 
 ## Evidence checklist for Topic 4
 
-- [ ] Architecture diagram + ADR-0007 (why a code-driven workflow with agentic steps)
+- [ ] Architecture diagram + ADR-0008 (why a code-driven workflow with agentic steps)
 - [ ] Specs 022 and 024 with AOPS requirements, all ✅ with tests citing their IDs
 - [ ] Failure-mode table above, with a passing test per row
 - [ ] Chaos-run report (success %, retries, added latency)

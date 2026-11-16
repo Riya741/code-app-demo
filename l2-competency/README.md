@@ -70,7 +70,7 @@ Rather than five unrelated demos, add **one AI capability** to the app and build
                                                │  retries · circuit breaker · checkpoints · budgets · traces         │
                                                ▼                                                                     │
                                   Eval harness (Topic 3): golden set, code graders, LLM-as-judge, judge calibration, │
-                                  model/prompt comparison → ADR-0006 decision → G7 regression gate in CI ────────────┘
+                                  model/prompt comparison → ADR-0007 decision → G7 regression gate in CI ────────────┘
 ```
 
 The same tool functions (search customer, list use cases, list events, get requirement) are written once in
@@ -90,13 +90,13 @@ phases to fit your date. Phases are ordered by dependency, and every phase ends 
 | **1 · Specify the AI work** | Week 1 | CR-20261117-1 + **Constitution Article XII (AI agents & data)** v1.1.0; specs **022–026**; agent specs + hand-off JSON schemas; spec-lint extension (G1+) | 1 |
 | **2 · Agentic dev setup** | Week 1–2 | `.claude/` subagents, project skills, hooks (spec-guard, lint-on-edit, gate-on-stop); settings with permission deny-list; first tasks closed by the agent workflow (UCF-T07/T08, EVF-T06, SUM-T07..T10) | 2, 5, 1 |
 | **3 · Build the agent pipeline** | Week 2 | `server/ai/` orchestrator + 4 roles + deterministic guard; failure handling; checkpoints/resume; traces + Run Inspector; fault-injection tests | 4 |
-| **4 · Evaluate** | Week 3 | `evals/` dataset (≥ 30 cases), code graders, LLM judge, human calibration (κ), experiment matrix (3 models × 2 prompts × critic on/off), report, **ADR-0006**, gate **G7** | 3 |
+| **4 · Evaluate** | Week 3 | `evals/` dataset (≥ 30 cases), code graders, LLM judge, human calibration (κ), experiment matrix (3 models × 2 prompts × critic on/off), report, **ADR-0007**, gate **G7** | 3 |
 | **5 · Extend & automate** | Week 3–4 | `mcp/workbook-mcp` server; `plugins/sdd-toolkit` packaging hooks + skills + agents; GitHub Actions running G1/G3/G4/G7 + headless `claude -p` spec-compliance review | 5, 2 |
 | **6 · Evidence & submit** | Week 4 | Evidence pack, 10–12 min demo video, self-assessment, regenerated spec tree | All |
 
 ### Critical path
 `SEC-T02 git` → `QA-T01 Vitest` + `fixture workbook` → `spec 022–026` → `SUM-T07 persist summary` → `AI pipeline` →
-`eval harness` → `ADR-0006` → `CI gates` → `submission`.
+`eval harness` → `ADR-0007` → `CI gates` → `submission`.
 
 ---
 
@@ -133,6 +133,6 @@ Tick as you go; each line maps to a section in the topic files.
 - [ ] Phase 1 — CR + Article XII, specs 022–026, agent specs, hand-off schemas, lint extension
 - [ ] Phase 2 — subagents, skills, hooks, settings; High gaps closed via the agent workflow
 - [ ] Phase 3 — AI pipeline, failure handling, checkpoints, traces, Run Inspector, chaos tests
-- [ ] Phase 4 — eval dataset, graders, judge calibration, experiment matrix, ADR-0006, G7
+- [ ] Phase 4 — eval dataset, graders, judge calibration, experiment matrix, ADR-0007, G7
 - [ ] Phase 5 — MCP server, `sdd-toolkit` plugin, CI with headless Claude review
 - [ ] Phase 6 — evidence pack, demo video, self-assessment, spec tree regenerated

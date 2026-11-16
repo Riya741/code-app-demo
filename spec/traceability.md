@@ -38,6 +38,7 @@
 | `src/lib/html.ts` | rich-text, security, export |
 | `src/lib/csv.ts` | export, security, data-grid |
 | `src/lib/search.ts` | customer-search |
+| `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json` | data-pipeline (PIPE-GEN-001..008), data-model (DATA-QUAL-001, -002, -004) |
 | `tests/unit/search.test.ts` | customer-search (SRCH-RANK-001..004) |
 | `tests/unit/csv.test.ts` | export (EXP-CSV-001..003, EXP-CSV-005, EXP-NAME-001, EXP-NAME-002) |
 | `vitest.config.ts` | quality |

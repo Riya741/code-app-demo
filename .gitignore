@@ -4,6 +4,7 @@
 *.xlsm
 *.csv
 ~$*
+~tmp-*
 
 # Secrets
 .env

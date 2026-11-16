@@ -33,7 +33,7 @@ JSON API at `/api/workbook` served by the Vite dev/preview server. Contract deta
 - **Source:** `server/workbook.ts`, `vite.config.ts`
 
 #### API-GEN-005: Local-only, no auth
-- **Status:** ⚠️ Partial — No auth by design, but reachable from the network (security spec SEC-EXPO-001)
+- **Status:** ✅ Implemented
 - **Criterion:** THE API SHALL NOT require authentication and SHALL only be reachable from the local machine.
 - **Source:** `server/workbook.ts`, `vite.config.ts`
 

@@ -37,7 +37,7 @@ into practice, and shows where compliance is incomplete. Update it whenever a sp
 |---|---|---|
 | **I Spec first** | QA-DOD-001..005, all `requirements.md` | — |
 | **II Workbook is truth** | STO-LOAD-001..006, STO-SAVE-001..010, STO-CONC-001, STO-CONC-002, API-WRITE-001..008, API-DEL-001, API-DEL-002, API-SUMM-001, DATA-TBL-001..005, DATA-FMT-001..004, DATA-LINK-001..005, LAY-THEME-001 (only UI prefs in browser), UCP-DEL-003, EVP-DEL-002 | SUM-EDIT-001 (SUM-T07..T10), UCF-EDIT-002 (UCF-T07), EVF-EDIT-002 (EVF-T06), STO-SAVE-010 backups (STO-T06), DATA-LINK-006 (DATA-T04) |
-| **III Safe by default** | RTX-SAN-001..005, EXP-CSV-003, EXP-WORD-002, SEC-SAFE-001..003, API-GEN-002 | SEC-EXPO-001 localhost (SEC-T01), SEC-SUPPLY-004 deps (SEC-T03) |
+| **III Safe by default** | RTX-SAN-001..005, EXP-CSV-003, EXP-WORD-002, SEC-SAFE-001..003, API-GEN-002, SEC-EXPO-001 | SEC-SUPPLY-004 deps (SEC-T03) |
 | **IV Valid by construction** | UCF-FIELD-001..008, UCF-ADD-001, UCB-ROWS-001, UCB-SAVE-001..004, EVF-ADD-001, API-WRITE-001, API-WRITE-006, DATA-LINK-004 | API-WRITE-008 FK validation (API-T08), EVF-ADD-004 (EVF-T07), DATA-QUAL-003 (DATA-T06) |
 | **V Clear feedback** | SRCH-LOAD-003, SRCH-LOAD-004, SRCH-RANK-006, UCP-DEL-001..003, UCP-CSV-001, UCP-STATE-001..003, EVP-DEL-001, EVP-DEL-002, EVP-CSV-001, EVP-STATE-001, UCF-ADD-003..005, UCB-SAVE-005..008, SUM-EDIT-004, SUM-WORD-003, CDL-HTTP-002..004, GRID-FILT-008, DS-MSG-001 | LAY-TOP-004 refresh (LAY-T07), SUM-EDIT-005, SUM-EDIT-006 (SUM-T09) |
 | **VI Theme & responsive** | LAY-PANEL-001..005, LAY-THEME-001, LAY-THEME-002, DS-TOKEN-001..003, RTX-DARK-001..005, GRID-ROW-004 | — |
@@ -52,7 +52,6 @@ into practice, and shows where compliance is incomplete. Update it whenever a sp
 |---|---|---|---|
 | II | executive-summary | Edits session-only until the summary endpoint exists | SUM-T07..T10 |
 | II | use-case-form, event-form | Edit dialogs do not persist yet | UCF-T07, EVF-T06 |
-| III.3 | security | Dev server reachable from the network | SEC-T01 |
 | VII | accessibility | Label association, error announcement, keyboard row expansion | A11Y-T02..T06 |
 | X | quality | No automated tests | QA-T01..T05 |
 

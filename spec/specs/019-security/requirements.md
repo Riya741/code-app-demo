@@ -42,7 +42,7 @@ authentication. This spec covers content safety, exposure and data handling.
 ### SEC-R2 — Exposure
 
 #### SEC-EXPO-001: Bind to localhost
-- **Status:** ❌ Gap
+- **Status:** ✅ Implemented
 - **Criterion:** THE dev and preview servers SHALL bind to `localhost` by default; binding to other interfaces SHALL require an explicit opt-in (env `HOST`).
 - **Source:** `vite.config.ts`
 

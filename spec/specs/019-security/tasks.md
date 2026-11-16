@@ -1,12 +1,13 @@
 # Tasks — Security
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 6 tasks — ✅ 2 · 🔄 0 · ⬜ 4 · ⛔ 0
+**Summary:** 6 tasks — ✅ 3 · 🔄 0 · ⬜ 3 · ⛔ 0
 
 - [x] **SEC-T00** Content safety controls (sanitising, CSV guard, message-only errors).
   - Status: ✅ Done · Covers: SEC-SAFE-001..003, SEC-SUPPLY-002
-- [ ] **SEC-T01** Bind dev/preview to localhost by default with `HOST` opt-in.
-  - Status: ⬜ Not started · Covers: SEC-EXPO-001, API-GEN-005 · Files: `vite.config.ts`, `steering/tech.md`
+- [x] **SEC-T01** Bind dev/preview to localhost by default with `HOST` opt-in.
+  - Status: ✅ Done · Covers: SEC-EXPO-001, API-GEN-005 · Files: `vite.config.ts`, `steering/tech.md`
+  - Verified 2026-11-16 (netstat): default `npm run dev` listens on `[::1]:3000` only; `HOST=0.0.0.0` listens on `0.0.0.0:3000`; `GET /api/workbook/health` and `/use-cases?parentId=1003` answer on localhost.
 - [x] **SEC-T02** Initialise git with `.gitignore` excluding workbooks and build output.
   - Status: ✅ Done · Covers: SEC-SUPPLY-001 · Files: `.gitignore`, `.gitattributes`
   - Verified 2026-11-16: `git diff --cached --name-only` lists no `.xlsx`, `.csv`, `.env*` or `node_modules` files; LF line endings enforced by `.gitattributes`.

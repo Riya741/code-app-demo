@@ -25,9 +25,9 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 ## Commands
 | Command | Purpose |
 |---|---|
-| `npm run dev` | Dev server, port 3000 (host `::`), with API |
+| `npm run dev` | Dev server with API on `localhost:3000` only; opt in to other interfaces with env `HOST` (e.g. `HOST=0.0.0.0`) |
 | `npm run build` / `build:dev` | Production / development build to `dist/` |
-| `npm run preview` | Serve `dist/` with API |
+| `npm run preview` | Serve `dist/` with API (`localhost` only, same `HOST` opt-in) |
 | `npm run lint` | ESLint |
 | `python -I scripts/generate_demo_workbook.py ../data/code-app-data.xlsx` | Generate the workbook with fictional demo data (`--customers`, `--seed`); catalogue in `scripts/demo_catalogue.json` |
 | `python -I scripts/build_workbook.py <src> <dst>` | Build workbook from a Power BI export (no export is kept in the project) |

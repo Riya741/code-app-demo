@@ -129,7 +129,7 @@ l2-competency/
 
 Tick as you go; each line maps to a section in the topic files.
 
-- [ ] Phase 0 — git, `.gitignore`, localhost bind, typecheck, Vitest, fixture workbook, `CLAUDE.md`
+- [x] Phase 0 — git, `.gitignore`, localhost bind, typecheck, Vitest, fixture workbook, `CLAUDE.md` (2026-11-16, branch `phase-0-foundations`; see [evidence/ai-dev-log.md](evidence/ai-dev-log.md))
 - [ ] Phase 1 — CR + Article XII, specs 022–026, agent specs, hand-off schemas, lint extension
 - [ ] Phase 2 — subagents, skills, hooks, settings; High gaps closed via the agent workflow
 - [ ] Phase 3 — AI pipeline, failure handling, checkpoints, traces, Run Inspector, chaos tests

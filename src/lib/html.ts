@@ -10,7 +10,7 @@ export function htmlToText(html: string): string {
     html.replace(/<\/(p|div|li|h[1-6]|tr)>|<br\s*\/?>/gi, " $&"),
     "text/html",
   );
-  return (doc.body.textContent ?? "").replace(/ /g, " ").replace(/\s+/g, " ").trim();
+  return (doc.body.textContent ?? "").replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
 }
 
 /** Inline CSS we keep from rich-text content. Anything else (position, url(), expressions...) is dropped. */

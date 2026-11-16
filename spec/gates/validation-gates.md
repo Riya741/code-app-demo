@@ -10,7 +10,7 @@ it passes. Gates marked *planned* become mandatory when their task is done.
 | G3 | Lint and types | `npm run lint` · `npm run typecheck` | Before commit | ✅ Active |
 | G4 | Tests cite requirements | `npm test` · tests named `PREFIX-AREA-NNN …` | Before commit | 📝 Planned (QA-T01..T03) |
 | G5 | Manual verification | Criterion checked in light + dark, ≥ 1024px + < 1024px, note in the task | Before ✅ Done | ✅ Active (manual) |
-| G6 | CI | G1, G3, G4 on every push | On push | 📝 Planned (QA-T07, needs SEC-T02) |
+| G6 | CI | G1, G3, G4 on every push | On push | 📝 Planned (QA-T07) |
 
 ## G1 — Spec lint
 `spec/scripts/spec_lint.py` fails when:
@@ -39,4 +39,4 @@ counts a requirement as *tested* when any test cites it.
 Until G4 covers a criterion, the task records who checked it, when, and how (themes, breakpoints, keyboard).
 
 ## G6 — Continuous integration
-Runs G1, G3 and G4 on every push once the repository is under git (SEC-T02 → QA-T07).
+Runs G1, G3 and G4 on every push once QA-T07 adds the pipeline (the repository is under git since SEC-T02).

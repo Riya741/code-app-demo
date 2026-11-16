@@ -1,0 +1,30 @@
+# Data: the workbook lives in ../data and is never committed (SEC-SUPPLY-001, Constitution Article II)
+*.xlsx
+*.xls
+*.xlsm
+*.csv
+~$*
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+/dist/
+/build/
+coverage/
+.vite/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local tool and OS files
+.claude/settings.local.json
+*.log
+.DS_Store
+Thumbs.db

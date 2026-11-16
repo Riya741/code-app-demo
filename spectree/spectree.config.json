@@ -1,0 +1,158 @@
+{
+  "$schema_note": "See references/config-schema.md in the sdd-spectree skill.",
+  "generator_version": "1.3.0",
+  "app_name": "code-app-demo",
+  "title": "",
+  "design": "glass",
+  "output": "dist/sdd-explorer.html",
+  "palette": "traffic",
+  "colors": {},
+  "tile_fields": [
+    "number",
+    "title",
+    "status",
+    "req_count",
+    "status_bar",
+    "tasks"
+  ],
+  "rollup": "worst",
+  "group_folders": true,
+  "include_tests_in_components": true,
+  "auto_cross_links": true,
+  "cross_links": [],
+  "projects": [
+    {
+      "key": "app",
+      "name": "code-app-demo",
+      "path": "..",
+      "sdd_dir": "spec",
+      "specs_dir": "spec/specs",
+      "tests_dir": "tests",
+      "repo_url": "",
+      "ref": null,
+      "exclude_tests": [],
+      "symbol_map": {}
+    }
+  ],
+  "flow": [
+    {
+      "name": "Constitution",
+      "kind": "docs",
+      "globs": [
+        "constitution.md"
+      ],
+      "explain": "Eleven non-negotiable articles. Every spec, design and task must obey them."
+    },
+    {
+      "name": "Steering",
+      "kind": "docs",
+      "globs": [
+        "steering/product.md",
+        "steering/tech.md",
+        "steering/structure.md",
+        "steering/*.md"
+      ],
+      "explain": "Product scope, tech stack, conventions, glossary and the constitution-to-spec mapping."
+    },
+    {
+      "name": "Decisions (ADRs)",
+      "kind": "adr",
+      "globs": [
+        "adr/[0-9][0-9][0-9][0-9]-*.md"
+      ],
+      "explain": "One architectural decision each, with context and consequences."
+    },
+    {
+      "name": "Specs",
+      "kind": "specs",
+      "explain": "One folder per capability: requirements (EARS) -> design -> tasks. Tile colour = worst status of its requirements."
+    },
+    {
+      "name": "Delivery",
+      "kind": "delivery",
+      "explain": "Tasks become code; requirement Source lines link specs to files; tests cite requirement IDs."
+    },
+    {
+      "name": "Gates",
+      "kind": "docs",
+      "globs": [
+        "gates/validation-gates.md",
+        "gates/*.md"
+      ],
+      "explain": "Spec lint, constitution check, lint/types, tests, manual checks, CI, and the gap register."
+    }
+  ],
+  "layers": [
+    [
+      "^(tests?/|.*\\.(test|spec)\\.[jt]sx?$)",
+      "Tests"
+    ],
+    [
+      "^server/",
+      "Server / API"
+    ],
+    [
+      "^src/pages/",
+      "Pages"
+    ],
+    [
+      "^src/components/customers/",
+      "Feature components"
+    ],
+    [
+      "^src/components/ui/",
+      "UI primitives"
+    ],
+    [
+      "^src/hooks/",
+      "Hooks"
+    ],
+    [
+      "^src/lib/",
+      "Client library"
+    ],
+    [
+      "^src/.*\\.css$",
+      "Styles"
+    ],
+    [
+      "^src/",
+      "App shell"
+    ],
+    [
+      "^scripts/",
+      "Data scripts"
+    ],
+    [
+      "^(vite\\.config\\.ts|tailwind\\.config\\.ts|postcss\\.config\\.js|eslint\\.config\\.js|tsconfig.*\\.json|package\\.json|components\\.json|index\\.html)$",
+      "Build & config"
+    ],
+    [
+      "^(spec|spectree)/",
+      "SDD & docs"
+    ],
+    [
+      ".*",
+      "Other"
+    ]
+  ],
+  "layer_order": [
+    "Pages",
+    "Feature components",
+    "Hooks",
+    "Client library",
+    "UI primitives",
+    "Styles",
+    "App shell",
+    "Server / API",
+    "Data scripts",
+    "Build & config",
+    "SDD & docs",
+    "Other",
+    "Tests"
+  ],
+  "collapsed_layers": [
+    "Tests",
+    "UI primitives"
+  ]
+}

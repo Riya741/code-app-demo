@@ -9,7 +9,8 @@ Client-side search over an in-memory index (ADR-0004). One component, `SearchBox
 |---|---|
 | `src/lib/customerSource.ts` | `fetchCustomers()` → `GET /table/customer`, filters `visible` |
 | `src/hooks/useCustomers.ts` | `useQuery(["customers"])` |
-| `src/components/customers/SearchBox.tsx` | Input, scoring, results list, keyboard handling, `Highlight` |
+| `src/lib/search.ts` | `normaliseQuery`, `tokenize`, `score`, `rankMatches` (pure; unit-tested) |
+| `src/components/customers/SearchBox.tsx` | Input, results list, keyboard handling, `Highlight` |
 | `src/pages/Customers.tsx` | Chooses hero vs bar, passes `rows`, `loading`, `error`, `onRetry`, `onSelect` |
 
 ## Interface
@@ -28,14 +29,15 @@ SearchBox(props: {
 ## Data flow
 ```
 useCustomers ─► rows ─► useMemo index [{row, name, id}]
-input ─► useDeferredValue(query) ─► q, tokens ─► score() each ─► sort ─► slice(0,100)
+input ─► useDeferredValue(query) ─► normaliseQuery, tokenize ─► rankMatches(): score() each ─► sort ─► slice(0,100)
 ```
 
 ## Algorithm — `score(name, id, query, tokens)`
 ```
+if id == query:              return 0   (exact parent ID first; SRCH-T09)
 n = name.toLowerCase()
 if not every token ⊂ n:  return id contains query ? 4 : null
-if n == query or id == query: return 0
+if n == query:               return 0
 if n.startsWith(query):       return 1
 if every token is prefix of some word of n (split /[\s\-_/.,()&]+/): return 2
 return 3
@@ -51,7 +53,7 @@ Load errors come from `useCustomers().error` (messages defined in the client-dat
 and a retry link calls `refetch()`.
 
 ## Testing approach
-- Unit: `score` ranking table (SRCH-RANK-002, SRCH-RANK-003).
+- Unit: `tests/unit/search.test.ts`: normalisation, matching, every rank, tie order and the 100 cap (SRCH-RANK-001..004).
 - Component: keyboard flow, empty state, highlight, 100-cap header.
 
 ## Constitution check

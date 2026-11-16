@@ -1,12 +1,13 @@
 # Tasks — Quality, Testing and Definition of Done
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 9 tasks — ✅ 3 · 🔄 0 · ⬜ 6 · ⛔ 0
+**Summary:** 9 tasks — ✅ 4 · 🔄 0 · ⬜ 5 · ⛔ 0
 
 - [x] **QA-T00** ESLint configuration and SDD process documents (constitution, steering, specs, templates).
   - Status: ✅ Done · Covers: QA-TRACE-002, QA-GATE-001, QA-DOD-001..005
-- [ ] **QA-T01** Set up Vitest (jsdom) with `npm test`; first unit tests for `score` and `exportCsv`.
-  - Status: ⬜ Not started · Covers: QA-TEST-001, QA-TRACE-001
+- [x] **QA-T01** Set up Vitest (jsdom) with `npm test`; first unit tests for `score` and `exportCsv`.
+  - Status: ✅ Done · Covers: QA-TEST-001, QA-TRACE-001 · Files: `vitest.config.ts`, `package.json`, `tests/unit/`, `spec/scripts/spec_lint.py`
+  - Verified 2026-11-16: `npm test` → 18 passed, 1 expected fail (pinned gap EXP-NAME-002). Spec lint check 9 now rejects any JS/TS test title that does not start with a requirement ID (probe file rejected, then removed). `tests/` and `vitest.config.ts` are type-checked.
 - [ ] **QA-T02** Add Testing Library for component tests.
   - Status: ⬜ Not started · Covers: QA-TEST-002 · Depends on: QA-T01
 - [ ] **QA-T03** Server integration harness with fixture workbook and `WORKBOOK_PATH`.

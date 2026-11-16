@@ -16,6 +16,7 @@
 | Rich text | `quill` 2 (lazy) + `dompurify` |
 | Workbook I/O (server) | `exceljs` + `jszip` |
 | Lint | ESLint 9 flat config, `typescript-eslint`, `react-hooks`, `react-refresh` |
+| Tests | Vitest 5 + jsdom (`tests/unit/`) |
 | Data scripts | Python 3 + `openpyxl`, run with `python -I` |
 
 ## Runtime topology
@@ -29,7 +30,8 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 | `npm run build` / `build:dev` | Production / development build to `dist/` |
 | `npm run preview` | Serve `dist/` with API (`localhost` only, same `HOST` opt-in) |
 | `npm run lint` | ESLint |
-| `npm run typecheck` | `tsc --noEmit` for the app and for server + Vite config |
+| `npm run typecheck` | `tsc --noEmit` for the app and tests, and for server + Vite/Vitest config |
+| `npm test` / `npm run test:watch` | Vitest unit tests (jsdom); every test title starts with a requirement ID |
 | `python -I scripts/generate_demo_workbook.py ../data/code-app-data.xlsx` | Generate the workbook with fictional demo data (`--customers`, `--seed`); catalogue in `scripts/demo_catalogue.json` |
 | `python -I scripts/build_workbook.py <src> <dst>` | Build workbook from a Power BI export (no export is kept in the project) |
 | `python -I scripts/apply_use_case_notes.py <xlsx> [out]` | Fill use case notes |

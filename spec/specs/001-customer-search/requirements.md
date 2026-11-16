@@ -42,22 +42,22 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 #### SRCH-RANK-001: Normalise and tokenise the query
 - **Status:** ✅ Implemented
 - **Criterion:** WHEN the user types THE system SHALL trim and lower-case the query and split it into unique whitespace-separated tokens.
-- **Source:** `src/components/customers/SearchBox.tsx`
+- **Source:** `src/lib/search.ts`, `src/components/customers/SearchBox.tsx`
 
 #### SRCH-RANK-002: Match on all tokens or parent ID
 - **Status:** ✅ Implemented
 - **Criterion:** THE system SHALL treat a customer as a match WHEN every token is a substring of `parent_name`, OR WHEN `parent_id` contains the whole query.
-- **Source:** `src/components/customers/SearchBox.tsx`
+- **Source:** `src/lib/search.ts`, `src/components/customers/SearchBox.tsx`
 
 #### SRCH-RANK-003: Rank matches
 - **Status:** ✅ Implemented
 - **Criterion:** THE system SHALL rank matches: 0 = name or ID equals query; 1 = name starts with query; 2 = every token starts a word of the name (words split on whitespace and `- _ / . , ( ) &`); 3 = other name match; 4 = ID-only match; ties by name.
-- **Source:** `src/components/customers/SearchBox.tsx`
+- **Source:** `src/lib/search.ts`, `src/components/customers/SearchBox.tsx`
 
 #### SRCH-RANK-004: Cap at 100 results with match count
 - **Status:** ✅ Implemented
 - **Criterion:** THE system SHALL show at most 100 results and a header "N match(es)", adding "(showing top 100)" when more exist.
-- **Source:** `src/components/customers/SearchBox.tsx`
+- **Source:** `src/lib/search.ts`, `src/components/customers/SearchBox.tsx`
 
 #### SRCH-RANK-005: Highlight tokens, hide parent ID
 - **Status:** ✅ Implemented

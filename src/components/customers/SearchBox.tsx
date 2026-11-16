@@ -1,10 +1,9 @@
 import { useDeferredValue, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { ChevronRight, CornerDownLeft, Loader2, Search, SearchX, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MAX_RESULTS, normaliseQuery, rankMatches, tokenize } from "@/lib/search";
 
 type Row = Record<string, unknown>;
-
-const MAX_RESULTS = 100;
 
 const nameOf = (r: Row) => String(r.parent_name ?? "");
 const idOf = (r: Row) => (r.parent_id == null ? "" : String(r.parent_id));
@@ -27,16 +26,6 @@ function Highlight({ text, tokens }: { text: string; tokens: string[] }) {
       )}
     </>
   );
-}
-
-/** Matches parent name or parent ID (the ID is never displayed). Lower is better; null = no match. */
-function score(name: string, id: string, query: string, tokens: string[]): number | null {
-  const n = name.toLowerCase();
-  if (!tokens.every((t) => n.includes(t))) return id && id.includes(query) ? 4 : null;
-  if (n === query || id === query) return 0;
-  if (n.startsWith(query)) return 1;
-  if (tokens.every((t) => n.split(/[\s\-_/.,()&]+/).some((w) => w.startsWith(t)))) return 2;
-  return 3;
 }
 
 export function SearchBox({
@@ -64,22 +53,13 @@ export function SearchBox({
   const listRef = useRef<HTMLUListElement>(null);
   const deferred = useDeferredValue(query);
 
-  const q = deferred.trim().toLowerCase();
-  const tokens = useMemo(() => [...new Set(q.split(/\s+/).filter(Boolean))], [q]);
+  const q = normaliseQuery(deferred);
+  const tokens = useMemo(() => tokenize(q), [q]);
 
   // Name + hidden parent-ID index built once per data load; searching is entirely in-memory.
   const index = useMemo(() => rows.map((row) => ({ row, name: nameOf(row), id: idOf(row) })), [rows]);
 
-  const { results, total } = useMemo(() => {
-    if (!q) return { results: [] as Row[], total: 0 };
-    const scored: { row: Row; s: number; name: string }[] = [];
-    for (const { row, name, id } of index) {
-      const s = score(name, id, q, tokens);
-      if (s !== null) scored.push({ row, s, name });
-    }
-    scored.sort((a, b) => a.s - b.s || a.name.localeCompare(b.name));
-    return { results: scored.slice(0, MAX_RESULTS).map((x) => x.row), total: scored.length };
-  }, [index, q, tokens]);
+  const { results, total } = useMemo(() => rankMatches(index, q, tokens), [index, q, tokens]);
 
   useEffect(() => setActive(0), [q]);
 

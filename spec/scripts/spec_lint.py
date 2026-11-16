@@ -13,7 +13,8 @@ Checks
   6. Task IDs mentioned anywhere in spec/ exist.
   7. Backticked Source paths exist in the repo.
   8. Relative Markdown links resolve.
-  9. Requirement IDs cited by test files (src/**/*.test.*, tests/**) exist.
+  9. Requirement IDs cited by test files (src/**/*.test.*, tests/**) exist, and every JS/TS test title
+     (`it(...)` / `test(...)`, including `.fails`, `.skip`, `.only`, `.todo`) starts with one (QA-TRACE-001).
 
 The sdd-spectree page generator imports this module and uses its regexes and
 collect_requirements(), so the page and this gate always count the same things.
@@ -32,6 +33,7 @@ STATUS_RE = re.compile(r"-\s*\*\*Status:\*\*\s*(?:[^\w]*\s*)?([A-Za-z]+)")
 REQ_RANGE_RE = re.compile(
     r"\b([A-Z][A-Z0-9]{1,4}-[A-Z]{2,6})-(\d{3})\s*(?:\.\.|–|to)\s*(?:[A-Z][A-Z0-9]{1,4}-[A-Z]{2,6}-)?(\d{3})\b")
 TEST_DEF_RE = re.compile(r"^\s*(?:async\s+)?def\s+(test_\w+)|^\s*class\s+(Test\w+)", re.M)
+JS_TEST_TITLE_RE = re.compile(r"""\b(?:it|test)(?:\.(?:fails|skip|only|todo|concurrent))*\(\s*(["'`])(.*?)\1""", re.S)
 
 REQ_STATUSES = {"Implemented", "Partial", "Gap", "Planned", "Deprecated"}
 TASK_STATUSES = {"✅": "Done", "🔄": "In progress", "⬜": "Not started", "⛔": "Blocked"}
@@ -232,9 +234,14 @@ def check_tests(root: str, f: Findings) -> None:
             for fn in fns:
                 if re.search(r"\.(test|spec)\.[cm]?[jt]sx?$", fn) or (base == "tests" and fn.endswith((".ts", ".tsx", ".js"))):
                     p = os.path.join(dp, fn)
-                    for rid in ids_in(read(p)):
+                    text = read(p)
+                    for rid in ids_in(text):
                         if rid not in f.req_ids:
                             f.error(rel(p, root), f"test cites unknown requirement {rid}")
+                    if fn.endswith((".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs")):
+                        for m in JS_TEST_TITLE_RE.finditer(text):
+                            if not REQ_ID_RE.match(m.group(2)):
+                                f.error(rel(p, root), f"test title must start with a requirement ID: {m.group(2)[:60]!r}")
 
 
 def main() -> int:

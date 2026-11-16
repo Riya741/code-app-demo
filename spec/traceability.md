@@ -4,7 +4,7 @@
 
 | Spec | Prefix | Implemented in |
 |---|---|---|
-| customer-search | SRCH | `src/components/customers/SearchBox.tsx`, `src/lib/customerSource.ts`, `src/hooks/useCustomers.ts` |
+| customer-search | SRCH | `src/lib/search.ts`, `src/components/customers/SearchBox.tsx`, `src/lib/customerSource.ts`, `src/hooks/useCustomers.ts` |
 | workspace-layout | LAY | `src/App.tsx`, `src/pages/Customers.tsx`, `src/components/customers/TopBar.tsx`, `src/components/customers/Panel.tsx`, `src/hooks/useMediaQuery.ts` |
 | executive-summary | SUM | `src/components/customers/CustomerDetails.tsx`, `src/lib/wordDoc.ts` |
 | use-cases-panel | UCP | `src/components/customers/ParentActivity.tsx` (`UseCasesPanel`), `src/components/customers/ConfirmDelete.tsx` |
@@ -37,6 +37,10 @@
 | `src/components/customers/CustomerDetails.tsx` | executive-summary, rich-text |
 | `src/lib/html.ts` | rich-text, security, export |
 | `src/lib/csv.ts` | export, security, data-grid |
+| `src/lib/search.ts` | customer-search |
+| `tests/unit/search.test.ts` | customer-search (SRCH-RANK-001..004) |
+| `tests/unit/csv.test.ts` | export (EXP-CSV-001..003, EXP-CSV-005, EXP-NAME-001, EXP-NAME-002) |
+| `vitest.config.ts` | quality |
 | `src/lib/lookups.ts` | client-data-layer, use-case-form, use-case-bulk, event-form, data-model |
 | `vite.config.ts` | workbook-api, security, tech steering |
 

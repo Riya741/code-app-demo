@@ -8,7 +8,7 @@ it passes. Gates marked *planned* become mandatory when their task is done.
 | G1 | Spec format and integrity | `py spec/scripts/spec_lint.py` | Before review, before commit | ✅ Active |
 | G2 | Constitution check | Reviewer reads the design's Constitution check table | Design review | ✅ Active (manual) |
 | G3 | Lint and types | `npm run lint` · `npm run typecheck` | Before commit | ✅ Active |
-| G4 | Tests cite requirements | `npm test` · tests named `PREFIX-AREA-NNN …` | Before commit | 📝 Planned (QA-T01..T03) |
+| G4 | Tests cite requirements | `npm test` · tests named `PREFIX-AREA-NNN …` | Before commit | ✅ Active: unit tests (component, integration, E2E planned QA-T02..T04) |
 | G5 | Manual verification | Criterion checked in light + dark, ≥ 1024px + < 1024px, note in the task | Before ✅ Done | ✅ Active (manual) |
 | G6 | CI | G1, G3, G4 on every push | On push | 📝 Planned (QA-T07) |
 
@@ -20,7 +20,7 @@ it passes. Gates marked *planned* become mandatory when their task is done.
 - a task has no Status/Covers line, its checkbox disagrees with its status, or the Summary line is wrong;
 - a nested checkbox would be counted as a task;
 - a Source path or a relative link does not exist;
-- a test cites an unknown requirement ID.
+- a test cites an unknown requirement ID, or a JS/TS test title does not start with a requirement ID (QA-TRACE-001).
 
 The sdd-spectree page imports the same regexes, so `--verify` proves the page counts what G1 counts.
 

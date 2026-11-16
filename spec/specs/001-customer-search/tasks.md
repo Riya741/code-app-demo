@@ -1,7 +1,7 @@
 # Tasks — Customer Search
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 8 tasks — ✅ 5 · 🔄 0 · ⬜ 3 · ⛔ 0
+**Summary:** 9 tasks — ✅ 7 · 🔄 0 · ⬜ 2 · ⛔ 0
 
 - [x] **SRCH-T01** Load visible customers through `fetchCustomers` + `useCustomers`.
   - Status: ✅ Done · Covers: SRCH-LOAD-001, SRCH-LOAD-002 · Files: `src/lib/customerSource.ts`, `src/hooks/useCustomers.ts`
@@ -20,7 +20,11 @@
   - Step: Verify with a screen reader (NVDA / VoiceOver)
 
 ## Test tasks
-- [ ] **SRCH-T07** Unit tests for `score()` covering every rank and the scenarios in requirements.
-  - Status: ⬜ Not started · Covers: SRCH-RANK-002, SRCH-RANK-003 · Depends on: QA-T01
+- [x] **SRCH-T07** Unit tests for `score()` covering every rank and the scenarios in requirements.
+  - Status: ✅ Done · Covers: SRCH-RANK-001..004 · Files: `src/lib/search.ts`, `tests/unit/search.test.ts`
+  - Pure ranking logic moved unchanged from `SearchBox.tsx` to `src/lib/search.ts` so it can be tested. 13 tests. The exact-ID test failed on first run and found the SRCH-T09 defect.
+- [x] **SRCH-T09** Defect: an exact parent ID match ranked 4 instead of 0 unless the name also contained the digits.
+  - Status: ✅ Done · Covers: SRCH-RANK-003 · Files: `src/lib/search.ts`
+  - Found 2026-11-16 by SRCH-T07 (`SRCH-RANK-003 ranks an exact parent ID match 0`). The spec says 0 = name or ID equals the query; `score()` now checks the exact ID first. Test passes.
 - [ ] **SRCH-T08** Component test for keyboard flow and empty state.
   - Status: ⬜ Not started · Covers: SRCH-SEL-002..004, SRCH-RANK-006 · Depends on: QA-T02

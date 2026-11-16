@@ -53,7 +53,7 @@ into practice, and shows where compliance is incomplete. Update it whenever a sp
 | II | executive-summary | Edits session-only until the summary endpoint exists | SUM-T07..T10 |
 | II | use-case-form, event-form | Edit dialogs do not persist yet | UCF-T07, EVF-T06 |
 | VII | accessibility | Label association, error announcement, keyboard row expansion | A11Y-T02..T06 |
-| X | quality | No automated tests | QA-T01..T05 |
+| X | quality | Unit tests only; component, integration and E2E tests pending | QA-T02..T04 |
 
 ## 4. Maintenance rules
 1. A new spec MUST add a row to the matrix and its requirement IDs to section 2.

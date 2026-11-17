@@ -1,6 +1,6 @@
 # Code App Demo — Constitution
 
-**Version:** 1.0.0 · **Ratified:** 2026-11-11 · **Last amended:** 2026-11-11
+**Version:** 1.1.0 · **Ratified:** 2026-11-11 · **Last amended:** 2026-11-17 ([CR-20261117-1](changes/CR-20261117-1-ai-agents.md))
 
 The constitution holds the non-negotiable principles for this project. Every spec, design and task must comply with
 them. Where a spec conflicts with the constitution, the constitution wins and the spec must be changed.
@@ -68,6 +68,26 @@ The mapping from each article to the specs that put it into practice is in
 2. Reference data is cached; heavy UI (the rich text editor) is loaded only when needed.
 3. Known scaling limits are documented in the spec, with the threshold at which the design must change.
 
+## Article XII — AI Agents and Data
+1. Every AI agent (runtime, evaluation or development) has an **agent spec** in [agents/](agents/README.md) naming its
+   purpose, inputs, outputs, allowed tools, model, guardrails, failure behaviour and done criteria. An agent may not
+   use a tool its spec does not list, and its prompt or subagent file cites the spec and version it implements.
+2. Agents hand off through **versioned contracts** (JSON Schema in [contracts/](contracts/README.md)). A hand-off that
+   fails validation is rejected; it is never repaired silently.
+3. AI output is a **draft** until a human accepts it. No agent writes business data to the workbook; only the
+   existing, specified write endpoints do, on a user's action.
+4. Workbook data is sent to a model provider only when `AI_ENABLED=true` and the
+   [AI data policy](steering/ai-data-policy.md) allows the field. This qualifies Article III.3: the project holds only
+   fictional data (ADR-0006), which the policy allows; real customer data may not be sent until authentication and
+   data handling are specified first. Development and evaluation use generated fictional data only.
+5. Every factual claim in AI output that is shown to a user cites the source record it comes from; an uncited or
+   wrongly cited claim fails verification.
+6. Every AI capability ships with an **evaluation**. A prompt or model change is accepted only when the eval gate
+   (G7) passes, and model choices are recorded in an ADR that cites the eval report.
+7. Every AI run is **traceable**: run ID, step, agent spec and version, model, tokens, cost, latency and outcome.
+8. AI features are **optional**. With `AI_ENABLED` unset, the app runs exactly as Article VIII.3 requires; the model
+   provider is the only extra external service, and only while AI is enabled.
+
 ---
 
 ## Governance
@@ -77,3 +97,9 @@ The mapping from each article to the specs that put it into practice is in
 - **Compliance check:** every `design.md` has a "Constitution check" section; reviewers reject a spec that fails it
   without a recorded, approved exception.
 - **Exceptions** are recorded in the spec's design under "Constitution check → Exceptions", with the reason and an exit plan (a task).
+
+## Amendment log
+| Version | Date | Change | Change request |
+|---|---|---|---|
+| 1.0.0 | 2026-11-11 | Ratified: Articles I–XI | — |
+| 1.1.0 | 2026-11-17 | Article XII (AI Agents and Data) added; qualifies III.3 and VIII.3 for AI features | [CR-20261117-1](changes/CR-20261117-1-ai-agents.md) |

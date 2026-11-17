@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://code-app-demo.local/spec/contracts/analyst-to-writer.v1.schema.json",
+  "title": "Analyst to Writer v1",
+  "description": "Analyst -> Writer. Insights grouped by the brief's sections; every insight cites the fact IDs it rests on.",
+  "x-contract": {
+    "name": "analyst-to-writer",
+    "version": 1,
+    "from": "AGENT-ANALYST",
+    "to": "AGENT-WRITER",
+    "requirements": ["AIB-CITE-002", "AIB-FAITH-001", "AIB-FAITH-002", "AIB-FMT-001"]
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract", "run_id", "overview", "wins", "risks", "next_steps", "no_activity"],
+  "properties": {
+    "contract": { "const": "analyst-to-writer.v1" },
+    "run_id": { "type": "string", "pattern": "^run_[0-9a-z]{8,32}$" },
+    "no_activity": {
+      "type": "boolean",
+      "description": "True when the fact sheet has no use cases and no events (AIB-FAITH-003)."
+    },
+    "overview": { "$ref": "#/$defs/insights" },
+    "wins": { "$ref": "#/$defs/insights" },
+    "risks": { "$ref": "#/$defs/insights" },
+    "next_steps": { "$ref": "#/$defs/insights" }
+  },
+  "$defs": {
+    "insights": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["point", "fact_ids"],
+        "properties": {
+          "point": { "type": "string", "maxLength": 400 },
+          "fact_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^(CU|UC|EV)-[0-9]+$" }
+          }
+        }
+      }
+    }
+  }
+}

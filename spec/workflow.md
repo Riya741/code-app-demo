@@ -13,12 +13,20 @@ defect fix, but none is skipped (Constitution, Article I).
 
 If code and spec disagree, one of them is a defect: fix the code, or change the spec through this workflow.
 
+## Work done by AI agents (Constitution Article XII)
+Agents follow the same seven steps; three things are added.
+- **Agent specs.** Each agent works under its spec in [agents/](agents/README.md): only its listed tools, its guardrails, its done criteria.
+- **Hand-off.** At *Verify*, the implementer writes `handoffs/<TASK-ID>.md` from [templates/handoff.md](templates/handoff.md); the reviewer records its verdict there before *Close*. Spec lint (G1 check 12) validates the file.
+- **AI changes.** A change to a prompt, model or the AI pipeline also passes gate G7 (eval) before merge, and a model choice is recorded in an ADR citing the eval report.
+
 ## Status vocabularies
 | Item | Values |
 |---|---|
 | Requirement | ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour missing or broken) · 📝 Planned · Deprecated |
 | Task | ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked (say by what) |
 | ADR | Proposed · Accepted · Superseded by ADR-NNNN |
+| Agent spec | Version `MAJOR.MINOR.PATCH`; bump on any change to tools, model, inputs, outputs or guardrails |
+| Hand-off verdict | pending · pass · fail |
 
 ## Gates
 See [gates/validation-gates.md](gates/validation-gates.md). Open gaps are tracked in

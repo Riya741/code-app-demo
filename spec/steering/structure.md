@@ -6,6 +6,10 @@ code-app-demo/
 ├─ index.html                 page shell, title "Code App Demo"
 ├─ vite.config.ts             dev/preview server, @ alias, workbook plugin
 ├─ server/workbook.ts         workbook API + storage engine
+├─ server/ai/                 (planned) AI Account Brief pipeline: orchestrator, steps, prompts, traces
+├─ evals/                     (planned) eval dataset, graders, judge, reports (gate G7)
+├─ mcp/workbook-mcp/          (planned) MCP server for agents
+├─ .claude/                   (planned) subagents, skills, hooks, settings
 ├─ scripts/                   Python workbook build/repair tools
 ├─ src/
 │  ├─ main.tsx, App.tsx       bootstrap, providers (theme, query, tooltip, toaster)
@@ -23,17 +27,21 @@ code-app-demo/
 ## Spec layout
 ```
 spec/
-├─ constitution.md            principles (Articles I–XI)
+├─ constitution.md            principles (Articles I–XII)
 ├─ workflow.md                how a change moves from idea to done
 ├─ steering/                  product, tech, structure, glossary, constitution mapping
 ├─ adr/                       0001-…, one decision per file
+├─ changes/                   change requests (CR-<yyyymmdd>-<n>-<slug>.md)
+├─ agents/                    one spec per AI agent (runtime, evaluation, development), Article XII.1
+├─ contracts/                 versioned JSON Schemas for agent hand-offs, Article XII.2
+├─ handoffs/                  one hand-off file per task delivered by a development agent
 ├─ specs/NNN-<spec-name>/
 │  ├─ requirements.md         user stories + one '#### PREFIX-AREA-NNN: title' block per EARS criterion
 │  ├─ design.md               architecture, data, interfaces, error handling, constitution check
 │  └─ tasks.md                implementation tasks with status and Covers
 ├─ gates/                     validation gates, gap register
-├─ scripts/spec_lint.py       G1 gate: format, IDs, links, task counts
-├─ templates/                 requirements / design / tasks / change-request / ADR templates
+├─ scripts/spec_lint.py       G1 gate: format, IDs, links, task counts, agents, prompts, hand-offs, contracts
+├─ templates/                 requirements / design / tasks / change-request / ADR / agent / hand-off templates
 ├─ traceability.md            spec ↔ source files, shared tasks
 └─ id-migration.md            old → new requirement IDs (2026-11-11)
 ```
@@ -49,6 +57,11 @@ spec/
 | Task | `<PREFIX>-T<nn>`; next line `  - Status: <emoji> <status> · Covers: <requirement IDs> · Files: …` |
 | Task steps | `  - Step: …` (never nested checkboxes) |
 | ADR | `adr/NNNN-kebab-title.md`, H1 `ADR-NNNN: Title`, referenced as `ADR-NNNN` |
+| Change request | `changes/CR-<yyyymmdd>-<n>-<slug>.md`, referenced as `CR-<yyyymmdd>-<n>` |
+| Agent spec | `agents/<name>.md`, ID `AGENT-<NAME>` (file name upper-cased), semver `Version` |
+| Contract | `contracts/<name>.v<N>.schema.json`; a breaking change is a new version file |
+| Hand-off | `handoffs/<TASK-ID>.md` with `task-handoff.v1` front matter |
+| Prompt / subagent header | `<!-- agent-spec: AGENT-<NAME>@<version> · requirements: <IDs> -->` in the first 20 lines |
 | Components | PascalCase file = component name |
 | Hooks | `useXxx.ts` |
 | Workbook columns | snake_case; event POST payload keys PascalCase (legacy) |

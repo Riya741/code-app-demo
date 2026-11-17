@@ -27,3 +27,18 @@
 | **Clone** | Creating new use cases from existing ones, typically to copy them to other subsidiaries/departments. | UI |
 | **Pending row** (bulk form) | A row in the bulk table with neither subsidiary nor department set. | UI |
 | **Surrogate key / alt key** | Lookup sheets carry both `id` and `<name>_id`. The app detects which one the activity rows use (`detectKey`). | `src/lib/lookups.ts` |
+
+## AI terms (Constitution Article XII)
+
+| Term | Definition | Where |
+|---|---|---|
+| **AI Account Brief** | An AI-drafted executive summary built from a customer's use cases and events, reviewed and saved by a person. | spec 022 |
+| **Agent** | A component that does one job in an AI workflow: an LLM step, a deterministic code step, or a Claude Code subagent. | `spec/agents/` |
+| **Agent spec** | The governing document of an agent: purpose, inputs, outputs, tools, model, guardrails, done criteria, failure. | `spec/agents/*.md` |
+| **Contract** | A versioned JSON Schema for a hand-off between agents; invalid hand-offs are rejected. | `spec/contracts/` |
+| **Hand-off** | What one agent passes to the next: a contract-shaped JSON object at runtime, or a hand-off file for a development task. | `spec/handoffs/` |
+| **Fact sheet / fact ID** | The allow-listed, redacted data for one customer; each record has a fact ID (`CU-`, `UC-`, `EV-` + workbook id) that the draft cites. | fact-sheet.v1 |
+| **Run** | One execution of the brief pipeline, with a run ID, checkpoints and a trace. | `../data/ai-runs/` |
+| **Unverified draft** | A draft the critic still rejected after two revisions; shown with its issues, never hidden. | AOPS-FAIL-003 |
+| **Judge** | An LLM that scores outputs against a rubric during evaluation; trusted only while calibrated against human scores. | AGENT-JUDGE |
+| **Gate G7** | The eval gate: quality thresholds a prompt or model change must meet. | EVAL-GATE-001 |

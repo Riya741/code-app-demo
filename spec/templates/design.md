@@ -41,5 +41,6 @@
 | IX Layered architecture | |
 | X Testable & traceable | |
 | XI Performance budget | |
+| XII AI agents & data | |
 
 **Exceptions:** <none | article, reason, exit task>

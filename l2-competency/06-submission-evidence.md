@@ -22,7 +22,7 @@ l2-competency/evidence/
 
 | Topic | Primary evidence | Supporting |
 |---|---|---|
-| 1 SDD | `spec/constitution.md` v1.1.0 (Art. XII), `spec/agents/`, `spec/contracts/`, `spec/handoffs/`, specs 022–026 | spec_lint checks 10–12, spec tree, traceability walkthrough |
+| 1 SDD | `spec/constitution.md` v1.1.0 (Art. XII), `spec/agents/`, `spec/contracts/`, `spec/handoffs/`, specs 022–026 | spec_lint checks 10–13, spec tree, traceability walkthrough |
 | 2 AI dev | Git log of task-ID commits, `CLAUDE.md`, `.claude/`, `ai-dev-log.md` | CI headless review comments, closed High gaps, working app demo |
 | 3 Eval | `evals/reports/…`, judge calibration, ADR-0007 | G7 in CI, 3B comparison (if done) |
 | 4 Agents/Ops | `server/ai/`, ADR-0008, failure-mode tests, chaos report | Run Inspector, runbook, resume demo |

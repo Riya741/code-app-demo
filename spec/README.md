@@ -8,29 +8,34 @@ and everything still to do is a task with a status.
 
 ```
 spec/
-├─ constitution.md                 non-negotiable principles (Articles I–XI)
+├─ constitution.md                 non-negotiable principles (Articles I–XII), v1.1.0
 ├─ workflow.md                     how a change moves: propose → specify → design → plan → build → verify → close
 ├─ steering/                       shared context every spec relies on
 │  ├─ product.md                   purpose, users, scope, principles
 │  ├─ tech.md                      stack, commands, configuration, constraints
 │  ├─ structure.md                 repo/spec layout, naming, code conventions
 │  ├─ glossary.md                  domain terms
-│  └─ constitution-mapping.md      article ↔ spec ↔ requirement matrix, exceptions
-├─ adr/                            0001 … 0005 architecture decision records
+│  ├─ constitution-mapping.md      article ↔ spec ↔ requirement matrix, exceptions
+│  └─ ai-data-policy.md            what data may reach a model, redaction, retention (Article XII.4)
+├─ adr/                            0001 … 0008 architecture decision records
+├─ changes/                        change requests (CR-20261117-1: AI agents, Article XII)
+├─ agents/                         12 agent specs: 6 runtime, 1 evaluation, 5 development (Article XII.1)
+├─ contracts/                      6 versioned JSON Schemas for agent hand-offs (Article XII.2)
+├─ handoffs/                       one hand-off file per task delivered by a development agent
 ├─ specs/NNN-<name>/
 │  ├─ requirements.md              user stories + one block per EARS criterion (ID, Status, Criterion, Source)
 │  ├─ design.md                    architecture, interfaces, planned changes, constitution check
 │  └─ tasks.md                     implementation tasks, each with a status and the requirements it covers
 ├─ gates/
-│  ├─ validation-gates.md          G1 spec lint … G6 CI
+│  ├─ validation-gates.md          G1 spec lint … G6 CI, G7 AI eval (planned)
 │  └─ gap-register.md              every ❌ Gap / ⚠️ Partial requirement and the tasks that close it
-├─ scripts/spec_lint.py            gate G1 (run: py spec/scripts/spec_lint.py)
-├─ templates/                      requirements, design, tasks, change-request, adr
+├─ scripts/spec_lint.py            gate G1, checks 1–13 (run: py spec/scripts/spec_lint.py)
+├─ templates/                      requirements, design, tasks, change-request, adr, agent, handoff
 ├─ traceability.md                 spec → source files, cross-spec task links
 └─ id-migration.md                 old IDs (SRCH-012) → new IDs (SRCH-RANK-003)
 ```
 
-## Status dashboard (2026-11-16)
+## Status dashboard (2026-11-17)
 
 Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Tasks: ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked.
 
@@ -60,22 +65,31 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [019-security](specs/019-security/) | SEC | 9 | 6 | 1 | 1 | 1 | 6 | 3 | 0 | 3 | 0 |
 | [020-performance-reliability](specs/020-performance-reliability/) | PERF/REL/COMP/DT | 23 | 16 | 4 | 1 | 2 | 7 | 2 | 0 | 5 | 0 |
 | [021-quality](specs/021-quality/) | QA | 15 | 10 | 0 | 0 | 5 | 10 | 4 | 0 | 6 | 0 |
-| **Total** | | **371** | **323** | **19** | **14** | **15** | **176** | **110** | **0** | **62** | **4** |
+| **AI & agents** (CR-20261117-1) | | | | | | | | | | | |
+| [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 25 | 0 | 0 | 0 | 25 | 9 | 0 | 0 | 7 | 2 |
+| [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 10 | 0 | 0 | 9 | 1 |
+| [024-agent-ops](specs/024-agent-ops/) | AOPS | 27 | 0 | 0 | 0 | 27 | 10 | 0 | 0 | 10 | 0 |
+| [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
+| [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 4 | 0 | 0 | 14 | 13 | 4 | 0 | 8 | 1 |
+| **Total** | | **490** | **327** | **19** | **14** | **130** | **224** | **114** | **0** | **101** | **9** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,
 EXP-T07, PIPE-T07 demo data generator, DATA-T09 test fixture.
+Done in Phase 1 (2026-11-17): DEVA-T01..T04: Article XII, AI data policy, specs 022–026, 12 agent specs, 6 contracts,
+ADR-0007 (Proposed) and ADR-0008, spec lint checks 10–13.
 
-1. **UCF-T07 / UCF-T08**, **EVF-T06** save edits
-2. **API-T09 → SUM-T08 → SUM-T09 → SUM-T10** persist the executive summary
-3. **QA-T02 → QA-T03** component tests and server integration harness (fixture: DATA-T09)
-4. **API-T08** validate references · **PERF-T03** date display fix
-5. **LAY-T07** refresh everything
-6. **SEC-T03 → SEC-T04** remove unused dependencies, then `npm audit` (8 findings after the first install)
-7. **QA-T07** CI once a GitHub remote exists
+1. **DEVA-T05..T09** subagents, hooks and skills (Phase 2), then deliver the next tasks through them
+2. **UCF-T07 / UCF-T08**, **EVF-T06** save edits
+3. **API-T09 → SUM-T08 → SUM-T09 → SUM-T10** persist the executive summary (also unblocks AIB-T07)
+4. **QA-T02 → QA-T03** component tests and server integration harness (fixture: DATA-T09)
+5. **API-T08** validate references · **PERF-T03** date display fix
+6. **LAY-T07** refresh everything
+7. **SEC-T03 → SEC-T04** remove unused dependencies, then `npm audit` (8 findings after the first install)
+8. **QA-T07** CI on GitHub Actions (the remote exists since 2026-11-17); unblocks EVAL-T09 and DEVA-T12
 
 ## Workflow
 See [workflow.md](workflow.md): **propose → specify → design → plan → build → verify → close**, with the
-[validation gates](gates/validation-gates.md) G1–G6. Run `py spec/scripts/spec_lint.py` before every review.
+[validation gates](gates/validation-gates.md) G1–G7. Run `py spec/scripts/spec_lint.py` before every review.
 
 Rule: **if code and spec disagree, one of them is a defect** (Constitution, Article I).

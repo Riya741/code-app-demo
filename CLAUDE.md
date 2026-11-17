@@ -9,7 +9,7 @@ The specs in `spec/` are the source of truth. Start with [spec/README.md](spec/R
 |---|---|
 | `npm run dev` | App + API on `localhost:3000` (data: `../data/code-app-data.xlsx`, override with `WORKBOOK_PATH`) |
 | `npm run lint` · `npm run typecheck` · `npm test` | Gates G3 and G4 |
-| `py spec/scripts/spec_lint.py` | Gate G1: spec format, IDs, links, test titles |
+| `py spec/scripts/spec_lint.py` | Gate G1: spec format, IDs, links, test titles, agent specs, prompt headers, hand-offs, contracts |
 | `py -I scripts/generate_demo_workbook.py <out.xlsx> [--customers 8]` | Fictional data workbook; `--customers 8` is the test fixture |
 | `py spectree/build_spectree.py --verify` (from `spectree/`) | Regenerate the spec tree page |
 
@@ -21,6 +21,9 @@ Follow [spec/workflow.md](spec/workflow.md): propose → specify → design → 
 4. Commit messages start with the task ID: `UCF-T07: save use case edits`. Work on a branch, not `main`.
 5. Close: task ✅ `[x]`, requirement status, gap register, Summary line, README dashboard, traceability.
 6. If code and spec disagree, one of them is a defect: fix the code or change the spec on purpose, never leave both.
+7. AI work follows Constitution Article XII. Each agent has a spec in `spec/agents/` and may use only the tools it lists. Prompt
+   and subagent files start with `<!-- agent-spec: AGENT-X@<version> · requirements: … -->`. Agents hand off through
+   `spec/contracts/` schemas. A delivered task gets `spec/handoffs/<TASK-ID>.md` (template `spec/templates/handoff.md`).
 
 ## Done means
 `npm run lint` (0 errors), `npm run typecheck`, `npm test` and `py spec/scripts/spec_lint.py` all pass, plus manual
@@ -33,6 +36,9 @@ checks for UI changes in light and dark themes, at ≥ 1024px and < 1024px (gate
 - Sanitise any HTML from data before rendering or exporting; CSV export keeps the formula guard (Article III).
 - Every user-facing message is in the [messages catalog](spec/specs/017-design-system/messages-catalog.md) (Article V).
 - Colours come from design tokens; both themes must work (Article VI).
+- AI (planned `server/ai/`) is optional and off by default. Its output is a draft until a person saves it. Only data in
+  [spec/steering/ai-data-policy.md](spec/steering/ai-data-policy.md) reaches a model, and the API key lives only in the
+  environment (Article XII).
 
 ## Never
 - Commit any `.xlsx` (SEC-SUPPLY-001) or bring real customer data into the project. The workbook is fictional demo

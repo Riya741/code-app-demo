@@ -48,5 +48,6 @@ Unit: `fmtUtc`. API integration: summary endpoint (status codes, timestamp). Com
 | III Safe | Sanitised display and Word export. ✅ |
 | V Clear feedback | Labels the edit as "on screen only"; no save failure path yet. ⚠️ |
 | VI Theme-aware | Dark-mode colour adaptation. ✅ |
+| XII AI agents & data | The AI Account Brief (022) opens its draft in this editor unsaved; only Save writes it, through SUM-EDIT-001 (XII.3). ✅ |
 
 **Exceptions:** Article II — on-screen-only edit is a known interim state. Exit plan: SUM-T07..T10.

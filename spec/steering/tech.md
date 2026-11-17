@@ -18,10 +18,15 @@
 | Lint | ESLint 9 flat config, `typescript-eslint`, `react-hooks`, `react-refresh` |
 | Tests | Vitest 5 + jsdom (`tests/unit/`) |
 | Data scripts | Python 3 + `openpyxl`, run with `python -I` |
+| AI (planned, Phase 3) | `@anthropic-ai/sdk` + `zod` in `server/ai/`; added only when the code that uses them lands (Article VIII.2) |
+| MCP (planned, Phase 5) | `@modelcontextprotocol/sdk`, stdio, in `mcp/workbook-mcp/` |
 
 ## Runtime topology
 Browser SPA → `/api/workbook/*` → Vite plugin `local-workbook` (`server/workbook.ts`) → `../data/code-app-data.xlsx`.
 The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
+
+**Planned (AI, spec 024):** the same plugin serves `/api/ai/*`; `server/ai/` calls the Anthropic API only when
+`AI_ENABLED=true`. The browser never calls the model. Run checkpoints and traces go to `../data/ai-runs/` (outside the repo).
 
 ## Commands
 | Command | Purpose |
@@ -45,12 +50,15 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 | Theme | default light, no system theme |
 | Panel memory | `autoSaveId="terra-split-h-v3"` |
 | TS | app `strict: false`; `vite.config.ts` + `server/` `strict: true` |
+| AI (planned) | `AI_ENABLED` (default off) · `ANTHROPIC_API_KEY` from the environment only, never committed (SEC-SUPPLY-002) · `AI_MODEL_<STEP>`, `AI_EFFORT_<STEP>` (defaults in the agent specs, ADR-0007) · `AI_RUN_MAX_TOKENS`, `AI_RUN_MAX_COST_USD`, `AI_RUN_MAX_SECONDS` · `AI_FAULTS` (development and test only) · `AI_RUNS_DIR` (default `../data/ai-runs`) |
+| MCP (planned) | `MCP_ALLOW_WRITE` (default off) · `WORKBOOK_PATH` |
 
 ## Technical constraints
 - No database server; the workbook is rewritten on every change (ADR-0001).
 - No authentication; local single-user use only.
 - Browser targets: current Chrome, Edge, Firefox, Safari (ES2020).
 - Node version must satisfy Vite 7 (20.19+ / 22.12+).
+- AI features are optional and off by default; with AI off the app needs no service apart from the font CDN (Article XII.8).
 
 ## Approved decisions
 [ADR-0001](../adr/0001-excel-workbook-as-data-store.md) ·
@@ -58,4 +66,6 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 [ADR-0003](../adr/0003-soft-delete.md) ·
 [ADR-0004](../adr/0004-client-side-search.md) ·
 [ADR-0005](../adr/0005-tanstack-query.md) ·
-[ADR-0006](../adr/0006-fictional-demo-dataset.md)
+[ADR-0006](../adr/0006-fictional-demo-dataset.md) ·
+[ADR-0007](../adr/0007-model-and-prompt-choice.md) (Proposed) ·
+[ADR-0008](../adr/0008-orchestration-pattern.md)

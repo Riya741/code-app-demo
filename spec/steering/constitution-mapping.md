@@ -7,29 +7,34 @@ into practice, and shows where compliance is incomplete. Update it whenever a sp
 
 ## 1. Matrix
 
-| Spec ↓ / Article → | I Spec first | II Workbook truth | III Safe | IV Valid input | V Feedback | VI Theme/responsive | VII A11y | VIII Simple | IX Layered | X Testable | XI Perf |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| [customer-search](../specs/001-customer-search/) | ○ | | | ○ | ● | ○ | ⚠️ | | ○ | ○ | ● |
-| [workspace-layout](../specs/002-workspace-layout/) | ○ | ○ | | | ⚠️ | ● | ○ | ● | | ○ | |
-| [executive-summary](../specs/003-executive-summary/) | ○ | ⚠️ | ○ | | ● | ○ | ○ | | ○ | ○ | ○ |
-| [use-cases-panel](../specs/004-use-cases-panel/) | ○ | ○ | ○ | | ● | ○ | ○ | | ● | ○ | |
-| [use-case-form](../specs/005-use-case-form/) | ○ | ⚠️ | | ● | ● | ○ | ○ | | ○ | ○ | |
-| [use-case-bulk](../specs/006-use-case-bulk/) | ○ | ○ | | ● | ● | ○ | ○ | | ○ | ○ | ○ |
-| [events-panel](../specs/007-events-panel/) | ○ | ○ | ○ | | ● | ○ | ○ | ⚠️ | ● | ○ | |
-| [event-form](../specs/008-event-form/) | ○ | ⚠️ | | ⚠️ | ● | ○ | ○ | | ○ | ○ | |
-| [data-grid](../specs/009-data-grid/) | ○ | | | | ● | ● | ⚠️ | ● | | ○ | |
-| [export](../specs/010-export/) | ○ | | ● | | ○ | | | ● | | ○ | |
-| [rich-text](../specs/011-rich-text/) | ○ | | ● | | | ● | ○ | | | ○ | ● |
-| [data-model](../specs/012-data-model/) | ○ | ● | | ● ⚠️ | | | | | | ○ | |
-| [workbook-storage](../specs/013-workbook-storage/) | ○ | ● ⚠️ | | | ○ | | | ● | | ○ | ● |
-| [workbook-api](../specs/014-workbook-api/) | ○ | ● | ⚠️ | ● ⚠️ | ○ | | | | ● | ○ | |
-| [client-data-layer](../specs/015-client-data-layer/) | ○ | | | | ● | | | | ● | ○ | ● |
-| [data-pipeline](../specs/016-data-pipeline/) | ○ | ● | | | | | | | | ● | |
-| [design-system](../specs/017-design-system/) | ○ | | | | ● | ● | ○ | ⚠️ | | | |
-| [accessibility](../specs/018-accessibility/) | ○ | | | | | | ● ⚠️ | | | ○ | |
-| [security](../specs/019-security/) | ○ | | ● ⚠️ | | | | | ⚠️ | | ○ | |
-| [performance-reliability](../specs/020-performance-reliability/) | ○ | ● ⚠️ | | | ○ | ○ | | | | | ● |
-| [quality](../specs/021-quality/) | ● | | | | | | | | | ● ⚠️ | |
+| Spec ↓ / Article → | I Spec first | II Workbook truth | III Safe | IV Valid input | V Feedback | VI Theme/responsive | VII A11y | VIII Simple | IX Layered | X Testable | XI Perf | XII AI |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| [customer-search](../specs/001-customer-search/) | ○ | | | ○ | ● | ○ | ⚠️ | | ○ | ○ | ● | |
+| [workspace-layout](../specs/002-workspace-layout/) | ○ | ○ | | | ⚠️ | ● | ○ | ● | | ○ | | |
+| [executive-summary](../specs/003-executive-summary/) | ○ | ⚠️ | ○ | | ● | ○ | ○ | | ○ | ○ | ○ | ○ |
+| [use-cases-panel](../specs/004-use-cases-panel/) | ○ | ○ | ○ | | ● | ○ | ○ | | ● | ○ | | |
+| [use-case-form](../specs/005-use-case-form/) | ○ | ⚠️ | | ● | ● | ○ | ○ | | ○ | ○ | | |
+| [use-case-bulk](../specs/006-use-case-bulk/) | ○ | ○ | | ● | ● | ○ | ○ | | ○ | ○ | ○ | |
+| [events-panel](../specs/007-events-panel/) | ○ | ○ | ○ | | ● | ○ | ○ | ⚠️ | ● | ○ | | |
+| [event-form](../specs/008-event-form/) | ○ | ⚠️ | | ⚠️ | ● | ○ | ○ | | ○ | ○ | | |
+| [data-grid](../specs/009-data-grid/) | ○ | | | | ● | ● | ⚠️ | ● | | ○ | | |
+| [export](../specs/010-export/) | ○ | | ● | | ○ | | | ● | | ○ | | |
+| [rich-text](../specs/011-rich-text/) | ○ | | ● | | | ● | ○ | | | ○ | ● | |
+| [data-model](../specs/012-data-model/) | ○ | ● | | ● ⚠️ | | | | | | ○ | | |
+| [workbook-storage](../specs/013-workbook-storage/) | ○ | ● ⚠️ | | | ○ | | | ● | | ○ | ● | |
+| [workbook-api](../specs/014-workbook-api/) | ○ | ● | ⚠️ | ● ⚠️ | ○ | | | | ● | ○ | | |
+| [client-data-layer](../specs/015-client-data-layer/) | ○ | | | | ● | | | | ● | ○ | ● | |
+| [data-pipeline](../specs/016-data-pipeline/) | ○ | ● | | | | | | | | ● | | |
+| [design-system](../specs/017-design-system/) | ○ | | | | ● | ● | ○ | ⚠️ | | | | |
+| [accessibility](../specs/018-accessibility/) | ○ | | | | | | ● ⚠️ | | | ○ | | |
+| [security](../specs/019-security/) | ○ | | ● ⚠️ | | | | | ⚠️ | | ○ | | ○ |
+| [performance-reliability](../specs/020-performance-reliability/) | ○ | ● ⚠️ | | | ○ | ○ | | | | | ● | |
+| [quality](../specs/021-quality/) | ● | | | | | | | | | ● ⚠️ | | ○ |
+| [ai-account-brief](../specs/022-ai-account-brief/) | ○ | ○ | ● | ○ | ● | ○ | ○ | ○ | ● | ○ | ○ | ● |
+| [ai-evaluation](../specs/023-ai-evaluation/) | ○ | | ○ | | | | | ○ | | ● | | ● |
+| [agent-ops](../specs/024-agent-ops/) | ○ | ○ | ○ | ○ | ● | | | ● | ○ | ● | ○ | ● |
+| [mcp-tooling](../specs/025-mcp-tooling/) | ○ | ● | ● | ○ | | | | ○ | ● | ○ | | ● |
+| [dev-agents](../specs/026-dev-agents/) | ● | ○ | ○ | | | | | | | ● | | ● |
 
 ## 2. Article → enforcing requirements
 
@@ -46,6 +51,7 @@ into practice, and shows where compliance is incomplete. Update it whenever a sp
 | **IX Layered architecture** | CDL-HTTP-001..005, CDL-FETCH-001..004, CDL-QUERY-001..006, structure.md CONV-002/003 | — |
 | **X Testable & traceable** | QA-TRACE-001, QA-TRACE-002, PIPE-BUILD-014 (logged recovery), every tasks.md | QA-TEST-001..005 (QA-T01..T05), QA-GATE-002, QA-GATE-003 |
 | **XI Performance budget** | PERF-SPEED-001..007, SRCH-RANK-004, CDL-QUERY-002, RTX-EDIT-001 | PERF-SPEED-005..007 thresholds monitored (PERF-T07) |
+| **XII AI agents & data** | DEVA-SPEC-001..003, DEVA-HAND-002 (lint checks 10–13); all other AIB, EVAL, AOPS, MCP, DEVA requirements are 📝 Planned | XII.1/XII.2 runtime enforcement (AOPS-T01, AOPS-T02, AIB-T01), XII.3 draft-only (AIB-T07), XII.4 policy (AIB-T02, MCP-T02), XII.5 citations (AIB-T03), XII.6 eval + G7 (EVAL-T08), XII.7 traces (AOPS-T01), XII.8 optional (AOPS-T01) |
 
 ## 3. Recorded exceptions
 | Article | Spec | Reason | Exit task |
@@ -59,3 +65,9 @@ into practice, and shows where compliance is incomplete. Update it whenever a sp
 1. A new spec MUST add a row to the matrix and its requirement IDs to section 2.
 2. A constitution amendment MUST add/rename a column and re-check every spec's "Constitution check".
 3. When an exit task is done, remove the exception row and the ⚠️ markers.
+
+## 5. Amendment re-check (constitution v1.1.0, 2026-11-17)
+Article XII was added by [CR-20261117-1](../changes/CR-20261117-1-ai-agents.md). Every spec's Constitution check was
+re-read against it: Article XII applies to the new specs 022–026 and touches three existing ones, whose designs gained
+an Article XII row: executive-summary (an AI draft is saved through SUM-EDIT-001), security (secrets and the AI data
+policy) and quality (gate G7). The other 18 specs do not involve AI; their checks are unchanged.

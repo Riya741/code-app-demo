@@ -67,3 +67,21 @@ Every string a user can see as feedback. Change wording here first, then in code
 | Multi-select hint | (one or more) |
 | Dialog description | Fields marked * are required. |
 | Bulk fill pickers | Leave as is |
+
+## 5. AI Account Brief (planned, spec 022)
+
+Specified by CR-20261117-1; not in the app yet. `<id>` is the first 6 characters of the run ID (AOPS-OBS-005).
+
+| Trigger | Where | Text | Requirement |
+|---|---|---|---|
+| AI available | Summary header button | Draft with AI | AIB-GEN-002 |
+| Run progress | Summary header, `aria-live` | Reading records… · Analysing… · Writing… · Checking (revision n)… | AIB-GEN-001 |
+| Unsaved edits | Confirm dialog | Replace your unsaved changes with an AI draft? [Replace] [Keep editing] | AIB-GEN-005 |
+| Run failed | Inline, with [Try again] | Could not draft the summary: <reason> (run <id>) | AIB-GEN-004 |
+| Breaker open | Button tooltip | AI is temporarily unavailable. Try again in a few minutes. | AIB-GEN-006 |
+| Draft ready | Editor banner | AI draft, not saved. Check it, then Save or Cancel. | AIB-HUMAN-001 |
+| Unverified draft | Editor banner + list | Unverified draft: check the points below before saving | AIB-HUMAN-002 |
+| Server: AI off | API 503 | AI is not enabled | AIB-API-001 |
+| Server: refusal | Run error reason | The model declined this request | AOPS-FAIL-004 |
+| Server: budget | Run error reason | Budget exceeded | AOPS-BUDG-001 |
+| Server: final check | Run error reason | Draft did not pass the final check | AIB-SAFE-002 |

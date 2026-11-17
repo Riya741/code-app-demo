@@ -41,7 +41,7 @@
       "globs": [
         "constitution.md"
       ],
-      "explain": "Eleven non-negotiable articles. Every spec, design and task must obey them."
+      "explain": "Twelve non-negotiable articles (v1.1.0). Every spec, design, task and AI agent must obey them; Article XII governs AI agents and data."
     },
     {
       "name": "Steering",
@@ -61,6 +61,16 @@
         "adr/[0-9][0-9][0-9][0-9]-*.md"
       ],
       "explain": "One architectural decision each, with context and consequences."
+    },
+    {
+      "name": "Agents & contracts",
+      "kind": "docs",
+      "globs": [
+        "changes/*.md",
+        "agents/*.md",
+        "contracts/*.json"
+      ],
+      "explain": "Article XII: change requests, one spec per AI agent (tools, model, guardrails, failure) and the versioned JSON Schema contracts agents hand off through."
     },
     {
       "name": "Specs",

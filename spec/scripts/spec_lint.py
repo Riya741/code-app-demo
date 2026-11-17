@@ -15,12 +15,22 @@ Checks
   8. Relative Markdown links resolve.
   9. Requirement IDs cited by test files (src/**/*.test.*, tests/**) exist, and every JS/TS test title
      (`it(...)` / `test(...)`, including `.fails`, `.skip`, `.only`, `.todo`) starts with one (QA-TRACE-001).
+ 10. Agent specs (spec/agents/*.md): ID/Version/Kind/Spec metadata, required sections, ID = file name, unique,
+     Requirements cite existing IDs, every contracts/<file> named exists (DEVA-SPEC-001).
+ 11. Prompt and subagent files (server/ai/prompts, .claude/agents, evals/graders/judge; *.md) carry the header
+     'agent-spec: AGENT-X@<version> · requirements: <IDs>' naming an existing agent at its current version and
+     only IDs that agent lists (DEVA-SPEC-002).
+ 12. Hand-off files (spec/handoffs/<TASK>.md): task-handoff.v1 front matter, task = file name and exists, covers only
+     IDs from that task's Covers line, known agent/reviewer, valid verdict and gates (DEVA-HAND-002).
+ 13. Contracts (spec/contracts/*.schema.json): valid JSON, $schema, $id ending in the file name, title, x-contract
+     name/version matching the file name, from/to agents and requirement IDs exist (DEVA-SPEC-003).
 
 The sdd-spectree page generator imports this module and uses its regexes and
 collect_requirements(), so the page and this gate always count the same things.
 """
 from __future__ import annotations
 
+import json
 import os
 import re
 import sys
@@ -47,6 +57,22 @@ LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
 SOURCE_RE = re.compile(r"^- \*\*Source:\*\*(.*)$")
 REQUIRED = ("requirements.md", "design.md", "tasks.md")
 
+# Article XII: agent specs, prompt headers, hand-offs, contracts (checks 10-13).
+AGENT_ID_FULL_RE = re.compile(r"^AGENT-[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*$")
+AGENT_META_RE = re.compile(r"^- \*\*(ID|Version|Kind|Spec):\*\*\s*(.+?)\s*$")
+AGENT_SECTIONS = ("Purpose", "Inputs", "Outputs", "Tools", "Model", "Guardrails", "Done when", "Failure",
+                  "Requirements", "Implementation")
+AGENT_KINDS = {"runtime", "evaluation", "development"}
+SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+$")
+SPEC_LINK_RE = re.compile(r"\]\(\.\./specs/([^/)#]+)/?\)")
+CONTRACT_REF_RE = re.compile(r"contracts/([A-Za-z0-9._-]+\.schema\.json)")
+CONTRACT_FILE_RE = re.compile(r"^([a-z0-9]+(?:-[a-z0-9]+)*)\.v(\d+)\.schema\.json$")
+PROMPT_HEADER_RE = re.compile(r"agent-spec:\s*(AGENT-[A-Z0-9-]+?)@(\d+\.\d+\.\d+)(.*)$")
+PROMPT_DIRS = ("server/ai/prompts", ".claude/agents", "evals/graders/judge")
+HANDOFF_KEYS = ("contract", "task", "agent", "covers", "files_changed", "tests", "gates", "verdict")
+HANDOFF_VERDICTS = {"pending", "pass", "fail"}
+GATE_RESULTS = {"pass", "fail", "n/a"}
+
 
 class Findings:
     def __init__(self) -> None:
@@ -56,6 +82,11 @@ class Findings:
         self.checked_tasks = 0
         self.req_ids: Dict[str, str] = {}   # id -> spec folder
         self.task_ids: Dict[str, str] = {}
+        self.task_covers: Dict[str, List[str]] = {}   # task id -> requirement IDs on its Covers line
+        self.agents: Dict[str, dict] = {}             # agent id -> {"version", "reqs", "path"}
+        self.checked_contracts = 0
+        self.checked_prompts = 0
+        self.checked_handoffs = 0
 
     def error(self, where: str, msg: str) -> None:
         self.errors.append(f"{where}: {msg}")
@@ -180,6 +211,7 @@ def check_tasks(specs_dir: str, root: str, f: Findings) -> None:
                 f.error(f"{where}:{i + 2}", f"{tid}: missing 'Covers:'")
             else:
                 ids = ids_in(cov.group(1))
+                f.task_covers[tid] = ids
                 if not ids and "—" not in cov.group(1):
                     f.error(f"{where}:{i + 2}", f"{tid}: Covers lists no requirement IDs (use '—' for none)")
                 for rid in ids:
@@ -244,6 +276,232 @@ def check_tests(root: str, f: Findings) -> None:
                                 f.error(rel(p, root), f"test title must start with a requirement ID: {m.group(2)[:60]!r}")
 
 
+def md_sections(text: str) -> Dict[str, str]:
+    """'## Heading' -> body text up to the next '## ' heading."""
+    out: Dict[str, str] = {}
+    current = None
+    for line in text.splitlines():
+        if line.startswith("## "):
+            current = line[3:].strip()
+            out[current] = ""
+        elif current is not None:
+            out[current] += line + "\n"
+    return out
+
+
+def check_agents(spec_root: str, root: str, f: Findings) -> None:
+    """Check 10. Fills f.agents."""
+    agents_dir = os.path.join(spec_root, "agents")
+    contracts_dir = os.path.join(spec_root, "contracts")
+    if not os.path.isdir(agents_dir):
+        return
+    spec_folders = {name for name, _ in iter_specs(os.path.join(spec_root, "specs"))}
+    for fn in sorted(os.listdir(agents_dir)):
+        if not fn.endswith(".md") or fn == "README.md":
+            continue
+        p = os.path.join(agents_dir, fn)
+        where = rel(p, root)
+        text = read(p)
+        meta: Dict[str, str] = {}
+        for line in text.splitlines():
+            m = AGENT_META_RE.match(line)
+            if m and m.group(1) not in meta:
+                meta[m.group(1)] = m.group(2)
+        for key in ("ID", "Version", "Kind", "Spec"):
+            if key not in meta:
+                f.error(where, f"agent spec missing '- **{key}:**'")
+        aid = meta.get("ID", "")
+        expected = "AGENT-" + fn[:-3].upper()
+        if aid and not AGENT_ID_FULL_RE.match(aid):
+            f.error(where, f"agent ID '{aid}' must look like AGENT-NAME")
+        elif aid and aid != expected:
+            f.error(where, f"agent ID '{aid}' does not match the file name (expected {expected})")
+        if aid in f.agents:
+            f.error(where, f"{aid} already defined in {f.agents[aid]['path']}")
+        version = meta.get("Version", "")
+        if version and not SEMVER_RE.match(version):
+            f.error(where, f"Version '{version}' is not MAJOR.MINOR.PATCH")
+        if "Kind" in meta and meta["Kind"] not in AGENT_KINDS:
+            f.error(where, f"Kind '{meta['Kind']}' must be one of {sorted(AGENT_KINDS)}")
+        if "Spec" in meta:
+            links = SPEC_LINK_RE.findall(meta["Spec"])
+            if not links or any(s not in spec_folders for s in links):
+                f.error(where, "Spec must link to an existing spec folder: [NNN-name](../specs/NNN-name/)")
+        sections = md_sections(text)
+        for sec in AGENT_SECTIONS:
+            if sec not in sections:
+                f.error(where, f"agent spec missing section '## {sec}'")
+        reqs = ids_in(sections.get("Requirements", ""))
+        if "Requirements" in sections and not reqs:
+            f.error(where, "Requirements section cites no requirement IDs")
+        for cfile in sorted(set(CONTRACT_REF_RE.findall(text))):
+            if not os.path.isfile(os.path.join(contracts_dir, cfile)):
+                f.error(where, f"names contract {cfile}, which does not exist in spec/contracts/")
+        if aid:
+            f.agents[aid] = {"version": version, "reqs": set(reqs), "path": where}
+
+
+def check_contracts(spec_root: str, root: str, f: Findings) -> None:
+    """Check 13. Needs f.agents (check 10)."""
+    cdir = os.path.join(spec_root, "contracts")
+    if not os.path.isdir(cdir):
+        return
+    for fn in sorted(os.listdir(cdir)):
+        if fn.endswith(".md"):
+            continue
+        p = os.path.join(cdir, fn)
+        where = rel(p, root)
+        m = CONTRACT_FILE_RE.match(fn)
+        if not m:
+            f.error(where, "contract file must be named <name>.v<N>.schema.json")
+            continue
+        f.checked_contracts += 1
+        try:
+            doc = json.loads(read(p))
+        except (ValueError, UnicodeDecodeError) as exc:
+            f.error(where, f"not valid JSON: {exc}")
+            continue
+        if not isinstance(doc, dict):
+            f.error(where, "contract must be a JSON object")
+            continue
+        for key in ("$schema", "$id", "title"):
+            if not doc.get(key):
+                f.error(where, f"missing '{key}'")
+        if doc.get("$id") and not str(doc["$id"]).endswith("/" + fn):
+            f.error(where, f"$id must end with '/{fn}'")
+        xc = doc.get("x-contract")
+        if not isinstance(xc, dict):
+            f.error(where, "missing 'x-contract' block")
+            continue
+        if xc.get("name") != m.group(1) or xc.get("version") != int(m.group(2)):
+            f.error(where, f"x-contract name/version must be '{m.group(1)}' / {int(m.group(2))}")
+        for side in ("from", "to"):
+            if xc.get(side) not in f.agents:
+                f.error(where, f"x-contract '{side}' agent {xc.get(side)!r} has no spec in spec/agents/")
+        reqs = xc.get("requirements")
+        if not isinstance(reqs, list) or not reqs:
+            f.error(where, "x-contract 'requirements' must list requirement IDs")
+        else:
+            for rid in reqs:
+                if rid not in f.req_ids:
+                    f.error(where, f"x-contract cites unknown requirement {rid}")
+
+
+def check_prompt_headers(root: str, f: Findings) -> None:
+    """Check 11. Needs f.agents (check 10)."""
+    for d in PROMPT_DIRS:
+        base = os.path.join(root, *d.split("/"))
+        if not os.path.isdir(base):
+            continue
+        for dp, dns, fns in os.walk(base):
+            for fn in sorted(fns):
+                if not fn.endswith(".md"):
+                    continue
+                p = os.path.join(dp, fn)
+                where = rel(p, root)
+                f.checked_prompts += 1
+                head = read(p).splitlines()[:20]
+                hm = next((PROMPT_HEADER_RE.search(line) for line in head if PROMPT_HEADER_RE.search(line)), None)
+                if not hm:
+                    f.error(where, "first 20 lines need '<!-- agent-spec: AGENT-X@1.0.0 · requirements: IDs -->'")
+                    continue
+                aid, version, rest = hm.groups()
+                agent = f.agents.get(aid)
+                if not agent:
+                    f.error(where, f"cites {aid}, which has no spec in spec/agents/")
+                    continue
+                if version != agent["version"]:
+                    f.error(where, f"cites {aid}@{version} but the spec is at {agent['version']} (version drift)")
+                rm = re.search(r"requirements:\s*(.*)", rest)
+                ids = ids_in(rm.group(1)) if rm else []
+                if not ids:
+                    f.error(where, "header lists no requirement IDs")
+                for rid in ids:
+                    if rid not in f.req_ids:
+                        f.error(where, f"header cites unknown requirement {rid}")
+                    elif rid not in agent["reqs"]:
+                        f.error(where, f"header cites {rid}, which {aid} does not list under Requirements")
+
+
+def parse_front_matter(text: str):
+    """Minimal YAML subset for hand-offs: 'key: value', inline lists [a, b] and maps {K: v}."""
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return None
+    out: Dict[str, object] = {}
+    for line in lines[1:]:
+        if line.strip() == "---":
+            return out
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        key, sep, value = line.partition(":")
+        if not sep:
+            continue
+        value = value.strip()
+        if value.startswith("[") and value.endswith("]"):
+            out[key.strip()] = [v.strip() for v in value[1:-1].split(",") if v.strip()]
+        elif value.startswith("{") and value.endswith("}"):
+            pairs = [v.partition(":") for v in value[1:-1].split(",") if v.strip()]
+            out[key.strip()] = {k.strip(): v.strip() for k, _, v in pairs}
+        else:
+            out[key.strip()] = value
+    return None   # no closing '---'
+
+
+def check_handoffs(spec_root: str, root: str, f: Findings) -> None:
+    """Check 12. Needs tasks (check 5) and agents (check 10)."""
+    hdir = os.path.join(spec_root, "handoffs")
+    if not os.path.isdir(hdir):
+        return
+    for fn in sorted(os.listdir(hdir)):
+        if not fn.endswith(".md") or fn == "README.md":
+            continue
+        p = os.path.join(hdir, fn)
+        where = rel(p, root)
+        f.checked_handoffs += 1
+        tid = fn[:-3]
+        if not re.fullmatch(r"[A-Z][A-Z0-9]{1,4}-T\d{2}", tid) or tid not in f.task_ids:
+            f.error(where, f"hand-off must be named after an existing task (<PREFIX-Tnn>.md), not '{fn}'")
+            continue
+        fm = parse_front_matter(read(p))
+        if fm is None:
+            f.error(where, "missing front matter between '---' lines (contract task-handoff.v1)")
+            continue
+        for key in HANDOFF_KEYS:
+            if key not in fm:
+                f.error(where, f"front matter missing '{key}'")
+        if fm.get("contract") != "task-handoff.v1":
+            f.error(where, "contract must be 'task-handoff.v1'")
+        if fm.get("task") != tid:
+            f.error(where, f"task '{fm.get('task')}' must equal the file name ({tid})")
+        if "agent" in fm and fm["agent"] not in f.agents:
+            f.error(where, f"agent {fm['agent']!r} has no spec in spec/agents/")
+        if "reviewer" in fm and fm["reviewer"] != "human" and fm["reviewer"] not in f.agents:
+            f.error(where, f"reviewer {fm['reviewer']!r} must be an agent ID or 'human'")
+        if "verdict" in fm and fm["verdict"] not in HANDOFF_VERDICTS:
+            f.error(where, f"verdict must be one of {sorted(HANDOFF_VERDICTS)}")
+        covers = fm.get("covers")
+        if "covers" in fm:
+            if not isinstance(covers, list) or not covers:
+                f.error(where, "covers must be a non-empty inline list [ID, ID]")
+            else:
+                allowed = set(f.task_covers.get(tid, []))
+                for rid in covers:
+                    if rid not in allowed:
+                        f.error(where, f"covers {rid}, which is not on {tid}'s Covers line")
+        for key in ("files_changed", "tests"):
+            if key in fm and not isinstance(fm[key], list):
+                f.error(where, f"{key} must be an inline list [a, b]")
+        gates = fm.get("gates")
+        if "gates" in fm:
+            if not isinstance(gates, dict):
+                f.error(where, "gates must be an inline map {G1: pass, ...}")
+            else:
+                for g, res in gates.items():
+                    if not re.fullmatch(r"G[1-7]", g) or res not in GATE_RESULTS:
+                        f.error(where, f"gate entry '{g}: {res}' must be G1..G7 with pass, fail or n/a")
+
+
 def main() -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -255,10 +513,15 @@ def main() -> int:
     check_tasks(specs_dir, root, f)
     check_references(spec_root, root, f)
     check_tests(root, f)
+    check_agents(spec_root, root, f)
+    check_contracts(spec_root, root, f)
+    check_prompt_headers(root, f)
+    check_handoffs(spec_root, root, f)
     for e in f.errors:
         print("ERROR", e)
     print(f"spec_lint: {f.checked_specs} specs, {f.checked_reqs} requirements, {f.checked_tasks} tasks, "
-          f"{len(f.errors)} error(s)")
+          f"{len(f.agents)} agents, {f.checked_contracts} contracts, {f.checked_prompts} prompts, "
+          f"{f.checked_handoffs} hand-offs, {len(f.errors)} error(s)")
     return 1 if f.errors else 0
 
 

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://code-app-demo.local/spec/contracts/brief-draft.v1.schema.json",
+  "title": "Brief draft v1",
+  "description": "Guard -> UI (via GET /api/ai/runs/:id). Sanitised HTML built by code, with citation markers, status and the critic's open issues (AIB-API-003, AIB-HUMAN-001, AIB-HUMAN-002).",
+  "x-contract": {
+    "name": "brief-draft",
+    "version": 1,
+    "from": "AGENT-GUARD",
+    "to": "AGENT-ORCHESTRATOR",
+    "requirements": ["AIB-API-003", "AIB-SAFE-002", "AIB-CITE-004", "AIB-FMT-002", "AIB-HUMAN-001", "AIB-HUMAN-002"]
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract", "run_id", "customer_id", "status", "html", "citations", "issues", "word_count", "revisions", "usage"],
+  "properties": {
+    "contract": { "const": "brief-draft.v1" },
+    "run_id": { "type": "string", "pattern": "^run_[0-9a-z]{8,32}$" },
+    "customer_id": { "type": "integer" },
+    "status": { "enum": ["verified", "unverified"] },
+    "html": { "type": "string", "maxLength": 20000, "description": "Sanitised with the rich-text allow-list; sentences end with [UC-123] style markers." },
+    "citations": { "type": "array", "items": { "type": "string", "pattern": "^(CU|UC|EV)-[0-9]+$" } },
+    "issues": {
+      "type": "array",
+      "description": "Open critic issues when status is unverified; empty when verified.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "detail"],
+        "properties": {
+          "type": { "type": "string" },
+          "detail": { "type": "string", "maxLength": 400 }
+        }
+      }
+    },
+    "word_count": { "type": "integer", "minimum": 0, "maximum": 350 },
+    "revisions": { "type": "integer", "minimum": 0, "maximum": 2 },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_tokens", "output_tokens", "cache_read_tokens", "cost_usd"],
+      "properties": {
+        "input_tokens": { "type": "integer", "minimum": 0 },
+        "output_tokens": { "type": "integer", "minimum": 0 },
+        "cache_read_tokens": { "type": "integer", "minimum": 0 },
+        "cost_usd": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

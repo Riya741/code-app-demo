@@ -31,3 +31,20 @@ DATA-QUAL-001, -002, -004; 2 Low: SEC-SUPPLY-001, API-GEN-005), 1 latent defect 
 **Where the agent needed correcting:** writing escape sequences (`\u00a0`, `\ufeff`) through the file tools produced
 literal characters twice. Lint caught both, and the rule now lives in `CLAUDE.md`. The data generator was built
 before its spec at the owner's request; it is recorded as a deviation in PIPE-T07.
+
+## Phase 1: specify the AI work (2026-11-17, branch `phase-1-specify-ai`)
+
+| Task | What | Features used | Fix-ups | Tests | Gates | Commit |
+|---|---|---|---|---|---|---|
+| DEVA-T01 | CR-20261117-1; constitution v1.1.0 with Article XII; AI data policy; specs 022–026 (119 requirements, 48 tasks); ADR-0007 (Proposed), ADR-0008 | Spec authoring from the topic plans; constitution re-check of all 21 existing designs | 1 (the Article XII review found a second conflict, VIII.3 "no external services", beyond the III.3 one the plan named; resolved as XII.8) | — | G1 | `074d6b5` |
+| DEVA-T02, DEVA-T04 | 12 agent specs (6 runtime, 1 evaluation, 5 development); 6 JSON Schema contracts; agent and hand-off templates | Contract design: the Writer returns plain-text sentences with citations and the Guard builds the HTML, so citations are checkable per sentence and no model text becomes markup | 0 | — | G1 | `074d6b5` |
+| DEVA-T03 | Spec lint checks 10–13 (agent specs, prompt headers, hand-offs, contracts) | Probe-file verification of the gate: 29 seeded defects across the 4 checks all rejected; a valid prompt and hand-off accepted; probes removed | 0 | probe run | G1, G3, G4 | `4dc86a1` |
+| Close-out | Dashboard (26 specs, 490 requirements, 224 tasks), traceability, mapping, steering, spec tree config + regeneration | `build_spectree.py --verify` (26/490 on both sides) | 1 (the spec tree generator crashed on a wrapped bullet in `workflow.md`; worked around and logged in QA-T09, because the generator may only change in its skill) | — | G1 | close-out commit |
+
+**Phase 1 totals:** 4 tasks closed (dashboard: 110 → 114 done), 119 new requirements (4 ✅ lint checks, 115 📝 planned),
+48 new tasks, 12 agent specs, 6 contracts, G1 extended from 9 to 13 checks, G7 specified.
+
+**Where the agent needed correcting:** a shell heredoc preceded by a stray `cat >` waited on input and had to be
+stopped; the edit was redone with the file tools. No spec content needed a human fix-up before the gates passed, but
+the CR's review boxes are left for the owner to tick at merge, because approving a constitution amendment is the
+owner's decision, not the agent's.

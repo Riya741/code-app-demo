@@ -12,7 +12,7 @@ How the acceptance criteria in every spec are verified, and what "done" means.
 ### QA-R1 — Test harness
 
 #### QA-TEST-001: Unit tests
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** `npm test` SHALL run unit tests (Vitest, jsdom).
 - **Source:** `package.json`
 
@@ -32,14 +32,14 @@ How the acceptance criteria in every spec are verified, and what "done" means.
 - **Source:** `package.json`
 
 #### QA-TEST-005: Typecheck script
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** `npm run typecheck` SHALL type-check app and server.
 - **Source:** `package.json`
 
 ### QA-R2 — Traceability
 
 #### QA-TRACE-001: Tests cite requirement IDs
-- **Status:** 📝 Planned — (no tests)
+- **Status:** ✅ Implemented
 - **Criterion:** EVERY test name SHALL start with the requirement ID it verifies (e.g. `SRCH-RANK-003 …`).
 
 #### QA-TRACE-002: Tasks list requirements and status

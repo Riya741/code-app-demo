@@ -9,13 +9,13 @@
 | Message-only errors | `server/workbook.ts` (`handle` catch) |
 | Atomic writes | `Store.save()` |
 
-## Planned — SEC-EXPO-001 localhost binding
+## Implemented — SEC-EXPO-001 localhost binding (SEC-T01)
 ```ts
 // vite.config.ts
 server: { host: process.env.HOST ?? "localhost", port: 3000 },
 preview: { host: process.env.HOST ?? "localhost" },
 ```
-Document `HOST=0.0.0.0 npm run dev` as the opt-in in steering/tech.md.
+The opt-in (`HOST=0.0.0.0 npm run dev`) is documented in steering/tech.md.
 
 ## Planned — SEC-SUPPLY-004 dependency cleanup
 Remove: `@hookform/resolvers`, `react-hook-form`, `zod`, `date-fns`, `react-day-picker`, `react-router-dom`,
@@ -24,13 +24,13 @@ Remove: `@hookform/resolvers`, `react-hook-form`, `zod`, `date-fns`, `react-day-
 `scroll-area`, `select`, `separator`, `slider`, `switch`, `tabs`, `toast`, `toggle`, `toggle-group`.
 Verify with `npm run build` and a smoke test afterwards.
 
-## Planned — SEC-SUPPLY-001 repository hygiene
+## Implemented — SEC-SUPPLY-001 repository hygiene (SEC-T02)
 `git init`; `.gitignore`: `node_modules/`, `dist/`, `*.xlsx`, `~tmp-*`, `.env*`.
 
 ## Constitution check
 | Article | Compliance |
 |---|---|
-| III | Content safety ✅; network exposure violates III.3 ⚠️ |
+| III | Content safety ✅; dev/preview bound to localhost (III.3) ✅ |
 | VIII | Unused dependencies ⚠️ |
 
-**Exceptions:** III.3 until SEC-T01 is done — users are told to run on trusted networks only.
+**Exceptions:** none. (III.3 was an exception until SEC-T01 closed it on 2026-11-16.)

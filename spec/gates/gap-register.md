@@ -19,15 +19,11 @@ Rules:
 | UCF-EDIT-004 | High | Preserve target fields on edit | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T08 ⬜ | Open |
 | EVF-EDIT-002 | High | Save event edits (Shows "Editing isn't connected yet") | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T06 ⬜, EVF-T09 ⬜ | Open |
 | API-WRITE-008 | High | Validate references | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T08 ⬜, API-T11 ⬜ | Open |
-| SEC-EXPO-001 | High | Bind to localhost | [019-security](../specs/019-security/requirements.md) | SEC-T01 ⬜ | Open |
 | DT-TIME-003 | High | Date-only values show stored day (One day early west of UTC) | [020-performance-reliability](../specs/020-performance-reliability/requirements.md) | UCP-T08 ⬜, PERF-T03 ⬜ | Open |
 | SRCH-ARIA-002 | Medium | Expose active option with aria-activedescendant | [001-customer-search](../specs/001-customer-search/requirements.md) | SRCH-T06 ⬜ | Open |
 | EVF-ADD-004 | Medium | Validate whole numbers | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T07 ⬜ | Open |
 | GRID-ROW-006 | Medium | Keyboard row expansion | [009-data-grid](../specs/009-data-grid/requirements.md) | GRID-T06 ⬜ | Open |
-| DATA-QUAL-001 | Medium | Real event type names (Placeholders "Event type N") | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T05 ⛔ | Open |
-| DATA-QUAL-002 | Medium | Real personnel ids and emails (Generated ids, blank emails) | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T07 ⬜ | Open |
 | DATA-QUAL-003 | Medium | Valid statuses per solution (Every status allowed for every solution) | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T06 ⛔ | Open |
-| DATA-QUAL-004 | Medium | Populate customer and event fields (Blank from export) | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T08 ⬜ | Open |
 | A11Y-NAME-003 | Medium | Search active option | [018-accessibility](../specs/018-accessibility/requirements.md) | A11Y-T02 ⬜ | Open |
 | A11Y-KEY-001 | Medium | Keyboard row expansion | [018-accessibility](../specs/018-accessibility/requirements.md) | GRID-T06 ⬜, A11Y-T03 ⬜ | Open |
 | A11Y-FORM-002 | Medium | Announce validation errors | [018-accessibility](../specs/018-accessibility/requirements.md) | A11Y-T05 ⬜ | Open |
@@ -41,7 +37,6 @@ Rules:
 | EXP-NAME-002 | Low | Keep any-script letters in names (Only ASCII letters/digits kept; non-Latin names become `customer`) | [010-export](../specs/010-export/requirements.md) | EXP-T04 ⬜, EXP-T07 ⬜ | Open |
 | RTX-EDIT-007 | Low | Placeholder per field (Always "Write the executive summary...") | [011-rich-text](../specs/011-rich-text/requirements.md) | RTX-T06 ⬜ | Open |
 | DATA-LINK-006 | Low | One agreed key column (Client may write the alternate `<name>_id` key (detectKey); server joins on `id`) | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T04 ⬜ | Open |
-| API-GEN-005 | Low | Local-only, no auth (No auth by design, but reachable from the network (security spec SEC-EXPO-001)) | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T10 ⬜, API-T11 ⬜, SEC-T01 ⬜ | Open |
 | CDL-QUERY-003 | Low | Write the server's join key (`detectKey` may choose the alternate key; server joins on `id`) | [015-client-data-layer](../specs/015-client-data-layer/requirements.md) | DATA-T04 ⬜, CDL-T06 ⛔ | Open |
 | DS-COMP-004 | Low | Reuse shared components (`Pill` defined twice (ParentActivity, UseCaseBulkForm)) | [017-design-system](../specs/017-design-system/requirements.md) | DS-T06 ⬜, DS-T08 ⬜ | Open |
 | A11Y-FORM-001 | Low | Labels associated with controls (`Field` label has no `htmlFor`; comboboxes have no accessible name) | [018-accessibility](../specs/018-accessibility/requirements.md) | A11Y-T04 ⬜ | Open |
@@ -63,4 +58,9 @@ Known limits agreed as acceptable at the current data size. Revisit using the tr
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
+| ~~DATA-QUAL-001~~ | Medium | ~~Real event type names~~ | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T05 ✅ (PIPE-T07) | Closed 2026-11-16 |
+| ~~DATA-QUAL-002~~ | Medium | ~~Real personnel ids and emails~~ | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T07 ✅ (PIPE-T07) | Closed 2026-11-16 |
+| ~~DATA-QUAL-004~~ | Medium | ~~Populate customer and event fields~~ | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T08 ✅ (PIPE-T07) | Closed 2026-11-16 |
+| ~~SEC-EXPO-001~~ | High | ~~Bind to localhost~~ | [019-security](../specs/019-security/requirements.md) | SEC-T01 ✅ | Closed 2026-11-16 |
+| ~~API-GEN-005~~ | Low | ~~Local-only, no auth~~ | [014-workbook-api](../specs/014-workbook-api/requirements.md) | SEC-T01 ✅, API-T10 ✅ | Closed 2026-11-16 |
 | ~~SEC-SUPPLY-001~~ | Low | ~~Workbook never committed~~ | [019-security](../specs/019-security/requirements.md) | SEC-T02 ✅ | Closed 2026-11-16 |

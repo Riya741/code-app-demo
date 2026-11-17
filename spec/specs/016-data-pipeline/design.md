@@ -30,11 +30,22 @@ load export (openpyxl, data_only)
 ## apply_use_case_notes.py
 Walks the `use case note` sheet once, building `notes[id] -> lines`, then writes `note` per use case row.
 
+## generate_demo_workbook.py (ADR-0006)
+```
+demo_catalogue.json -> catalogue sheets (fictional names, original ids and rules, solution weights)
+random.Random(seed) -> personnel -> per customer: tier -> subsidiaries -> departments -> stakeholders
+                    -> use cases (+ personnel, content types, status history) -> events (+ personnel, solutions)
+                    -> executive summary built from the customer's own use cases
+check(): keys, cascades, date rules, optional real-name scan (--reference) -> save(): README + styled tables
+```
+The first 8 customers carry the planted edge cases (PIPE-GEN-006), so `--customers 8` is the smallest useful fixture.
+
 ## Constitution check
 | Article | Compliance |
 |---|---|
 | II | Produces the single source of truth with documented gaps. ✅ |
-| X | Every recovery decision counted and logged. ✅ |
+| X | Every recovery decision counted and logged; the generator checks integrity before writing. ✅ |
+| III | The project's data is fictional (ADR-0006), so nothing real can leave the machine. ✅ |
 
 ## Risks
 - Scripts have no tests; a changed export layout silently changes counts. Mitigation: PIPE-T05.

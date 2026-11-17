@@ -16,6 +16,7 @@
 | Rich text | `quill` 2 (lazy) + `dompurify` |
 | Workbook I/O (server) | `exceljs` + `jszip` |
 | Lint | ESLint 9 flat config, `typescript-eslint`, `react-hooks`, `react-refresh` |
+| Tests | Vitest 5 + jsdom (`tests/unit/`) |
 | Data scripts | Python 3 + `openpyxl`, run with `python -I` |
 
 ## Runtime topology
@@ -25,10 +26,12 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 ## Commands
 | Command | Purpose |
 |---|---|
-| `npm run dev` | Dev server, port 3000 (host `::`), with API |
+| `npm run dev` | Dev server with API on `localhost:3000` only; opt in to other interfaces with env `HOST` (e.g. `HOST=0.0.0.0`) |
 | `npm run build` / `build:dev` | Production / development build to `dist/` |
-| `npm run preview` | Serve `dist/` with API |
+| `npm run preview` | Serve `dist/` with API (`localhost` only, same `HOST` opt-in) |
 | `npm run lint` | ESLint |
+| `npm run typecheck` | `tsc --noEmit` for the app and tests, and for server + Vite/Vitest config |
+| `npm test` / `npm run test:watch` | Vitest unit tests (jsdom); every test title starts with a requirement ID |
 | `python -I scripts/generate_demo_workbook.py ../data/code-app-data.xlsx` | Generate the workbook with fictional demo data (`--customers`, `--seed`); catalogue in `scripts/demo_catalogue.json` |
 | `python -I scripts/build_workbook.py <src> <dst>` | Build workbook from a Power BI export (no export is kept in the project) |
 | `python -I scripts/apply_use_case_notes.py <xlsx> [out]` | Fill use case notes |
@@ -54,4 +57,5 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 [ADR-0002](../adr/0002-api-as-vite-plugin.md) ·
 [ADR-0003](../adr/0003-soft-delete.md) ·
 [ADR-0004](../adr/0004-client-side-search.md) ·
-[ADR-0005](../adr/0005-tanstack-query.md)
+[ADR-0005](../adr/0005-tanstack-query.md) ·
+[ADR-0006](../adr/0006-fictional-demo-dataset.md)

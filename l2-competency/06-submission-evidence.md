@@ -10,7 +10,7 @@ l2-competency/evidence/
 ├─ ai-dev-log.md              Topic 2: one row per task (features used, time, fix-ups, tests, gates, commit)
 ├─ sessions/                  Topic 2/5: exported Claude Code session notes and screenshots (plan mode, subagents, hooks)
 ├─ traceability-walkthrough.md Topic 1: AIB-CITE-002 from requirement to trace span
-├─ eval/                      Topic 3: final report, judge-calibration table, ADR-0006 link, scores.csv
+├─ eval/                      Topic 3: final report, judge-calibration table, ADR-0007 link, scores.csv
 ├─ ops/                       Topic 4: chaos-run report, trace sample (redacted), Run Inspector screenshots, resume demo
 ├─ security/                  Topic 5: hook test output, MCP security tests, audit-log sample
 └─ before-after.md            dashboard counts: gaps, tasks, tests, gates — at start vs at submission
@@ -24,8 +24,8 @@ l2-competency/evidence/
 |---|---|---|
 | 1 SDD | `spec/constitution.md` v1.1.0 (Art. XII), `spec/agents/`, `spec/contracts/`, `spec/handoffs/`, specs 022–026 | spec_lint checks 10–12, spec tree, traceability walkthrough |
 | 2 AI dev | Git log of task-ID commits, `CLAUDE.md`, `.claude/`, `ai-dev-log.md` | CI headless review comments, closed High gaps, working app demo |
-| 3 Eval | `evals/reports/…`, judge calibration, ADR-0006 | G7 in CI, 3B comparison (if done) |
-| 4 Agents/Ops | `server/ai/`, ADR-0007, failure-mode tests, chaos report | Run Inspector, runbook, resume demo |
+| 3 Eval | `evals/reports/…`, judge calibration, ADR-0007 | G7 in CI, 3B comparison (if done) |
+| 4 Agents/Ops | `server/ai/`, ADR-0008, failure-mode tests, chaos report | Run Inspector, runbook, resume demo |
 | 5 Tools | `.claude/hooks/`, `.claude/skills/`, `mcp/workbook-mcp/`, `plugins/sdd-toolkit/` | Security tests, second-repo install |
 
 ## 3. Demo script (10–12 minutes)
@@ -38,7 +38,7 @@ l2-competency/evidence/
 | 5–7 | **AI Account Brief** | Click *Draft with AI* → step progress → cited draft → edit → Save (SUM-EDIT-001 closed) |
 | 7–8 | **Failure & recovery** | Fault injection on: retries visible; kill the server mid-run → resume; breaker opens → graceful message |
 | 8–9 | **Observability** | Run Inspector waterfall, tokens and cost per step, trace to run ID from a toast |
-| 9–11 | **Evaluation** | Report: model × prompt × critic comparison, judge–human κ, error taxonomy, ADR-0006 decision; G7 failing a deliberately worse prompt |
+| 9–11 | **Evaluation** | Report: model × prompt × critic comparison, judge–human κ, error taxonomy, ADR-0007 decision; G7 failing a deliberately worse prompt |
 | 11–12 | **Extensibility** | MCP tool call from Claude Code; plugin installed in a second repo; close with the "after" dashboard |
 
 ## 4. Self-assessment template

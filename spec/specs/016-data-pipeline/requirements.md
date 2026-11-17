@@ -5,7 +5,8 @@
 | data-pipeline | PIPE | ✅ Implemented | II, X |
 
 ## Introduction
-Offline Python tools that build `code-app-data.xlsx` from the Power BI export `Terra_Data.xlsx` and fill use case notes.
+Offline Python tools: the demo generator that writes `code-app-data.xlsx` with fictional data (ADR-0006), and the
+original tools that build it from a Power BI export and fill use case notes (no export is kept in the project).
 Run with `python -I`; requires `openpyxl`.
 
 ---
@@ -114,3 +115,46 @@ Run with `python -I`; requires `openpyxl`.
 - **Status:** ✅ Implemented
 - **Criterion:** THE script SHALL write only `use_case.note` (re-runnable), append a README line and print counts.
 - **Source:** `scripts/apply_use_case_notes.py`
+
+### PIPE-R3 — Generate the demo workbook (`scripts/generate_demo_workbook.py <output.xlsx> [--customers N] [--seed S] [--as-of D] [--reference X]`)
+**User story:** As a developer, I want a realistic workbook with no real customer data, so the app, tests, evals and demos can be shared (ADR-0006).
+
+#### PIPE-GEN-001: Same schema as the data model
+- **Status:** ✅ Implemented
+- **Criterion:** THE generator SHALL write every sheet and column of the data model, each sheet as an Excel table named after the sheet, with a README sheet first.
+- **Source:** `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json`
+
+#### PIPE-GEN-002: Fictional data with the original catalogue rules
+- **Status:** ✅ Implemented
+- **Criterion:** THE generator SHALL produce only fictional customers, people, products and text, and SHALL take the product catalogue from `scripts/demo_catalogue.json`, keeping the original ids, metric types, premium flags and allowed status / use case type per solution.
+- **Source:** `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json`
+
+#### PIPE-GEN-003: Referential integrity before writing
+- **Status:** ✅ Implemented
+- **Criterion:** BEFORE writing, THE generator SHALL check every foreign key and cascade (subsidiary to customer, department to subsidiary, stakeholder to department, use case type and status allowed for the solution, link rows) and SHALL exit without writing on any violation.
+- **Source:** `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json`
+
+#### PIPE-GEN-004: Deterministic output
+- **Status:** ✅ Implemented
+- **Criterion:** WHEN run with the same `--seed`, `--as-of` and `--customers` THE generator SHALL produce identical sheet data.
+- **Source:** `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json`
+
+#### PIPE-GEN-005: Consistent dates and history
+- **Status:** ✅ Implemented
+- **Criterion:** THE generated data SHALL have completed events in the past, launch dates that follow the use case status, `created` no later than `last_modified`, and status history that ends at the current status.
+- **Source:** `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json`
+
+#### PIPE-GEN-006: Planted edge cases
+- **Status:** ✅ Implemented
+- **Criterion:** THE generator SHALL include, and list with their ids in the README sheet, these edge cases: non-Latin customer names, no executive summary, events only, use cases only, a hidden customer, unsafe text (HTML/script, formula-like cells, prompt injection), a very long note, and subsidiaries with no parent.
+- **Source:** `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json`
+
+#### PIPE-GEN-007: Real-name guard
+- **Status:** ✅ Implemented
+- **Criterion:** WHEN `--reference <workbook with real data>` is given THE generator SHALL fail if any text cell contains a product or vendor name read from that workbook.
+- **Source:** `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json`
+
+#### PIPE-GEN-008: Locked output file
+- **Status:** ✅ Implemented
+- **Criterion:** IF the output file is locked THEN THE generator SHALL exit with "Cannot write <path>: the file is locked. Close it in Excel and run the script again."
+- **Source:** `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json`

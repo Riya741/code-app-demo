@@ -93,14 +93,14 @@ The workbook `code-app-data.xlsx` is the database. Each sheet is a table; the fu
 ### DATA-R4 — Data quality (after a build)
 
 #### DATA-QUAL-001: Real event type names
-- **Status:** ❌ Gap — Placeholders "Event type N"
+- **Status:** ✅ Implemented
 - **Criterion:** `event_type` SHALL hold real names.
-- **Source:** `scripts/build_workbook.py`
+- **Source:** `scripts/generate_demo_workbook.py`
 
 #### DATA-QUAL-002: Real personnel ids and emails
-- **Status:** ❌ Gap — Generated ids, blank emails
+- **Status:** ✅ Implemented
 - **Criterion:** `personnel` SHALL hold real ids and emails.
-- **Source:** `scripts/build_workbook.py`
+- **Source:** `scripts/generate_demo_workbook.py`
 
 #### DATA-QUAL-003: Valid statuses per solution
 - **Status:** ❌ Gap — Every status allowed for every solution
@@ -108,6 +108,6 @@ The workbook `code-app-data.xlsx` is the database. Each sheet is a table; the fu
 - **Source:** `scripts/build_workbook.py`
 
 #### DATA-QUAL-004: Populate customer and event fields
-- **Status:** ❌ Gap — Blank from export
+- **Status:** ✅ Implemented
 - **Criterion:** `customer.industry`, `customer.vertical`, `event.virtual` SHALL be populated where known.
-- **Source:** `scripts/build_workbook.py`
+- **Source:** `scripts/generate_demo_workbook.py`

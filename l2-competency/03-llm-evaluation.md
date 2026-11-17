@@ -102,7 +102,7 @@ expected status counts, maximum length.
 **Report** (`evals/reports/2026-12-xx-brief.html`): per-config table of every metric, cost per brief, p50/p95
 latency, a quality-vs-cost Pareto chart, pairwise win rates, and per-category breakdowns.
 
-**Decision → ADR-0006.** Example shape: *"Sonnet 5.5 + prompt v2 + critic on scores 4.5 faithfulness (Opus 4.6,
+**Decision → ADR-0007.** Example shape: *"Sonnet 5.5 + prompt v2 + critic on scores 4.5 faithfulness (Opus 4.6,
 Haiku 3.9) at 40% of Opus's cost; citation validity 99.3%. Chosen as default; Opus kept as fallback."* Use your real
 numbers. The ADR must cite the report and state the threshold that would reverse the decision.
 
@@ -136,6 +136,6 @@ numbers. The ADR must cite the report and state the threshold that would reverse
 - [ ] Deterministic graders + LLM judge with structured, evidence-first output
 - [ ] Judge calibration table (κ, ρ) and judge-prompt version history
 - [ ] Experiment report: ≥ 6 configs, CIs, cost, latency, Pareto chart, error taxonomy
-- [ ] ADR-0006 citing the report
+- [ ] ADR-0007 citing the report
 - [ ] G7 gate in CI with thresholds
 - [ ] *(Stretch)* 3B comparison table

@@ -30,14 +30,14 @@ spec/
 └─ id-migration.md                 old IDs (SRCH-012) → new IDs (SRCH-RANK-003)
 ```
 
-## Status dashboard (2026-11-11)
+## Status dashboard (2026-11-16)
 
 Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Tasks: ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked.
 
 | Spec | Prefix | Reqs | ✅ | ⚠️ | ❌ | 📝 | Tasks | ✅ | 🔄 | ⬜ | ⛔ |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | **Features** | | | | | | | | | | | |
-| [001-customer-search](specs/001-customer-search/) | SRCH | 20 | 19 | 0 | 1 | 0 | 8 | 5 | 0 | 3 | 0 |
+| [001-customer-search](specs/001-customer-search/) | SRCH | 20 | 19 | 0 | 1 | 0 | 9 | 7 | 0 | 2 | 0 |
 | [002-workspace-layout](specs/002-workspace-layout/) | LAY | 17 | 15 | 2 | 0 | 0 | 8 | 6 | 0 | 2 | 0 |
 | [003-executive-summary](specs/003-executive-summary/) | SUM | 14 | 11 | 1 | 1 | 1 | 11 | 6 | 0 | 4 | 1 |
 | [004-use-cases-panel](specs/004-use-cases-panel/) | UCP | 21 | 20 | 1 | 0 | 0 | 9 | 7 | 0 | 2 | 0 |
@@ -46,29 +46,33 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [007-events-panel](specs/007-events-panel/) | EVP | 13 | 12 | 1 | 0 | 0 | 9 | 6 | 0 | 3 | 0 |
 | [008-event-form](specs/008-event-form/) | EVF | 10 | 7 | 0 | 2 | 1 | 9 | 5 | 0 | 3 | 1 |
 | [009-data-grid](specs/009-data-grid/) | GRID | 19 | 18 | 0 | 1 | 0 | 7 | 5 | 0 | 2 | 0 |
-| [010-export](specs/010-export/) | EXP | 11 | 9 | 1 | 0 | 1 | 7 | 3 | 0 | 4 | 0 |
+| [010-export](specs/010-export/) | EXP | 11 | 9 | 1 | 0 | 1 | 7 | 4 | 0 | 3 | 0 |
 | [011-rich-text](specs/011-rich-text/) | RTX | 21 | 20 | 1 | 0 | 0 | 7 | 5 | 0 | 2 | 0 |
 | **Data & backend** | | | | | | | | | | | |
-| [012-data-model](specs/012-data-model/) | DATA | 19 | 14 | 1 | 4 | 0 | 9 | 3 | 0 | 4 | 2 |
+| [012-data-model](specs/012-data-model/) | DATA | 19 | 17 | 1 | 1 | 0 | 9 | 7 | 0 | 1 | 1 |
 | [013-workbook-storage](specs/013-workbook-storage/) | STO | 18 | 16 | 1 | 0 | 1 | 7 | 5 | 0 | 2 | 0 |
-| [014-workbook-api](specs/014-workbook-api/) | API | 22 | 19 | 1 | 1 | 1 | 11 | 7 | 0 | 4 | 0 |
+| [014-workbook-api](specs/014-workbook-api/) | API | 22 | 20 | 0 | 1 | 1 | 11 | 8 | 0 | 3 | 0 |
 | [015-client-data-layer](specs/015-client-data-layer/) | CDL | 15 | 14 | 1 | 0 | 0 | 7 | 5 | 0 | 1 | 1 |
-| [016-data-pipeline](specs/016-data-pipeline/) | PIPE | 20 | 20 | 0 | 0 | 0 | 6 | 4 | 0 | 2 | 0 |
+| [016-data-pipeline](specs/016-data-pipeline/) | PIPE | 28 | 28 | 0 | 0 | 0 | 8 | 5 | 0 | 3 | 0 |
 | **Cross-cutting** | | | | | | | | | | | |
 | [017-design-system](specs/017-design-system/) | DS | 16 | 14 | 1 | 0 | 1 | 8 | 5 | 0 | 3 | 0 |
 | [018-accessibility](specs/018-accessibility/) | A11Y | 15 | 10 | 2 | 3 | 0 | 6 | 1 | 0 | 5 | 0 |
-| [019-security](specs/019-security/) | SEC | 9 | 4 | 2 | 2 | 1 | 6 | 1 | 0 | 5 | 0 |
+| [019-security](specs/019-security/) | SEC | 9 | 6 | 1 | 1 | 1 | 6 | 3 | 0 | 3 | 0 |
 | [020-performance-reliability](specs/020-performance-reliability/) | PERF/REL/COMP/DT | 23 | 16 | 4 | 1 | 2 | 7 | 2 | 0 | 5 | 0 |
-| [021-quality](specs/021-quality/) | QA | 15 | 7 | 0 | 0 | 8 | 8 | 1 | 0 | 6 | 1 |
-| **Total** | | **363** | **306** | **21** | **18** | **18** | **171** | **96** | **0** | **69** | **6** |
+| [021-quality](specs/021-quality/) | QA | 15 | 10 | 0 | 0 | 5 | 10 | 4 | 0 | 6 | 0 |
+| **Total** | | **371** | **323** | **19** | **14** | **15** | **176** | **110** | **0** | **62** | **4** |
 
 ## Suggested next tasks (highest value first)
-1. **SEC-T02** git init + `.gitignore` (enables review workflow and CI)
-2. **SEC-T01** bind dev server to localhost
-3. **UCF-T07 / UCF-T08**, **EVF-T06** save edits
-4. **API-T09 → SUM-T08 → SUM-T09 → SUM-T10** persist the executive summary
-5. **LAY-T07** refresh everything · **PERF-T03** date display fix
-6. **QA-T01 → QA-T03** test harness
+Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,
+EXP-T07, PIPE-T07 demo data generator, DATA-T09 test fixture.
+
+1. **UCF-T07 / UCF-T08**, **EVF-T06** save edits
+2. **API-T09 → SUM-T08 → SUM-T09 → SUM-T10** persist the executive summary
+3. **QA-T02 → QA-T03** component tests and server integration harness (fixture: DATA-T09)
+4. **API-T08** validate references · **PERF-T03** date display fix
+5. **LAY-T07** refresh everything
+6. **SEC-T03 → SEC-T04** remove unused dependencies, then `npm audit` (8 findings after the first install)
+7. **QA-T07** CI once a GitHub remote exists
 
 ## Workflow
 See [workflow.md](workflow.md): **propose → specify → design → plan → build → verify → close**, with the

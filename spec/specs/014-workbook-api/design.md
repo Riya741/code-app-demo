@@ -60,6 +60,6 @@ or "Status <id> is not allowed for solution <id>".
 | Article | Compliance |
 |---|---|
 | II | Atomic saves, soft delete, history. ✅ |
-| III | Message-only errors (SEC-SAFE-003); network exposure open (SEC-EXPO-001). ⚠️ |
+| III | Message-only errors (SEC-SAFE-003); local-only by default (SEC-EXPO-001). ✅ |
 | IV | Required fields enforced; FK/allowed-value checks missing. ⚠️ |
 | IX | Server owns joins and persistence. ✅ |

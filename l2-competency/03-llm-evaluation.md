@@ -76,7 +76,7 @@ expected status counts, maximum length.
 - **Rubric (1–5 each, with anchored descriptions):** Faithfulness · Coverage of what matters · Actionability · Concision · Tone for an executive reader.
 - **Format:** structured output (`output_config.format`) returning, per criterion, `evidence` (quoted spans) → `reasoning` → `score`. Evidence and reasoning come *before* the score.
 - **Pairwise mode** for comparisons: A vs B on the same case, run **twice with positions swapped**; count it as a win only when both orders agree, otherwise a tie.
-- **Judge model:** `claude-opus-5-5` (effort `high`). Because Claude models also generate the candidates, guard against self-preference: run a second judge pass with `claude-sonnet-5-5` on a 20% sample and report the agreement between the two judges.
+- **Judge model, chosen by data:** calibrate both `claude-sonnet-5-5` and `claude-opus-5-5` (effort `high`) against your human labels (§2.4). Use Sonnet as the main judge if its κ is within 0.05 of Opus's; it costs half as much, which matters on a $50 budget ([README §7](README.md#7-api-budget-50-for-phases-3-and-4)). Because Claude models also generate the candidates, guard against self-preference: run the other judge on a 20% sample and report the agreement between the two judges.
 - **Blind the judge**: it never sees which model or prompt produced an output.
 
 ### 2.4 Calibrate the judge against humans (the step most candidates skip)
@@ -88,16 +88,22 @@ expected status counts, maximum length.
 
 ### 2.5 Experiment matrix → data-grounded decision
 
-| Factor | Levels |
-|---|---|
-| Writer/analyst model | `claude-haiku-5-5` · `claude-sonnet-5-5` · `claude-opus-5-5` |
-| Prompt | `v1` (baseline) · `v2` (improved after error analysis) |
-| Critic loop | off · on (max 2 revisions) |
-| Effort *(optional)* | `low` · `medium` on the best model |
+A full grid (3 models × 2 prompts × critic on/off × 3 repetitions) would cost about $120. With $50 for the whole
+L2, run the **6 configs that answer the three questions the ADR needs**:
 
-- 30 cases × 3 repetitions per config to measure variance; report **mean ± 95% CI** (bootstrap).
+| # | Model | Prompt | Critic | Answers |
+|---|---|---|---|---|
+| 1 | `claude-haiku-5-5` | v2 | on | Which model? |
+| 2 | `claude-sonnet-5-5` | v2 | on | Which model? (and the baseline for the other two questions) |
+| 3 | `claude-opus-5-5` | v2 | on | Which model? |
+| 4 | `claude-sonnet-5-5` | v1 | on | Did prompt v2 help? (vs 2) |
+| 5 | `claude-sonnet-5-5` | v2 | off | Is the critic worth its cost? (vs 2) |
+| 6 | `claude-haiku-5-5` | v2 | off | Is the critic worth its cost? (vs 1) |
+
+- 30 cases × 2 repetitions per config to measure variance; report **mean ± 95% CI** (bootstrap). Add a third repetition only for configs whose intervals overlap, if the reserve allows.
+- Effort `low` vs `medium` on the best model is a stretch, run from the reserve.
 - Run the bulk with the **Message Batches API** (50% cheaper; nothing here is latency-sensitive).
-- Price guide (per 1M input / output tokens, Anthropic API, cached 2026-11-03): Haiku 5.5 $0.10 / $0.50 · Sonnet 5.5 $2 / $10 · Opus 5.5 $4 / $20. Measure real cost from `usage` after a 3-case pilot, and get budget sign-off before the full run.
+- Price guide (per 1M input / output tokens, Anthropic API): Haiku 5.5 $0.10 / $0.50 · Sonnet 5.5 $2 / $10 · Opus 5.5 $4 / $20. Measure real cost from `usage` after a 3-case pilot, update the estimate in [README §7](README.md#7-api-budget-50-for-phases-3-and-4), and check it against the spend ledger before the full run.
 
 **Report** (`evals/reports/2026-12-xx-brief.html`): per-config table of every metric, cost per brief, p50/p95
 latency, a quality-vs-cost Pareto chart, pairwise win rates, and per-category breakdowns.
@@ -118,7 +124,7 @@ numbers. The ADR must cite the report and state the threshold that would reverse
 
 - `npm run eval:smoke`: 8 representative cases, deterministic graders and judge, ~2 minutes.
 - Thresholds in `evals/thresholds.json`, e.g. citation validity ≥ 98%, faithfulness ≥ 4.2, zero injection compliance.
-- Add **G7** to [validation-gates.md](../spec/gates/validation-gates.md). CI runs it when `server/ai/**` or `evals/**` change; a failure blocks merge (EVAL-GATE-001).
+- Add **G7** to [validation-gates.md](../spec/gates/validation-gates.md). On every PR that changes `server/ai/**` or `evals/**`, CI runs the code graders on recorded outputs at no cost; a failure blocks merge (EVAL-GATE-001). The live smoke run (about $1) is a manual `workflow_dispatch` trigger, run before merging a prompt or model change.
 
 ---
 

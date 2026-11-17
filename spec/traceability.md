@@ -25,6 +25,11 @@
 | security | SEC | `src/lib/html.ts`, `src/lib/csv.ts`, `vite.config.ts`, `package.json` |
 | performance-reliability | PERF/REL/COMP/DT | cross-cutting, `package.json` |
 | quality | QA | `eslint.config.js`, `tsconfig*.json`, `package.json` (scripts) |
+| ai-account-brief | AIB | planned: `server/ai/steps/*`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts`, `CustomerDetails.tsx`, `AiDraftBanner.tsx` · agents: `spec/agents/{retriever,analyst,writer,critic,guard}.md` · contracts: `spec/contracts/*.v1.schema.json` |
+| ai-evaluation | EVAL | planned: `evals/**` · agents: `spec/agents/judge.md`, `spec/agents/eval-analyst.md` |
+| agent-ops | AOPS | planned: `server/ai/{orchestrator,resilience,trace,config,client,tools}.ts`, `src/pages/AiRuns.tsx`, `docs/ai-runbook.md` · agent: `spec/agents/orchestrator.md` |
+| mcp-tooling | MCP | planned: `mcp/workbook-mcp/**`, `.mcp.json` |
+| dev-agents | DEVA | `spec/scripts/spec_lint.py` (checks 10–13), `spec/templates/{agent,handoff}.md`, `spec/agents/`, `spec/contracts/`, `spec/handoffs/` · planned: `.claude/**`, `.github/workflows/review.yml` |
 
 ## 2. Source file → specs (reverse lookup)
 
@@ -44,6 +49,8 @@
 | `vitest.config.ts` | quality |
 | `src/lib/lookups.ts` | client-data-layer, use-case-form, use-case-bulk, event-form, data-model |
 | `vite.config.ts` | workbook-api, security, tech steering |
+| `spec/scripts/spec_lint.py` | quality (G1), dev-agents (DEVA-SPEC-001..003, DEVA-HAND-002) |
+| `server/ai/tools.ts` (planned) | agent-ops (runtime tools), mcp-tooling (shared by the MCP server) |
 
 ## 3. Shared tasks (one piece of work, several specs)
 Do these once and mark every linked task ✅ together.
@@ -59,6 +66,8 @@ Do these once and mark every linked task ✅ together.
 | Shared duplicate check | UCF-T09, UCB-T10 |
 | XSS regression tests | RTX-T07, SEC-T05 |
 | Remove `detectKey` | DATA-T04 → CDL-T06 |
+| Shared read-only tools for runtime agents and MCP | AOPS-T02 → MCP-T02 |
+| Lint check for a reviewed hand-off before ✅ | DEVA-T10 (uses DEVA-HAND-003) |
 
 ## 4. Dependency chain for the main open work
 ```
@@ -70,4 +79,10 @@ UCF-T07 ──► UCF-T08
 DATA-T04 ──► CDL-T06
 SEC-T03 ──► SEC-T04
 A11Y-T04 ──► A11Y-T05
+SUM-T09 ──► AIB-T07 (an AI draft must be savable)
+AOPS-T01 ──► AIB-T03 ──► AOPS-T04 ;  AOPS-T01 ──► AIB-T05 ──► AIB-T06
+AIB-T03 ──► EVAL-T04 ──► EVAL-T05 ──► EVAL-T06 ──► EVAL-T07 (ADR-0007)
+AOPS-T02 ──► MCP-T02
+QA-T07 ──► EVAL-T09 (G7 in CI), DEVA-T12 (headless review)
+DEVA-T05 + DEVA-T09 ──► DEVA-T11 (first hand-offs)
 ```

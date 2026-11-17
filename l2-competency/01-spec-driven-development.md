@@ -2,7 +2,7 @@
 
 **Top marks (25–30):** *Spec discipline governs agent behaviour and hand-offs, not just a single file.*
 
-**Today: 18–21 (Proficient). Target: 27–30.**
+**Today: 23–26 after Phase 1 (was 18–21). Target: 27–30.**
 
 ## 1. What already earns marks
 
@@ -12,7 +12,7 @@ The repo is already a model SDD project; reuse it and point the assessor to it.
 |---|---|---|
 | Constitution with versioning and amendment governance | [spec/constitution.md](../spec/constitution.md) | Principles above specs |
 | Steering layer every spec relies on | [spec/steering/](../spec/steering/) | Shared context |
-| 21 specs × (requirements → design → tasks), 363 EARS criteria, permanent IDs | [spec/specs/](../spec/specs/) | Discipline at scale |
+| 26 specs × (requirements → design → tasks), 490 EARS criteria, permanent IDs | [spec/specs/](../spec/specs/) | Discipline at scale |
 | Constitution check in every design, ADRs, change-request template | `spec/specs/*/design.md`, [spec/adr/](../spec/adr/) | Governance |
 | Gate G1 as code (`spec_lint.py`), gap register, traceability | [spec/gates/](../spec/gates/), [spec/scripts/spec_lint.py](../spec/scripts/spec_lint.py) | Enforced, not aspirational |
 | Spec tree explorer | [spectree/dist/sdd-explorer.html](../spectree/dist/sdd-explorer.html) | Visible status |
@@ -129,12 +129,12 @@ Keep the `sdd-spectree` generator in step: it imports `spec_lint.py`'s regexes, 
 
 ## Evidence checklist for Topic 1
 
-- [ ] CR-20261117-1 and constitution v1.1.0 with Article XII; mapping updated
-- [ ] `steering/ai-data-policy.md`
-- [ ] Specs 022–026 pass G1; ADR-0007 and ADR-0008
-- [ ] `spec/agents/` (≥ 10 agent specs) and `spec/contracts/` (≥ 5 schemas)
+- [x] CR-20261117-1 and constitution v1.1.0 with Article XII (also qualifies VIII.3, not only III.3); mapping updated
+- [x] `steering/ai-data-policy.md`
+- [ ] Specs 022–026 pass G1 ✅; ADR-0008 Accepted ✅; ADR-0007 *Proposed* until the Phase 4 eval decides it
+- [x] `spec/agents/` (12 agent specs, incl. the eval judge) and `spec/contracts/` (6 schemas, incl. `brief-draft.v1`)
 - [ ] ≥ 5 `spec/handoffs/<TASK>.md` files written by the implementer subagent
-- [ ] `spec_lint.py` checks 10–12 passing; spec tree `--verify` passing
+- [x] `spec_lint.py` checks 10–12 passing (plus check 13 for contracts); spec tree `--verify` passing
 - [ ] One end-to-end traceability walkthrough (screenshot or video segment)
 
 ## Pitfalls to avoid

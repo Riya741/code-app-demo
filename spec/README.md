@@ -70,8 +70,8 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 10 | 0 | 0 | 9 | 1 |
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 27 | 0 | 0 | 0 | 27 | 10 | 0 | 0 | 10 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
-| [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 4 | 0 | 0 | 14 | 13 | 4 | 0 | 8 | 1 |
-| **Total** | | **490** | **327** | **19** | **14** | **130** | **224** | **114** | **0** | **101** | **9** |
+| [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 14 | 0 | 0 | 4 | 14 | 10 | 1 | 2 | 1 |
+| **Total** | | **490** | **337** | **19** | **14** | **120** | **225** | **120** | **1** | **95** | **9** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,

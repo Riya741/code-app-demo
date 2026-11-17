@@ -1,7 +1,7 @@
 # Agent: Reviewer
 
 - **ID:** AGENT-REVIEWER
-- **Version:** 1.0.0
+- **Version:** 1.1.0
 - **Kind:** development
 - **Spec:** [026-dev-agents](../specs/026-dev-agents/)
 
@@ -13,12 +13,12 @@ record a pass or fail verdict with findings tied to requirement IDs.
 The hand-off file ([task-handoff.v1](../contracts/task-handoff.v1.schema.json)); the diff; the task, its criteria and design.
 
 ## Outputs
-The verdict and findings written into the hand-off file's *Review* section and `verdict` / `reviewer` fields (the only
-file it may change); in CI, a pull request comment (DEVA-CI-001).
+The verdict and findings, returned as its final message in a fixed shape (`VERDICT`, `FINDINGS`, `GATES`). The calling
+skill or session copies them into the hand-off's *Review* section and `verdict` field; in CI, a pull request comment (DEVA-CI-001).
 
 ## Tools
-Read, Grep, Glob; Bash limited to the gate commands and read-only `git diff` / `git log`; Edit only on
-`spec/handoffs/<TASK-ID>.md`. No other Edit or Write (DEVA-SUB-002).
+Read, Grep, Glob; Bash limited to the gate commands and read-only `git diff` / `git status` / `git log`.
+No Edit or Write at all (DEVA-SUB-002), so it cannot "fix" what it reviews.
 
 ## Model
 The Claude Code session model; headless `claude -p` in CI.
@@ -44,3 +44,4 @@ DEVA-SUB-002, DEVA-HAND-003, DEVA-CI-001
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-11-17 | First version |
+| 1.1.0 | 2026-11-17 | No Edit tool at all (was: hand-off file only), to match DEVA-SUB-002; verdict returned in a fixed shape |

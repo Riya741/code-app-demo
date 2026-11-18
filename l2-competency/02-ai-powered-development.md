@@ -106,7 +106,7 @@ honest view of where the agent needed help. Assessors value candour about limits
 ## Evidence checklist for Topic 2
 
 - [ ] Git history with task-ID commits; PRs if using GitHub
-- [ ] `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`, `.claude/settings.json`
+- [x] `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`, `.claude/settings.json` (Phase 2)
 - [ ] ≥ 3 recorded sessions: plan mode, parallel subagents, worktrees
 - [ ] Headless `claude -p` review running in CI
 - [ ] 7 High gaps closed; app demo of the working features

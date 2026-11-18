@@ -1,0 +1,47 @@
+{
+  "description": "Trigger evaluation sets for the project skills (DEVA-SKILL-002). Each prompt should (true) or should not (false) make Claude Code invoke the skill. Run them with the skill-creator eval loop (task DEVA-T14) and keep results in l2-competency/evidence/.",
+  "skills": {
+    "task-implement": [
+      ["implement UCF-T07", true],
+      ["please build SUM-T08 and SUM-T09", true],
+      ["deliver task EVF-T06 through the agent workflow", true],
+      ["can you do API-T09 now", true],
+      ["what does UCF-T07 cover?", false],
+      ["close UCF-T07, it was reviewed", false],
+      ["add a requirement for exporting events to PDF", false],
+      ["explain how the spec guard hook works", false]
+    ],
+    "task-close": [
+      ["close UCF-T07", true],
+      ["UCF-T07 passed review, mark it done and update the dashboard", true],
+      ["wrap up EVF-T06", true],
+      ["implement UCF-T07", false],
+      ["which tasks are still open in the use case form spec?", false],
+      ["regenerate the spec tree", false]
+    ],
+    "spec-change": [
+      ["we need users to be able to archive a customer, write the spec for it", true],
+      ["raise a change request: event dates should accept times", true],
+      ["the search should also match subsidiary names, specify that", true],
+      ["implement SRCH-T06", false],
+      ["what does SRCH-RANK-003 say?", false],
+      ["fix the typo in the README", false]
+    ],
+    "gap-report": [
+      ["what should I work on next?", true],
+      ["list the open High gaps", true],
+      ["what's still broken in the app according to the specs?", true],
+      ["implement the top gap", false],
+      ["close the SUM-EDIT-001 gap, the task is done", false],
+      ["run the tests", false]
+    ],
+    "eval-run": [
+      ["run the evals", true],
+      ["I changed the writer prompt, check quality with the smoke suite", true],
+      ["does gate G7 pass?", true],
+      ["write unit tests for the guard step", false],
+      ["implement EVAL-T02", false],
+      ["what model does the writer use?", false]
+    ]
+  }
+}

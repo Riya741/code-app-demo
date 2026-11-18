@@ -21,7 +21,8 @@ Checks
      'agent-spec: AGENT-X@<version> · requirements: <IDs>' naming an existing agent at its current version and
      only IDs that agent lists (DEVA-SPEC-002).
  12. Hand-off files (spec/handoffs/<TASK>.md): task-handoff.v1 front matter, task = file name and exists, covers only
-     IDs from that task's Covers line, known agent/reviewer, valid verdict and gates (DEVA-HAND-002).
+     IDs from that task's Covers line, known agent/reviewer, valid verdict and gates (DEVA-HAND-002); a task
+     marked ✅ Done needs `verdict: pass` and a reviewer in its hand-off (DEVA-HAND-003).
  13. Contracts (spec/contracts/*.schema.json): valid JSON, $schema, $id ending in the file name, title, x-contract
      name/version matching the file name, from/to agents and requirement IDs exist (DEVA-SPEC-003).
 
@@ -83,6 +84,7 @@ class Findings:
         self.req_ids: Dict[str, str] = {}   # id -> spec folder
         self.task_ids: Dict[str, str] = {}
         self.task_covers: Dict[str, List[str]] = {}   # task id -> requirement IDs on its Covers line
+        self.task_status: Dict[str, str] = {}         # task id -> status emoji
         self.agents: Dict[str, dict] = {}             # agent id -> {"version", "reqs", "path"}
         self.checked_contracts = 0
         self.checked_prompts = 0
@@ -204,6 +206,7 @@ def check_tasks(specs_dir: str, root: str, f: Findings) -> None:
             if TASK_STATUSES[emoji] != word:
                 f.error(f"{where}:{i + 2}", f"{tid}: emoji {emoji} does not match '{word}'")
             counts[emoji] += 1
+            f.task_status[tid] = emoji
             if done != (emoji == "✅"):
                 f.error(f"{where}:{i + 1}", f"{tid}: checkbox [x] must match ✅ Done")
             cov = re.search(r"Covers:\s*([^·]*)", rest)
@@ -480,6 +483,13 @@ def check_handoffs(spec_root: str, root: str, f: Findings) -> None:
             f.error(where, f"reviewer {fm['reviewer']!r} must be an agent ID or 'human'")
         if "verdict" in fm and fm["verdict"] not in HANDOFF_VERDICTS:
             f.error(where, f"verdict must be one of {sorted(HANDOFF_VERDICTS)}")
+        if f.task_status.get(tid) == "✅" and (fm.get("verdict") != "pass" or not fm.get("reviewer")):
+            f.error(where, f"{tid} is ✅ Done, so its hand-off needs 'verdict: pass' and a reviewer (DEVA-HAND-003)")
+        if fm.get("verdict") in ("pass", "fail"):
+            review = md_sections(read(p)).get("Review", "")
+            if not re.sub(r"<[^>]*>", "", review).strip():
+                f.error(where, f"verdict is '{fm['verdict']}' but the '## Review' section is missing or empty; "
+                               "record the reviewer's verdict and findings there (DEVA-HAND-003)")
         covers = fm.get("covers")
         if "covers" in fm:
             if not isinstance(covers, list) or not covers:

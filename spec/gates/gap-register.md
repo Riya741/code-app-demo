@@ -14,10 +14,6 @@ Rules:
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
-| SUM-EDIT-001 | High | Persist summary edits (Kept on screen for the session only) | [003-executive-summary](../specs/003-executive-summary/requirements.md) | SUM-T07 ⬜, SUM-T08 ⬜, SUM-T11 ⬜, API-T09 ⬜ | Open |
-| UCF-EDIT-002 | High | Save use case edits (Shows "Editing isn't connected yet" and saves nothing) | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T07 ⬜, UCF-T10 ⬜ | Open |
-| UCF-EDIT-004 | High | Preserve target fields on edit | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T08 ⬜ | Open |
-| EVF-EDIT-002 | High | Save event edits (Shows "Editing isn't connected yet") | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T06 ⬜, EVF-T09 ⬜ | Open |
 | API-WRITE-008 | High | Validate references | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T08 ⬜, API-T11 ⬜ | Open |
 | DT-TIME-003 | High | Date-only values show stored day (One day early west of UTC) | [020-performance-reliability](../specs/020-performance-reliability/requirements.md) | UCP-T08 ⬜, PERF-T03 ⬜ | Open |
 | SRCH-ARIA-002 | Medium | Expose active option with aria-activedescendant | [001-customer-search](../specs/001-customer-search/requirements.md) | SRCH-T06 ⬜ | Open |
@@ -30,7 +26,6 @@ Rules:
 | SEC-SUPPLY-004 | Medium | Remove unused dependencies (30 unused) | [019-security](../specs/019-security/requirements.md) | SEC-T03 ⬜ | Open |
 | LAY-PANEL-004 | Low | Persist all split sizes (Only the horizontal split is saved) | [002-workspace-layout](../specs/002-workspace-layout/requirements.md) | LAY-T08 ⬜ | Open |
 | LAY-TOP-004 | Low | Refresh reloads all data (Only the customer list reloads) | [002-workspace-layout](../specs/002-workspace-layout/requirements.md) | LAY-T07 ⬜ | Open |
-| SUM-EDIT-005 | Low | Save success and failure feedback (Toast shown, with description "Shown on screen only; it is not written to the database."; no failure path) | [003-executive-summary](../specs/003-executive-summary/requirements.md) | SUM-T09 ⛔ | Open |
 | UCP-GRID-004 | Low | Launch date sort and display (Displayed one day early west of UTC (see performance-reliability DT-TIME-003)) | [004-use-cases-panel](../specs/004-use-cases-panel/requirements.md) | UCP-T08 ⬜ | Open |
 | UCB-PASTE-004 | Low | Split on tabs only when present (Splits on tabs and commas together) | [006-use-case-bulk](../specs/006-use-case-bulk/requirements.md) | UCB-T09 ⬜ | Open |
 | EVP-GRID-003 | Low | Show stored calendar day (One day early west of UTC) | [007-events-panel](../specs/007-events-panel/requirements.md) | EVP-T07 ⬜ | Open |
@@ -58,6 +53,12 @@ Known limits agreed as acceptable at the current data size. Revisit using the tr
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
+| ~~UCF-EDIT-002~~ | High | ~~Save use case edits~~ | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T07 ✅ | Closed 2026-11-18 |
+| ~~EVF-EDIT-002~~ | High | ~~Save event edits~~ | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T06 ✅ | Closed 2026-11-18 |
+| ~~SUM-EDIT-001~~ | High | ~~Persist summary edits~~ | [003-executive-summary](../specs/003-executive-summary/requirements.md) | API-T09 ✅, SUM-T07..T11 ✅ | Closed 2026-11-18 |
+| ~~SUM-EDIT-005~~ | Low | ~~Save success and failure feedback~~ | [003-executive-summary](../specs/003-executive-summary/requirements.md) | SUM-T09 ✅ | Closed 2026-11-18 |
+| ~~SUM-EDIT-006~~ | Low | ~~Disable buttons while saving~~ | [003-executive-summary](../specs/003-executive-summary/requirements.md) | SUM-T09 ✅ | Closed 2026-11-18 |
+| ~~UCF-EDIT-004~~ | High | ~~Preserve target fields on edit~~ | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T08 ✅ | Closed 2026-11-18 |
 | ~~DATA-QUAL-001~~ | Medium | ~~Real event type names~~ | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T05 ✅ (PIPE-T07) | Closed 2026-11-16 |
 | ~~DATA-QUAL-002~~ | Medium | ~~Real personnel ids and emails~~ | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T07 ✅ (PIPE-T07) | Closed 2026-11-16 |
 | ~~DATA-QUAL-004~~ | Medium | ~~Populate customer and event fields~~ | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T08 ✅ (PIPE-T07) | Closed 2026-11-16 |

@@ -102,7 +102,7 @@ reproducible. The [spectree README](../spectree/README.md) already says the gene
 
 ## Evidence checklist for Topic 5
 
-- [ ] `.claude/settings.json` with hooks + deny-list; hook scripts with tests
+- [x] `.claude/settings.json` with hooks + deny-list; hook scripts with tests (17 tests, `npm run test:hooks`)
 - [ ] Recording: spec-guard blocks an edit; post-edit lint feeds back a fix
 - [ ] 5 project skills with trigger evals
 - [ ] `mcp/workbook-mcp` with tests, `.mcp.json`, Inspector screenshot, audit log sample

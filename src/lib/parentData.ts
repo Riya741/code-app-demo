@@ -30,14 +30,14 @@ export async function deleteEvent(row: EventRow): Promise<void> {
   await remove(`/events/${row.id}`);
 }
 
-/* ----------------------------------- Adding ----------------------------------- */
+/* ---------------------------- Adding and updating ----------------------------- */
 
-/** Adds a use case (no `id`) and links its content types and contributors. */
+/** Adds (no `id`) or updates (with `id`) a use case and replaces its content type and contributor links. */
 export async function saveUseCase(input: UseCaseInput): Promise<void> {
   await post("/use-cases", input);
 }
 
-/** Adds an event (no `Id`) and links its solutions and contributors. */
+/** Adds (no `Id`) or updates (with `Id`) an event and replaces its solution and contributor links. */
 export async function saveEvent(input: EventInput): Promise<void> {
   await post("/events", input);
 }

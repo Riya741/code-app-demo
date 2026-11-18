@@ -44,19 +44,19 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | **Features** | | | | | | | | | | | |
 | [001-customer-search](specs/001-customer-search/) | SRCH | 20 | 19 | 0 | 1 | 0 | 9 | 7 | 0 | 2 | 0 |
 | [002-workspace-layout](specs/002-workspace-layout/) | LAY | 17 | 15 | 2 | 0 | 0 | 8 | 6 | 0 | 2 | 0 |
-| [003-executive-summary](specs/003-executive-summary/) | SUM | 14 | 11 | 1 | 1 | 1 | 11 | 6 | 0 | 4 | 1 |
+| [003-executive-summary](specs/003-executive-summary/) | SUM | 13 | 13 | 0 | 0 | 0 | 12 | 11 | 0 | 1 | 0 |
 | [004-use-cases-panel](specs/004-use-cases-panel/) | UCP | 21 | 20 | 1 | 0 | 0 | 9 | 7 | 0 | 2 | 0 |
-| [005-use-case-form](specs/005-use-case-form/) | UCF | 20 | 17 | 0 | 2 | 1 | 10 | 6 | 0 | 4 | 0 |
+| [005-use-case-form](specs/005-use-case-form/) | UCF | 20 | 19 | 0 | 0 | 1 | 10 | 8 | 0 | 2 | 0 |
 | [006-use-case-bulk](specs/006-use-case-bulk/) | UCB | 25 | 24 | 1 | 0 | 0 | 11 | 8 | 0 | 3 | 0 |
 | [007-events-panel](specs/007-events-panel/) | EVP | 13 | 12 | 1 | 0 | 0 | 9 | 6 | 0 | 3 | 0 |
-| [008-event-form](specs/008-event-form/) | EVF | 10 | 7 | 0 | 2 | 1 | 9 | 5 | 0 | 3 | 1 |
+| [008-event-form](specs/008-event-form/) | EVF | 10 | 8 | 0 | 1 | 1 | 9 | 6 | 0 | 2 | 1 |
 | [009-data-grid](specs/009-data-grid/) | GRID | 19 | 18 | 0 | 1 | 0 | 7 | 5 | 0 | 2 | 0 |
 | [010-export](specs/010-export/) | EXP | 11 | 9 | 1 | 0 | 1 | 7 | 4 | 0 | 3 | 0 |
 | [011-rich-text](specs/011-rich-text/) | RTX | 21 | 20 | 1 | 0 | 0 | 7 | 5 | 0 | 2 | 0 |
 | **Data & backend** | | | | | | | | | | | |
 | [012-data-model](specs/012-data-model/) | DATA | 19 | 17 | 1 | 1 | 0 | 9 | 7 | 0 | 1 | 1 |
 | [013-workbook-storage](specs/013-workbook-storage/) | STO | 18 | 16 | 1 | 0 | 1 | 7 | 5 | 0 | 2 | 0 |
-| [014-workbook-api](specs/014-workbook-api/) | API | 22 | 20 | 0 | 1 | 1 | 11 | 8 | 0 | 3 | 0 |
+| [014-workbook-api](specs/014-workbook-api/) | API | 22 | 21 | 0 | 1 | 0 | 13 | 9 | 0 | 4 | 0 |
 | [015-client-data-layer](specs/015-client-data-layer/) | CDL | 15 | 14 | 1 | 0 | 0 | 7 | 5 | 0 | 1 | 1 |
 | [016-data-pipeline](specs/016-data-pipeline/) | PIPE | 28 | 28 | 0 | 0 | 0 | 8 | 5 | 0 | 3 | 0 |
 | **Cross-cutting** | | | | | | | | | | | |
@@ -64,22 +64,25 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [018-accessibility](specs/018-accessibility/) | A11Y | 15 | 10 | 2 | 3 | 0 | 6 | 1 | 0 | 5 | 0 |
 | [019-security](specs/019-security/) | SEC | 9 | 6 | 1 | 1 | 1 | 6 | 3 | 0 | 3 | 0 |
 | [020-performance-reliability](specs/020-performance-reliability/) | PERF/REL/COMP/DT | 23 | 16 | 4 | 1 | 2 | 7 | 2 | 0 | 5 | 0 |
-| [021-quality](specs/021-quality/) | QA | 15 | 10 | 0 | 0 | 5 | 10 | 4 | 0 | 6 | 0 |
+| [021-quality](specs/021-quality/) | QA | 15 | 12 | 0 | 0 | 3 | 11 | 6 | 0 | 5 | 0 |
 | **AI & agents** (CR-20261117-1) | | | | | | | | | | | |
 | [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 25 | 0 | 0 | 0 | 25 | 9 | 0 | 0 | 7 | 2 |
 | [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 10 | 0 | 0 | 9 | 1 |
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 27 | 0 | 0 | 0 | 27 | 10 | 0 | 0 | 10 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
-| [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 4 | 0 | 0 | 14 | 13 | 4 | 0 | 8 | 1 |
-| **Total** | | **490** | **327** | **19** | **14** | **130** | **224** | **114** | **0** | **101** | **9** |
+| [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 16 | 0 | 0 | 2 | 15 | 12 | 0 | 2 | 1 |
+| **Total** | | **489** | **347** | **18** | **10** | **114** | **230** | **133** | **0** | **89** | **8** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,
 EXP-T07, PIPE-T07 demo data generator, DATA-T09 test fixture.
 Done in Phase 1 (2026-11-17): DEVA-T01..T04: Article XII, AI data policy, specs 022–026, 12 agent specs, 6 contracts,
 ADR-0007 (Proposed) and ADR-0008, spec lint checks 10–13.
+Done in Phase 2 (2026-11-18): DEVA-T05..T11, T13 (subagents, hooks, skills); QA-T02, QA-T03, API-T09/SUM-T07,
+UCF-T08, SUM-T08, SUM-T11, and (after the owner's G5 check) UCF-T07, EVF-T06, SUM-T09, SUM-T10, all through the agent
+workflow.
 
-1. **DEVA-T05..T09** subagents, hooks and skills (Phase 2), then deliver the next tasks through them
+1. **API-T13** owner decision on Article II.4 (link rows replaced on edit), then **API-T08** validate references
 2. **UCF-T07 / UCF-T08**, **EVF-T06** save edits
 3. **API-T09 → SUM-T08 → SUM-T09 → SUM-T10** persist the executive summary (also unblocks AIB-T07)
 4. **QA-T02 → QA-T03** component tests and server integration harness (fixture: DATA-T09)

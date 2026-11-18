@@ -66,6 +66,15 @@ reviewer: AGENT-REVIEWER
 
 **Contract metadata** (check 13): `"x-contract": { "name": "writer-to-critic", "version": 1, "from": "AGENT-WRITER", "to": "AGENT-CRITIC" }`.
 
+**Tool limits.** A Claude Code subagent's `tools` field restricts tool *names* only. Finer limits in the agent specs
+are enforced as follows: code edits need a 🔄 task (spec-guard hook, all agents); secrets and workbooks are
+protected (data-guard hook, all agents); the reviewer and eval analyst have no Edit/Write tool; path limits such as
+"spec-author edits only `spec/**`" and command limits on Bash are instructions in the subagent file, checked by the
+reviewer and visible in the hand-off's `files_changed`. Hooks apply to subagents as well as the main session.
+
+**Loading.** Claude Code reads `.claude/settings.json` hooks and `.claude/agents/` at session start; after changing
+them, restart the session (or review them in `/hooks`) before relying on them.
+
 ## Data and state
 No app data. Hand-off files are committed with the task's code. Lint keeps a map task → Covers IDs to check hand-offs.
 

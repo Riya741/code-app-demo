@@ -11,12 +11,12 @@ into practice, and shows where compliance is incomplete. Update it whenever a sp
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | [customer-search](../specs/001-customer-search/) | ○ | | | ○ | ● | ○ | ⚠️ | | ○ | ○ | ● | |
 | [workspace-layout](../specs/002-workspace-layout/) | ○ | ○ | | | ⚠️ | ● | ○ | ● | | ○ | | |
-| [executive-summary](../specs/003-executive-summary/) | ○ | ⚠️ | ○ | | ● | ○ | ○ | | ○ | ○ | ○ | ○ |
+| [executive-summary](../specs/003-executive-summary/) | ○ | ○ | ○ | | ● | ○ | ○ | | ○ | ○ | ○ | ○ |
 | [use-cases-panel](../specs/004-use-cases-panel/) | ○ | ○ | ○ | | ● | ○ | ○ | | ● | ○ | | |
-| [use-case-form](../specs/005-use-case-form/) | ○ | ⚠️ | | ● | ● | ○ | ○ | | ○ | ○ | | |
+| [use-case-form](../specs/005-use-case-form/) | ○ | ○ ⚠️ | | ● | ● | ○ | ○ | | ○ | ○ | | |
 | [use-case-bulk](../specs/006-use-case-bulk/) | ○ | ○ | | ● | ● | ○ | ○ | | ○ | ○ | ○ | |
 | [events-panel](../specs/007-events-panel/) | ○ | ○ | ○ | | ● | ○ | ○ | ⚠️ | ● | ○ | | |
-| [event-form](../specs/008-event-form/) | ○ | ⚠️ | | ⚠️ | ● | ○ | ○ | | ○ | ○ | | |
+| [event-form](../specs/008-event-form/) | ○ | ○ ⚠️ | | ⚠️ | ● | ○ | ○ | | ○ | ○ | | |
 | [data-grid](../specs/009-data-grid/) | ○ | | | | ● | ● | ⚠️ | ● | | ○ | | |
 | [export](../specs/010-export/) | ○ | | ● | | ○ | | | ● | | ○ | | |
 | [rich-text](../specs/011-rich-text/) | ○ | | ● | | | ● | ○ | | | ○ | ● | |
@@ -56,8 +56,7 @@ into practice, and shows where compliance is incomplete. Update it whenever a sp
 ## 3. Recorded exceptions
 | Article | Spec | Reason | Exit task |
 |---|---|---|---|
-| II | executive-summary | Edits session-only until the summary endpoint exists | SUM-T07..T10 |
-| II | use-case-form, event-form | Edit dialogs do not persist yet | UCF-T07, EVF-T06 |
+| II.4 | workbook-api, use-case-form, event-form | An edit replaces the record's link rows (API-WRITE-004), which physically removes the old ones; Article II.4 says link rows are never destroyed. Live since edits were connected (2026-11-18). | API-T13 (owner decision) |
 | VII | accessibility | Label association, error announcement, keyboard row expansion | A11Y-T02..T06 |
 | X | quality | Unit tests only; component, integration and E2E tests pending | QA-T02..T04 |
 

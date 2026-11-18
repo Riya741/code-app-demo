@@ -18,7 +18,7 @@ the 70-point pass mark.
 
 ---
 
-## 1. What the repo already has (updated 2026-11-17, after Phase 1)
+## 1. What the repo already has (updated 2026-11-18, after Phase 2)
 
 | Asset | Where | State |
 |---|---|---|
@@ -34,20 +34,21 @@ the 70-point pass mark.
 | Git repository on GitHub (private), Phase 0 merged into `main`, Phase 1 on `phase-1-specify-ai` | `Riya741/code-app-demo` | ✅ Task-ID commit messages, `.gitignore` blocks `.xlsx` and `.env` |
 | Fictional demo data generator + catalogue (deterministic, integrity-checked) | [scripts/](../scripts/) | ✅ Also makes the 8-customer test fixture |
 | `CLAUDE.md` (commands, workflow rules, done criteria, never-list) | [CLAUDE.md](../CLAUDE.md) | ✅ |
-| Vitest unit tests (19, named by requirement ID) + `typecheck` script | [tests/unit/](../tests/unit/) | ✅ Component, integration, E2E still planned (QA-T02..T04) |
-| `.claude/` (agents, skills, hooks, settings), `.mcp.json` | — | ❌ None (Phase 2, Phase 5) |
+| 89 tests (unit, component with Testing Library, server integration on a generated fixture) + 17 hook tests | [tests/](../tests/) | ✅ E2E still planned (QA-T04) |
+| `.claude/`: 5 subagents, 5 skills, 5 hooks (tested), settings deny-list | [.claude/](../.claude/README.md) | ✅ Used to deliver 11 tasks with reviewed hand-offs ([spec/handoffs/](../spec/handoffs/README.md)) |
+| `.mcp.json`, MCP server | — | ❌ None (Phase 5) |
 | Any LLM feature, agent, eval harness or MCP server (code) | — | ❌ None yet: specified in Phase 1, built in Phases 3–5 |
 
 ### Honest current-score estimate
 
 | Topic | Today | Why | Target |
 |---|---|---|---|
-| 1 Spec-Driven Development | **23–26** (Advanced) | The spec system now governs *agents* too: Article XII, 12 agent specs, 6 contracts and lint checks that tie prompts and hand-offs to them. Still on paper until Phase 2–3 agents run under it and hand-off files exist. | 27–30 |
-| 2 AI-Powered Development | **13–16** (Developing) | Phases 0–1 were done with Claude Code and are visible in git history, `CLAUDE.md` and the [AI dev log](evidence/ai-dev-log.md). No subagents, project skills or hooks yet. | 26–29 |
+| 1 Spec-Driven Development | **26–28** (Distinction) | Agents now work under their specs. There are 11 hand-off files with recorded reviews, and lint rejects a done task without a passed review. Spec-vs-code conflicts the agents found are resolved on purpose (an Article II.4 exception; a retired interim criterion). | 27–30 |
+| 2 AI-Powered Development | **20–24** (Advanced) | Implementer and reviewer subagents ran in parallel, with an independent review that failed 2 tasks, including a real data-loss bug. The working software: use case, event and summary edits now save. Not yet: worktrees, headless `claude -p` in CI, or the owner's G5 checks. | 26–29 |
 | 3 LLM Evaluation & Interpretability | **2–4** (Emerging) | Eval design specified (spec 023, judge agent, G7), but no dataset, grader or result yet. | 25–28 |
 | 4 Agent Design, Orchestration & Ops | **4–7** (Emerging) | Orchestration, failure handling and observability specified (spec 024, ADR-0008), but nothing runs yet. | 25–28 |
-| 5 AI Tool Integration & Extensibility | **3–6** (Emerging) | A skill was *used*; the MCP server, hooks and skills are now specified (specs 025, 026) but none is built. | 26–29 |
-| **Total** | **≈ 45–59 / 150** | **Still below the 70 pass mark:** specs earn little until the work they describe runs. | **≈ 130 / 150** |
+| 5 AI Tool Integration & Extensibility | **12–16** (Developing) | 5 tested hooks enforce the workflow and caught real problems, 5 project skills and a deny-list. No MCP server or plugin yet (Phase 5). | 26–29 |
+| **Total** | **≈ 64–79 / 150** | **Around the 70 pass mark.** Phases 3–4 (the AI pipeline and evals) are needed for a safe margin. | **≈ 130 / 150** |
 
 > Your instinct is right that "a few rubric steps are already implemented", but only Topic 1 is substantially
 > covered. The spec system is the project's biggest asset, so the plan builds everything else on top of it: each new
@@ -134,7 +135,7 @@ Tick as you go; each line maps to a section in the topic files.
 
 - [x] Phase 0 — git, `.gitignore`, localhost bind, typecheck, Vitest, fixture workbook, `CLAUDE.md` (2026-11-16, merged into `main` 2026-11-17; see [evidence/ai-dev-log.md](evidence/ai-dev-log.md))
 - [x] Phase 1 — CR + Article XII, specs 022–026, agent specs, hand-off schemas, lint extension (2026-11-17, branch `phase-1-specify-ai`; DEVA-T01..T04)
-- [ ] Phase 2 — subagents, skills, hooks, settings; High gaps closed via the agent workflow
+- [x] Phase 2 — subagents, skills, hooks, settings; High gaps closed via the agent workflow (2026-11-18, branch `phase-2-agentic-dev`; 19 tasks closed, including UCF-T07, EVF-T06, SUM-T09 and SUM-T10 after the owner's G5 check; 4 High gaps closed)
 - [ ] Phase 3 — AI pipeline, failure handling, checkpoints, traces, Run Inspector, chaos tests
 - [ ] Phase 4 — eval dataset, graders, judge calibration, experiment matrix, ADR-0007, G7
 - [ ] Phase 5 — MCP server, `sdd-toolkit` plugin, CI with headless Claude review

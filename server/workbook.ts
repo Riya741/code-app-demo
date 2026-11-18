@@ -369,6 +369,15 @@ function saveEvent(s: Store, body: Record<string, unknown>) {
   return id;
 }
 
+/** Stores a customer's executive summary (blank → null) and stamps `summary_last_modified` (API-SUMM-001). */
+function saveSummary(s: Store, id: number, body: Record<string, unknown>) {
+  const row = s.table("customer").rows.find((r) => r.id === id);
+  if (!row) throw new HttpError(404, `Customer ${id} was not found.`);
+  row.executive_summary = text(body.executive_summary);
+  row.summary_last_modified = now();
+  return { id, summary_last_modified: row.summary_last_modified };
+}
+
 /** Soft delete, the way the old app did it: the row stays, `deleted` becomes true, and the read queries leave it out. */
 function softDelete(s: Store, table: "use_case" | "event", id: number) {
   const row = s.table(table).rows.find((r) => r.id === id);
@@ -450,6 +459,10 @@ export function workbookPlugin(defaultFile: string): Plugin {
         if (method === "POST" && parts[0] === "events" && !parts[1]) {
           const body = await readBody(req);
           return mutate(() => ({ id: saveEvent(store, body) }));
+        }
+        if (method === "POST" && parts[0] === "customers" && num(parts[1]) != null && parts[2] === "summary" && !parts[3]) {
+          const body = await readBody(req);
+          return mutate(() => saveSummary(store, Number(parts[1]), body));
         }
         if (method === "DELETE" && (parts[0] === "use-cases" || parts[0] === "events") && num(parts[1]) != null) {
           return mutate(() => (softDelete(store, parts[0] === "events" ? "event" : "use_case", Number(parts[1])), { ok: true }));

@@ -2,7 +2,7 @@
 
 | Spec | Prefix | Status | Constitution |
 |---|---|---|---|
-| 026-dev-agents | DEVA | ⚠️ Lint checks built; agents, hooks and skills planned (CR-20261117-1) | I, III, X, XII |
+| 026-dev-agents | DEVA | ⚠️ Lint, hooks, subagents and skills built and used; trigger evals and headless review planned (CR-20261117-1) | I, III, X, XII |
 
 ## Introduction
 How AI agents that *build* this project are governed: every agent has a spec, hands off through a checked file, and
@@ -26,7 +26,7 @@ governed by reviewed specs rather than by unreviewed prompts.
 #### DEVA-SPEC-002: Prompt and subagent files cite their agent spec
 - **Status:** ✅ Implemented
 - **Criterion:** EVERY file in `server/ai/prompts/`, `.claude/agents/` and `evals/graders/judge/` (Markdown) SHALL contain, in its first 20 lines, the header `agent-spec: AGENT-<NAME>@<version>` naming an existing agent spec at its current version, and `requirements:` citing IDs listed in that spec; spec lint SHALL fail otherwise.
-- **Source:** `spec/scripts/spec_lint.py`
+- **Source:** `spec/scripts/spec_lint.py`, `.claude/agents/implementer.md`
 
 #### DEVA-SPEC-003: Contracts are valid and linked
 - **Status:** ✅ Implemented
@@ -38,8 +38,9 @@ governed by reviewed specs rather than by unreviewed prompts.
 what was done against what the task promised.
 
 #### DEVA-HAND-001: Implementer writes a hand-off file
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN the implementer agent finishes a task THE agent SHALL write `spec/handoffs/<TASK-ID>.md` from the hand-off template ([task-handoff.v1](../../contracts/task-handoff.v1.schema.json)): requirements covered, files changed, tests added, gates run with results, open questions.
+- **Source:** `.claude/agents/implementer.md`, `spec/templates/handoff.md`
 
 #### DEVA-HAND-002: Hand-off files are checked
 - **Status:** ✅ Implemented
@@ -47,59 +48,70 @@ what was done against what the task promised.
 - **Source:** `spec/scripts/spec_lint.py`, `spec/templates/handoff.md`
 
 #### DEVA-HAND-003: Review verdict before Done
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** IF a task with a hand-off file is set to ✅ Done THEN its hand-off SHALL record `verdict: pass` and the reviewer, and spec lint SHALL fail otherwise.
+- **Source:** `spec/scripts/spec_lint.py`
 
 ### DEVA-R3 — Guards
 **User story:** As the owner, I want the workflow enforced while agents work, so that discipline does not depend on
 the agent remembering it.
 
 #### DEVA-GUARD-001: No code edits without a task in progress
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHILE no task in `spec/specs/*/tasks.md` is 🔄 In progress THE spec-guard hook SHALL block edits to `src/`, `server/`, `scripts/`, `mcp/` and `evals/`, with a message naming the rule and how to start a task.
+- **Source:** `.claude/hooks/spec_guard.py`, `.claude/settings.json`
 
 #### DEVA-GUARD-002: Protected files
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE data-guard hook SHALL block agent reads and writes of `.env*` files and credential files, writes to any `.xlsx`, and shell commands that touch them.
+- **Source:** `.claude/hooks/data_guard.py`, `.claude/settings.json`
 
 #### DEVA-GUARD-003: Permission deny-list
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE project `.claude/settings.json` SHALL deny `.env*` reads, `git push --force`, `rm -rf` and web fetches by default.
+- **Source:** `.claude/settings.json`
 
 #### DEVA-GUARD-004: Hooks are tested
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** EVERY hook SHALL have tests that feed sample hook input and check the allow or block decision, and SHALL allow the action IF the hook itself fails to run (fail open with a warning), except the data guard, which SHALL fail closed.
+- **Source:** `tests/hooks/test_hooks.py`
 
 ### DEVA-R4 — Gates inside the loop
 **User story:** As a developer, I want the agent to see gate failures while it still has context, so that it fixes them itself.
 
 #### DEVA-GATE-001: Lint after each edit
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN an agent edits a file under `spec/` THE post-edit hook SHALL run spec lint, and WHEN it edits a `.ts`/`.tsx` file the hook SHALL run ESLint on that file, returning findings to the agent.
+- **Source:** `.claude/hooks/post_edit_check.py`
 
 #### DEVA-GATE-002: Gates before stopping
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN an agent is about to stop THE stop hook SHALL run G1, typecheck and the affected tests, and IF any fails THEN tell the agent to continue with the failures listed.
+- **Source:** `.claude/hooks/gates_on_stop.py`
 
 #### DEVA-CTX-001: Session context
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN a session starts THE session hook SHALL add the current 🔄 task, its Covers IDs and the number of open High gaps to the agent's context.
+- **Source:** `.claude/hooks/session_context.py`
 
 ### DEVA-R5 — Subagents and skills
 **User story:** As a developer, I want repeatable agent roles and commands for the workflow, so that any developer
 or agent follows the same steps.
 
 #### DEVA-SUB-001: Subagents with least privilege
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE project SHALL define the subagents spec-author, implementer, test-writer, reviewer and eval-analyst in `.claude/agents/`, each with only the tools its agent spec lists.
+- **Source:** `.claude/agents/implementer.md`, `.claude/agents/test-writer.md`, `.claude/agents/reviewer.md`, `.claude/agents/spec-author.md`, `.claude/agents/eval-analyst.md`
 
 #### DEVA-SUB-002: Reviewer cannot edit
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE reviewer subagent SHALL have no Edit or Write tool, and its verdict SHALL be pass or fail with findings tied to requirement IDs.
+- **Source:** `.claude/agents/reviewer.md`
 
 #### DEVA-SKILL-001: Workflow skills
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE project SHALL provide the skills `spec-change`, `task-implement`, `task-close`, `gap-report` and `eval-run` in `.claude/skills/`, each encoding its workflow steps and ending with gate G1.
+- **Source:** `.claude/skills/task-implement/SKILL.md`, `.claude/skills/task-close/SKILL.md`, `.claude/skills/spec-change/SKILL.md`, `.claude/skills/gap-report/SKILL.md`, `.claude/skills/eval-run/SKILL.md`
 
 #### DEVA-SKILL-002: Skill triggering is evaluated
 - **Status:** 📝 Planned

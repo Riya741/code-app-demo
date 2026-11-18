@@ -45,6 +45,13 @@
 | `src/lib/search.ts` | customer-search |
 | `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json` | data-pipeline (PIPE-GEN-001..008), data-model (DATA-QUAL-001, -002, -004) |
 | `tests/unit/search.test.ts` | customer-search (SRCH-RANK-001..004) |
+| `tests/component/*.test.tsx` (Testing Library) | design-system (DS-COMP-003), use-cases-panel (UCP-DEL-002), workspace-layout (LAY-SHELL-001) |
+| `tests/integration/harness.ts`, `tests/integration/*.test.ts` | quality (QA-TEST-003), workbook-api (API-GEN-001..004, API-READ-004, API-WRITE-001, API-WRITE-007, API-DEL-001, API-DEL-002, API-SUMM-001) |
+| `tests/component/UseCaseForm.test.tsx`, `tests/integration/use-case-edit.test.ts` | use-case-form (UCF-EDIT-002, UCF-EDIT-004, UCF-ADD-002, UCF-ADD-004) |
+| `tests/component/EventForm.test.tsx`, `tests/integration/event-edit.test.ts` | event-form (EVF-EDIT-002, EVF-ADD-003) |
+| `tests/component/CustomerDetails.test.tsx`, `tests/unit/fmtUtc.test.ts` | executive-summary (SUM-EDIT-001, SUM-EDIT-004..006, SUM-VIEW-004) |
+| `src/lib/customerSource.ts` (`saveSummary`), `src/hooks/useCustomers.ts` (`useSaveSummary`) | executive-summary (SUM-EDIT-001), client-data-layer |
+| `tests/hooks/test_hooks.py` | dev-agents (DEVA-GUARD-001..004, DEVA-GATE-001, DEVA-GATE-002, DEVA-CTX-001) |
 | `tests/unit/csv.test.ts` | export (EXP-CSV-001..003, EXP-CSV-005, EXP-NAME-001, EXP-NAME-002) |
 | `vitest.config.ts` | quality |
 | `src/lib/lookups.ts` | client-data-layer, use-case-form, use-case-bulk, event-form, data-model |
@@ -59,7 +66,7 @@ Do these once and mark every linked task ✅ together.
 |---|---|
 | Date display on stored calendar day (`src/lib/dates.ts`) | UCP-T08, EVP-T07, PERF-T03 |
 | Workbook backups | STO-T06, PERF-T04 |
-| Summary endpoint | API-T09, SUM-T07 |
+| Summary endpoint | API-T09, SUM-T07 (both ✅ 2026-11-17) |
 | Localhost binding | SEC-T01, API-T10 |
 | Keyboard row expansion | GRID-T06, A11Y-T03 |
 | Search `aria-activedescendant` | SRCH-T06, A11Y-T02 |

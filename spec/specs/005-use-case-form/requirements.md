@@ -105,7 +105,7 @@ combinations can be chosen.
 - **Source:** `src/components/customers/UseCaseForm.tsx`
 
 #### UCF-EDIT-002: Save use case edits
-- **Status:** ❌ Gap — Shows "Editing isn't connected yet" and saves nothing
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN "Save changes" is submitted THE system SHALL post the full `UseCaseInput` with `id`, toast "Use case updated", close and refresh.
 - **Source:** `src/components/customers/UseCaseForm.tsx`
 
@@ -115,7 +115,7 @@ combinations can be chosen.
 - **Source:** `src/components/customers/UseCaseForm.tsx`
 
 #### UCF-EDIT-004: Preserve target fields on edit
-- **Status:** ❌ Gap
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN saving an edit THE system SHALL send the row's current `target_users`, `target_credits_consumed`, `target_api_calls` so the full-replace API does not erase them.
 - **Source:** `src/components/customers/UseCaseForm.tsx`
 

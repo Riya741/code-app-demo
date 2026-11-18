@@ -1,7 +1,7 @@
 # Tasks — Workbook HTTP API
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 11 tasks — ✅ 8 · 🔄 0 · ⬜ 3 · ⛔ 0
+**Summary:** 13 tasks — ✅ 9 · 🔄 0 · ⬜ 4 · ⛔ 0
 
 - [x] **API-T01** Vite plugin wiring for dev and preview; JSON responses and error mapping.
   - Status: ✅ Done · Covers: API-GEN-001..004 · Files: `server/workbook.ts`, `vite.config.ts`
@@ -22,9 +22,14 @@
   - Step: FK existence checks
   - Step: Solution ↔ status / type checks
   - Step: Add messages to the messages catalog
-- [ ] **API-T09** `POST /customers/:id/summary`.
-  - Status: ⬜ Not started · Covers: API-SUMM-001, SUM-EDIT-001 · Unblocks: SUM-T09
+- [x] **API-T09** `POST /customers/:id/summary`.
+  - Status: ✅ Done · Covers: API-SUMM-001, SUM-EDIT-001 · Unblocks: SUM-T09
+  - Verified 2026-11-17 via the agent workflow (implementer subagent, read-only reviewer subagent; hand-off `spec/handoffs/API-T09.md`, verdict pass): `POST /customers/:id/summary` in `server/workbook.ts`; 6 integration tests (`tests/integration/summary.test.ts`). Same work as SUM-T07.
 - [x] **API-T10** Restrict exposure (see SEC-T01).
   - Status: ✅ Done · Covers: API-GEN-005 · Done by SEC-T01 (the API is served by the dev/preview server, now localhost-only).
 - [ ] **API-T11** Integration tests for every endpoint and error code.
   - Status: ⬜ Not started · Covers: API-GEN-001..005, API-READ-001..006, API-WRITE-001..008, API-DEL-001, API-DEL-002, API-SUMM-001 · Depends on: QA-T03, DATA-T09
+- [ ] **API-T12** Refuse updates to soft-deleted use cases and events (409, like `softDelete`), so an edit saved in one tab cannot bring back a row deleted in another.
+  - Status: ⬜ Not started · Covers: API-WRITE-001, API-WRITE-006 · Files: `server/workbook.ts` · Found 2026-11-18 in the EVF-T06 review. Needs a new requirement through /spec-change first.
+- [ ] **API-T13** Resolve Article II.4 ("link rows are never destroyed") vs API-WRITE-004 ("replace link rows"): since UCF-T07/EVF-T06 connected edits, an edit physically removes the old personnel / content-type / solution link rows. Owner decides: soft-delete link rows (data-model change) or amend Article II.4 to allow replacing a record's own links on edit (constitution PATCH/MINOR via CR).
+  - Status: ⬜ Not started · Covers: API-WRITE-004 · Files: `spec/constitution.md` or `server/workbook.ts` · Recorded as a Constitution exception in steering/constitution-mapping.md §3.

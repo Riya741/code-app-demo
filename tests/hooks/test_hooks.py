@@ -125,6 +125,13 @@ class DataGuardTest(FixtureProject):
         self.assertIsNone(self.check("Bash", {"command": "py -I scripts/generate_demo_workbook.py ../data/x.xlsx 2>&1"}))
         self.assertIsNone(self.check("Bash", {"command": "ls ../data/*.xlsx 2>/dev/null"}))
 
+    def test_DEVA_GUARD_002_judges_each_shell_command_separately(self):
+        mixed = ('cat > "$S/msg.txt" <<\'EOF\'\nmessage\nEOF\n'
+                 'git diff --name-only | py -I -c "print([f for f in x if f.endswith(\'.xlsx\')])"')
+        self.assertIsNone(self.check("Bash", {"command": mixed}))
+        self.assertEqual(self.check("Bash", {"command": "ls; cp a.xlsx ../data/code-app-data.xlsx"}), "deny")
+        self.assertEqual(self.check("Bash", {"command": "echo hi && cat x > ../data/b.xlsx"}), "deny")
+
     def test_DEVA_GUARD_004_data_guard_fails_closed(self):
         _, out, _ = run_hook("data_guard.py", "{not json", self.project)
         self.assertEqual(decision(out), "deny")
@@ -158,6 +165,20 @@ class StopAndContextTest(FixtureProject):
         text = " M spec/specs/026-dev-agents/tasks.md\n?? .claude/hooks/x.py\nR  old.ts -> src/new.ts\n"
         self.assertEqual(gates_on_stop.parse_porcelain(text),
                          ["spec/specs/026-dev-agents/tasks.md", ".claude/hooks/x.py", "src/new.ts"])
+
+    def test_DEVA_GATE_002_runs_tools_from_an_upper_case_drive(self):
+        sys.path.insert(0, HOOKS)
+        import _common
+        old = os.environ.get("CLAUDE_PROJECT_DIR")
+        try:
+            os.environ["CLAUDE_PROJECT_DIR"] = self.project[0].lower() + self.project[1:]
+            root = _common.project_root()
+            self.assertTrue(root[1] != ":" or root[0].isupper(), root)
+        finally:
+            if old is None:
+                os.environ.pop("CLAUDE_PROJECT_DIR", None)
+            else:
+                os.environ["CLAUDE_PROJECT_DIR"] = old
 
     def test_DEVA_GATE_002_passes_when_nothing_changed(self):
         code, out, _ = run_hook("gates_on_stop.py", {"stop_hook_active": False}, self.project)  # not a git repo

@@ -18,9 +18,13 @@ GAP_ROW_RE = re.compile(r"^\| ([A-Z][A-Z0-9]{1,4}-[A-Z]{2,6}-\d{3}) \| (High|Med
 
 def project_root() -> str:
     env = os.environ.get("CLAUDE_PROJECT_DIR")
-    if env and os.path.isdir(env):
-        return os.path.abspath(env)
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    root = os.path.abspath(env) if env and os.path.isdir(env) else \
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    # Windows: a lower-case drive letter (VS Code passes "c:\...") makes Vite/Vitest load two copies of a module
+    # ("Vitest failed to find the current suite"); always hand tools an upper-case drive.
+    if len(root) > 1 and root[1] == ":":
+        root = root[0].upper() + root[1:]
+    return root
 
 
 def read_event() -> dict:

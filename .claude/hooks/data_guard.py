@@ -28,6 +28,8 @@ SHELL_SECRET_RE = re.compile(r"(?<![\w.-])\.env(?!\.example\b)(?:\.[\w-]+)?(?![\
 SHELL_WRITE_RE = re.compile(
     r"\b(rm|del|erase|mv|cp|move|copy|ren|rename|truncate|Remove-Item|Move-Item|Copy-Item|Rename-Item|"
     r"Set-Content|Add-Content|Out-File|Clear-Content)\b|(?<![0-9&>])>(?!&)", re.I)
+# Judge each simple command on its own: a workbook named in one command and a redirect in another is not a write.
+SEGMENT_SPLIT_RE = re.compile(r"\n|;|&&|\|\||\|")
 
 
 def is_secret_path(path: str) -> bool:
@@ -52,9 +54,11 @@ def decide(event: dict):
         cmd = str(ti.get("command", ""))
         if SHELL_SECRET_RE.search(cmd) or CRED_RE.search(cmd):
             return "Blocked by data-guard (DEVA-GUARD-002): the command touches a secrets file (.env* or credentials)."
-        if WORKBOOK_RE.search(cmd) and SHELL_WRITE_RE.search(cmd) and "generate_demo_workbook.py" not in cmd:
-            return ("Blocked by data-guard (DEVA-GUARD-002, ADR-0006): the command would delete, move, copy over or "
-                    "redirect into a workbook. Regenerate it with scripts/generate_demo_workbook.py instead.")
+        for segment in SEGMENT_SPLIT_RE.split(cmd):
+            if WORKBOOK_RE.search(segment) and SHELL_WRITE_RE.search(segment) \
+                    and "generate_demo_workbook.py" not in segment:
+                return ("Blocked by data-guard (DEVA-GUARD-002, ADR-0006): the command would delete, move, copy over "
+                        "or redirect into a workbook. Regenerate it with scripts/generate_demo_workbook.py instead.")
         return None
     return None
 

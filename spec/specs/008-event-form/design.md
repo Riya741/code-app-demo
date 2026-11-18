@@ -28,9 +28,11 @@ EventForm({ parentId: number, customerKeys: number[], existing: EventRow[], row?
 | notes | non-blank HTML or undefined |
 | solutionIds / personnel | comma string or undefined |
 
-## Planned design — EVF-EDIT-002
-When `row` is set, add `Id: row.id` to the payload; toast "Event updated"; remove `NOT_WIRED`. All event fields are
-editable in the form, so the full-replace API loses nothing.
+## Implemented — EVF-EDIT-002 (EVF-T06, 2026-11-18)
+When `row` is set, add `Id: row.id` to the payload; toast "Event updated"; remove `NOT_WIRED`. Every field the
+full-replace API writes is shown in the form, so an edit blanks nothing. It does normalise some values (owner
+questions): HTML attendee names are saved as plain text (EVF-EDIT-001), a stored time on `event_date` is cut to the
+date, and Stage is trimmed.
 
 ## Planned design — EVF-ADD-004
 Validate `attendees`/`duration` with `/^\d+$/` when non-blank; show the message under the field; include in `missing`-style map.
@@ -38,7 +40,7 @@ Validate `attendees`/`duration` with `/^\d+$/` when non-blank; show the message 
 ## Constitution check
 | Article | Compliance |
 |---|---|
-| II | Edit not persisted. ⚠️ Exception until EVF-T06 |
+| II | Edits persist through the API (EVF-T06). An edit replaces the event's link rows (API-WRITE-004), which conflicts with II.4. ⚠️ Exception: API-T13 |
 | IV | Required fields; number validation missing. ⚠️ |
 | V | Pending/success/error. ✅ |
 | IX | Hooks + lib. ✅ |

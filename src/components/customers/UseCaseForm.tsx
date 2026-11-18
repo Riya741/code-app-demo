@@ -30,10 +30,7 @@ const one = (v?: number) => (v == null ? [] : [String(v)]);
 /** Value / notes can hold HTML from the old rich text control; the plain text boxes here show it as text. */
 export const plain =(v?: string) => (v && looksLikeHtml(v) ? htmlToText(v) : (v ?? ""));
 
-const NOT_WIRED = () =>
-  toast.info("Editing isn't connected yet", { description: "This is a preview of the edit form; your changes were not saved." });
-
-/** Dialog for adding a use case to the selected customer. Mounted only while open, so every open starts blank. */
+/** Dialog for adding a use case to the selected customer, or editing one. Mounted only while open, so every open starts afresh. */
 export function UseCaseForm({
   parentId,
   customerKeys,
@@ -46,7 +43,7 @@ export function UseCaseForm({
   customerKeys: number[];
   /** Use cases already shown; used to work out which id column the lookups are keyed by. */
   existing: UseCaseRow[];
-  /** When set the form opens filled in with this use case, as an edit. Saving edits is not connected yet. */
+  /** When set the form opens filled in with this use case, as an edit, and saving updates that use case (by its `id`). */
   row?: UseCaseRow;
   onClose: () => void;
 }) {
@@ -125,10 +122,17 @@ export function UseCaseForm({
   const submit = () => {
     setTouched(true);
     if (invalid) return;
-    if (row) return void NOT_WIRED();
     const sol = (solutions.data ?? []).find((s) => String(s.id) === solution[0]);
     save.mutate(
       {
+        // Editing: the API replaces the whole row, so send its id and the target fields this form does not show
+        // (UCF-EDIT-002, UCF-EDIT-004).
+        ...(row && {
+          id: row.id,
+          target_users: row.target_users,
+          target_credits_consumed: row.target_credits_consumed,
+          target_api_calls: row.target_api_calls,
+        }),
         parent_id: parentId,
         subsidiary_id: num(subsidiary),
         department_id: num(department),
@@ -141,12 +145,14 @@ export function UseCaseForm({
         personnel_ids: idList(personnel),
         value_snippet: value.trim() || undefined,
         note: note.trim() ? note : undefined,
-        premium_credit: sol?.premium_credit ?? false,
+        // From the chosen solution when its flag is known. When it is not (lookup loading or failed, solution not in the
+        // list, or a blank cell), an edit keeps the row's stored flag and an add sends false.
+        premium_credit: sol?.premium_credit ?? row?.premium_credit ?? false,
         deleted: false,
       },
       {
         onSuccess: () => {
-          toast.success("Use case added");
+          toast.success(row ? "Use case updated" : "Use case added");
           onClose();
         },
       },

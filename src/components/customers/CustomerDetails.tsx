@@ -1,8 +1,9 @@
 import { Suspense, lazy, useState } from "react";
 import { toast } from "sonner";
-import { Check, Pencil, X } from "lucide-react";
+import { Check, Loader2, Pencil, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
+import { useSaveSummary } from "@/hooks/useCustomers";
 import { cn } from "@/lib/utils";
 import { exportFileName } from "@/lib/csv";
 import { downloadWordDoc } from "@/lib/wordDoc";
@@ -13,7 +14,7 @@ import { RICH_TEXT_CLASS, looksLikeHtml, sanitizeHtml } from "@/lib/html";
 type Row = Record<string, unknown>;
 
 /** "Oct 16, 2026, 3:42 PM UTC". The database stores UTC, so a value with no zone designator is read as UTC. Placeholder dates (< 2000) are hidden. */
-function fmtUtc(v: unknown): string | null {
+export function fmtUtc(v: unknown): string | null {
   if (typeof v !== "string" || !v.trim()) return null;
   const iso = /(Z|[+-]\d{2}:?\d{2})$/i.test(v) || !/T|\d{2}:\d{2}/.test(v) ? v : `${v.trim().replace(" ", "T")}Z`;
   const d = new Date(iso);
@@ -21,26 +22,27 @@ function fmtUtc(v: unknown): string | null {
   return `${d.toLocaleString("en-US", { timeZone: "UTC", year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} UTC`;
 }
 
-/** Summaries edited in this browser session, by customer. UI only: nothing is written to the database and a reload clears them. */
-const editedSummaries = new Map<string, string>();
-
 const RichTextEditor = lazy(() => import("@/components/customers/RichTextEditor").then((m) => ({ default: m.RichTextEditor })));
 
 /** Shows only the executive summary. Name and ID live in the top bar; everything else stays internal. Click the text to edit it. */
 export function CustomerDetails({ row, className }: { row: Row; className?: string }) {
-  const customerKey = String(row.id ?? row.parent_id);
-  const original = typeof row.executive_summary === "string" ? row.executive_summary.trim() : "";
-  const [edited, setEdited] = useState<string | undefined>(() => editedSummaries.get(customerKey));
+  const summary = typeof row.executive_summary === "string" ? row.executive_summary.trim() : "";
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
+  const saveSummary = useSaveSummary();
+  const saving = saveSummary.isPending;
   const { resolvedTheme } = useTheme();
   const dark = resolvedTheme === "dark";
-  const summary = edited ?? original;
   const modified = fmtUtc(row.summary_last_modified);
 
   const startEdit = () => {
+    saveSummary.reset();
     setDraft(summary);
     setEditing(true);
+  };
+  const cancel = () => {
+    saveSummary.reset();
+    setEditing(false);
   };
   const exportSummary = () => {
     const customer = String(row.parent_name ?? "");
@@ -52,11 +54,18 @@ export function CustomerDetails({ row, className }: { row: Row; className?: stri
     );
     toast.success("Executive summary exported");
   };
+  // The summary endpoint finds the customer by the `customer` sheet `id` (SUM-EDIT-001). The hook waits for the customer
+  // list to refetch, so the panel shows the stored summary and new timestamp as soon as the editor closes.
   const save = () => {
-    editedSummaries.set(customerKey, draft);
-    setEdited(draft);
-    setEditing(false);
-    toast.success("Executive summary updated", { description: "Shown on screen only; it is not written to the database." });
+    saveSummary.mutate(
+      { id: Number(row.id), html: draft },
+      {
+        onSuccess: () => {
+          setEditing(false);
+          toast.success("Executive summary updated");
+        },
+      },
+    );
   };
 
   return (
@@ -65,16 +74,15 @@ export function CustomerDetails({ row, className }: { row: Row; className?: stri
       headerRight={
         editing ? (
           <div className="flex items-center gap-1.5">
-            <Button size="sm" variant="outline" className="h-6 gap-1 bg-background px-2 text-[11px] [&_svg]:size-3" onClick={() => setEditing(false)}>
+            <Button size="sm" variant="outline" className="h-6 gap-1 bg-background px-2 text-[11px] [&_svg]:size-3" disabled={saving} onClick={cancel}>
               <X /> Cancel
             </Button>
-            <Button size="sm" className="h-6 gap-1 px-2 text-[11px] [&_svg]:size-3" onClick={save}>
-              <Check /> Save
+            <Button size="sm" className="h-6 gap-1 px-2 text-[11px] [&_svg]:size-3" disabled={saving} onClick={save}>
+              {saving ? <Loader2 className="animate-spin" /> : <Check />} Save
             </Button>
           </div>
         ) : (
           <div className="flex flex-wrap items-center justify-end gap-x-2">
-            {edited !== undefined && <span className="whitespace-nowrap text-[11px] font-medium text-amber-700 dark:text-amber-400">Edited (on screen only)</span>}
             {modified && <span className="whitespace-nowrap text-[11px] font-semibold text-teal-700 dark:text-teal-300">Last modified: {modified}</span>}
             <ExportButton disabled={!summary} onClick={exportSummary} title="Download the executive summary as a Word document" />
           </div>
@@ -84,9 +92,16 @@ export function CustomerDetails({ row, className }: { row: Row; className?: stri
       headerClassName="border-stone-300/70 bg-stone-200/70 dark:border-stone-700/60 dark:bg-stone-800/60"
     >
       {editing ? (
-        <Suspense fallback={<p className="p-4 text-xs text-muted-foreground">Loading editor...</p>}>
-          <RichTextEditor html={draft} onChange={setDraft} />
-        </Suspense>
+        <>
+          {saveSummary.error && (
+            <p role="alert" className="m-2 rounded-md bg-destructive/10 px-2.5 py-1.5 text-xs text-destructive">
+              Could not save: {saveSummary.error.message}
+            </p>
+          )}
+          <Suspense fallback={<p className="p-4 text-xs text-muted-foreground">Loading editor...</p>}>
+            <RichTextEditor html={draft} onChange={setDraft} />
+          </Suspense>
+        </>
       ) : (
         <div
           role="button"

@@ -44,19 +44,19 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | **Features** | | | | | | | | | | | |
 | [001-customer-search](specs/001-customer-search/) | SRCH | 20 | 19 | 0 | 1 | 0 | 9 | 7 | 0 | 2 | 0 |
 | [002-workspace-layout](specs/002-workspace-layout/) | LAY | 17 | 15 | 2 | 0 | 0 | 8 | 6 | 0 | 2 | 0 |
-| [003-executive-summary](specs/003-executive-summary/) | SUM | 14 | 11 | 1 | 1 | 1 | 11 | 7 | 0 | 3 | 1 |
+| [003-executive-summary](specs/003-executive-summary/) | SUM | 13 | 10 | 3 | 0 | 0 | 12 | 9 | 2 | 1 | 0 |
 | [004-use-cases-panel](specs/004-use-cases-panel/) | UCP | 21 | 20 | 1 | 0 | 0 | 9 | 7 | 0 | 2 | 0 |
-| [005-use-case-form](specs/005-use-case-form/) | UCF | 20 | 17 | 0 | 2 | 1 | 10 | 6 | 0 | 4 | 0 |
+| [005-use-case-form](specs/005-use-case-form/) | UCF | 20 | 18 | 1 | 0 | 1 | 10 | 7 | 1 | 2 | 0 |
 | [006-use-case-bulk](specs/006-use-case-bulk/) | UCB | 25 | 24 | 1 | 0 | 0 | 11 | 8 | 0 | 3 | 0 |
 | [007-events-panel](specs/007-events-panel/) | EVP | 13 | 12 | 1 | 0 | 0 | 9 | 6 | 0 | 3 | 0 |
-| [008-event-form](specs/008-event-form/) | EVF | 10 | 7 | 0 | 2 | 1 | 9 | 5 | 0 | 3 | 1 |
+| [008-event-form](specs/008-event-form/) | EVF | 10 | 7 | 1 | 1 | 1 | 9 | 5 | 1 | 2 | 1 |
 | [009-data-grid](specs/009-data-grid/) | GRID | 19 | 18 | 0 | 1 | 0 | 7 | 5 | 0 | 2 | 0 |
 | [010-export](specs/010-export/) | EXP | 11 | 9 | 1 | 0 | 1 | 7 | 4 | 0 | 3 | 0 |
 | [011-rich-text](specs/011-rich-text/) | RTX | 21 | 20 | 1 | 0 | 0 | 7 | 5 | 0 | 2 | 0 |
 | **Data & backend** | | | | | | | | | | | |
 | [012-data-model](specs/012-data-model/) | DATA | 19 | 17 | 1 | 1 | 0 | 9 | 7 | 0 | 1 | 1 |
 | [013-workbook-storage](specs/013-workbook-storage/) | STO | 18 | 16 | 1 | 0 | 1 | 7 | 5 | 0 | 2 | 0 |
-| [014-workbook-api](specs/014-workbook-api/) | API | 22 | 21 | 0 | 1 | 0 | 11 | 9 | 0 | 2 | 0 |
+| [014-workbook-api](specs/014-workbook-api/) | API | 22 | 21 | 0 | 1 | 0 | 13 | 9 | 0 | 4 | 0 |
 | [015-client-data-layer](specs/015-client-data-layer/) | CDL | 15 | 14 | 1 | 0 | 0 | 7 | 5 | 0 | 1 | 1 |
 | [016-data-pipeline](specs/016-data-pipeline/) | PIPE | 28 | 28 | 0 | 0 | 0 | 8 | 5 | 0 | 3 | 0 |
 | **Cross-cutting** | | | | | | | | | | | |
@@ -70,8 +70,8 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 10 | 0 | 0 | 9 | 1 |
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 27 | 0 | 0 | 0 | 27 | 10 | 0 | 0 | 10 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
-| [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 14 | 0 | 0 | 4 | 14 | 10 | 1 | 2 | 1 |
-| **Total** | | **490** | **340** | **19** | **14** | **117** | **226** | **124** | **1** | **92** | **9** |
+| [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 14 | 0 | 0 | 4 | 15 | 10 | 1 | 3 | 1 |
+| **Total** | | **489** | **340** | **23** | **10** | **116** | **230** | **127** | **5** | **90** | **8** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,

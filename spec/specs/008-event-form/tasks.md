@@ -1,7 +1,7 @@
 # Tasks — Add / Edit Event
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 9 tasks — ✅ 5 · 🔄 0 · ⬜ 3 · ⛔ 1
+**Summary:** 9 tasks — ✅ 5 · 🔄 1 · ⬜ 2 · ⛔ 1
 
 - [x] **EVF-T01** Dialog, fields, stage suggestions.
   - Status: ✅ Done · Covers: EVF-FIELD-001, EVF-FIELD-002 · Files: `EventForm.tsx`
@@ -14,7 +14,8 @@
 - [x] **EVF-T05** Edit pre-fill.
   - Status: ✅ Done · Covers: EVF-EDIT-001
 - [ ] **EVF-T06** Save event edits.
-  - Status: ⬜ Not started · Covers: EVF-EDIT-002
+  - Status: 🔄 In progress · Covers: EVF-EDIT-002
+  - Review passed 2026-11-18 (hand-off `spec/handoffs/EVF-T06.md`, verdict pass); code and tests in place. Stays 🔄 until the owner records the G5 manual check listed in the hand-off.
   - Step: Add `Id: row.id` when editing
   - Step: Toast "Event updated" (add to messages catalog)
   - Step: Remove `NOT_WIRED`

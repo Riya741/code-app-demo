@@ -1,7 +1,7 @@
 # Tasks — Add / Edit Use Case
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 10 tasks — ✅ 6 · 🔄 0 · ⬜ 4 · ⛔ 0
+**Summary:** 10 tasks — ✅ 7 · 🔄 1 · ⬜ 2 · ⛔ 0
 
 - [x] **UCF-T01** Dialog shell, fields, labels and placeholders.
   - Status: ✅ Done · Covers: UCF-FIELD-001, UCF-ADD-006, UCF-ADD-007 · Files: `UseCaseForm.tsx`
@@ -16,12 +16,14 @@
 - [x] **UCF-T06** Edit mode pre-fill.
   - Status: ✅ Done · Covers: UCF-EDIT-001, UCF-EDIT-003
 - [ ] **UCF-T07** Save edits through the API.
-  - Status: ⬜ Not started · Covers: UCF-EDIT-002 · Files: `UseCaseForm.tsx`
+  - Status: 🔄 In progress · Covers: UCF-EDIT-002 · Files: `UseCaseForm.tsx`
+  - Review passed 2026-11-18 (hand-off `spec/handoffs/UCF-T07.md`, verdict pass); code and tests in place. Stays 🔄 until the owner records the G5 manual check listed in the hand-off. Round 1 failed on a real data-loss defect (premium_credit erased when Save was clicked before the solutions lookup loaded); fixed and re-reviewed.
   - Step: Add `id: row.id` to the payload when editing
   - Step: Success toast "Use case updated"; add text to the messages catalog
   - Step: Remove `NOT_WIRED`
-- [ ] **UCF-T08** Preserve hidden fields on edit.
-  - Status: ⬜ Not started · Covers: UCF-EDIT-004 · Depends on: UCF-T07
+- [x] **UCF-T08** Preserve hidden fields on edit.
+  - Status: ✅ Done · Covers: UCF-EDIT-004 · Depends on: UCF-T07
+  - Verified 2026-11-18 via the agent workflow (implementer subagent, then the project reviewer subagent; hand-off `spec/handoffs/UCF-T08.md`, verdict pass): an edit posts the row's three targets; the component test pins the posted body and the integration test re-reads the file (round trip checked through the harness instead of opening Excel). G5 n/a (no visual change).
   - Step: Send `target_users`, `target_credits_consumed`, `target_api_calls` from `row`
   - Step: Verify the round trip in Excel: target values unchanged after an edit (fields already exist on `UseCaseRow`)
 - [ ] **UCF-T09** Duplicate warning shared with the bulk form.

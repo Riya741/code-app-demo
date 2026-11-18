@@ -2,7 +2,7 @@
 
 | Spec | Prefix | Status | Constitution |
 |---|---|---|---|
-| executive-summary | SUM | ⚠️ Edit is not persisted | I, II, III, V, VI |
+| executive-summary | SUM | ⚠️ Edit saved to the workbook; awaiting manual G5 check (SUM-T09, SUM-T10) | I, II, III, V, VI, XII |
 
 ## Introduction
 The right-hand panel shows the customer's rich-text executive summary, lets the user edit it with formatting and
@@ -37,7 +37,7 @@ export it to Word.
 **User story:** As a CSS, I want to update the summary with formatting so the account narrative stays current for everyone.
 
 #### SUM-EDIT-001: Persist summary edits
-- **Status:** ❌ Gap — Kept on screen for the session only
+- **Status:** ⚠️ Partial — server (API-T09) and client (SUM-T08..T10) implemented and reviewed 2026-11-18; the selected-row refresh is awaiting the owner's manual G5 check (SUM-T09)
 - **Criterion:** WHEN the user saves an edit THE system SHALL write `executive_summary` and `summary_last_modified = now (UTC)` for that customer to the workbook and refresh the customer data.
 - **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/RichTextEditor.tsx`
 
@@ -57,17 +57,17 @@ export it to Word.
 - **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/RichTextEditor.tsx`
 
 #### SUM-EDIT-005: Save success and failure feedback
-- **Status:** ⚠️ Partial — Toast shown, with description "Shown on screen only; it is not written to the database."; no failure path
+- **Status:** ⚠️ Partial — implemented and tested (SUM-T09); awaiting the owner's manual G5 check
 - **Criterion:** WHEN save succeeds THE system SHALL show the toast "Executive summary updated". IF save fails THEN THE editor SHALL stay open with the draft and show "Could not save: <message>".
 - **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/RichTextEditor.tsx`
 
 #### SUM-EDIT-006: Disable buttons while saving
-- **Status:** 📝 Planned
+- **Status:** ⚠️ Partial — implemented and tested (SUM-T09); awaiting the owner's manual G5 check
 - **Criterion:** WHILE the save is in progress Save and Cancel SHALL be disabled with a spinner.
 - **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/RichTextEditor.tsx`
 
 #### SUM-EDIT-007: Interim on-screen-only marker
-- **Status:** ✅ Implemented
+- **Status:** Deprecated — retired by SUM-T10 (2026-11-18): summaries are saved, so the on-screen-only marker is gone
 - **Criterion:** *(interim, retire when SUM-EDIT-001 is done)* WHILE an on-screen edit exists THE header SHALL show "Edited (on screen only)".
 - **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/RichTextEditor.tsx`
 
@@ -76,7 +76,7 @@ export it to Word.
 
 #### SUM-WORD-001: Export summary to Word
 - **Status:** ✅ Implemented
-- **Criterion:** WHEN Export is clicked THE system SHALL download the current summary (including unsaved on-screen edits) as `<Customer>_executive-summary_<YYYY-MM-DD>.doc`, titled "<Customer> - Executive Summary", subtitle "Last modified: …" when known.
+- **Criterion:** WHEN Export is clicked THE system SHALL download the stored summary as `<Customer>_executive-summary_<YYYY-MM-DD>.doc`, titled "<Customer> - Executive Summary", subtitle "Last modified: …" when known.
 - **Source:** `src/components/customers/CustomerDetails.tsx`, `src/lib/wordDoc.ts`
 
 #### SUM-WORD-002: Disable export when empty
@@ -91,6 +91,6 @@ export it to Word.
 
 ## Scenarios
 - HTML summary with red bold text → red bold in light and legible in dark mode.
-- Edit → Save → reload → **target:** new text shown and present in Excel (today: original text returns).
+- Edit → Save → reload → new text shown and present in the workbook (SUM-T08..T10; manual G5 check pending).
 - Click a link in the summary → opens in a new tab, editor does not open.
 - Customer "Acme Corp." exported on 2026-11-11 → `Acme_Corp_executive-summary_2026-11-11.doc`.

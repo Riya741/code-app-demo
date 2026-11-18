@@ -8,14 +8,14 @@ Every string a user can see as feedback. Change wording here first, then in code
 |---|---|---|---|
 | Use case added | success | Use case added | UseCaseForm |
 | Event added | success | Event added | EventForm |
-| Use case edit saved *(planned, UCF-T07)* | success | Use case updated | UseCaseForm (UCF-EDIT-002) |
-| Event edit saved *(planned, EVF-T06)* | success | Event updated | EventForm (EVF-EDIT-002) |
-| Edit saved (not wired) *(to be retired by UCF-T07 and EVF-T06)* | info | Editing isn't connected yet — This is a preview of the edit form; your changes were not saved. | UseCaseForm, EventForm |
+| Use case edit saved | success | Use case updated | UseCaseForm (UCF-EDIT-002) |
+| Event edit saved | success | Event updated | EventForm (EVF-EDIT-002) |
+| ~~Edit saved (not wired)~~ | ~~info~~ | ~~Editing isn't connected yet — This is a preview of the edit form; your changes were not saved.~~ | Retired 2026-11-18 (UCF-T07, EVF-T06) |
 | Use case deleted | success | Use case deleted | UseCasesPanel |
 | Event deleted | success | Event deleted | EventsPanel |
 | Use cases exported | success | Exported N use case / use cases | UseCasesPanel |
 | Events exported | success | Exported N event / events | EventsPanel |
-| Summary saved | success | Executive summary updated — Shown on screen only; it is not written to the database. | CustomerDetails (the description is interim; SUM-T10 removes it once SUM-EDIT-001 persists the summary) |
+| Summary saved | success | Executive summary updated | CustomerDetails |
 | Summary exported | success | Executive summary exported | CustomerDetails |
 | Bulk all saved | success | N use case(s) created | UseCaseBulkForm |
 | Bulk partial | error | S of N created — The rows that did not save are still in the table. | UseCaseBulkForm |

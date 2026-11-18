@@ -18,10 +18,10 @@ const one = (v?: number) => (v == null ? [] : [String(v)]);
 /** Value / notes can hold HTML from the old rich text control; the plain text boxes here show it as text. */
 const plain = (v?: string) => (v && looksLikeHtml(v) ? htmlToText(v) : (v ?? ""));
 
-const NOT_WIRED = () =>
-  toast.info("Editing isn't connected yet", { description: "This is a preview of the edit form; your changes were not saved." });
-
-/** Dialog for adding an event under one of the selected customer's subsidiaries. Mounted only while open, so every open starts blank. */
+/**
+ * Dialog for adding an event under one of the selected customer's subsidiaries, or editing one (`row`). Mounted only
+ * while open, so every open starts blank or from the row.
+ */
 export function EventForm({
   parentId,
   customerKeys,
@@ -34,7 +34,10 @@ export function EventForm({
   customerKeys: number[];
   /** Events already shown; used to work out which id column subsidiaries are keyed by, and to suggest stages. */
   existing: EventRow[];
-  /** When set the form opens filled in with this event, as an edit. Saving edits is not connected yet. */
+  /**
+   * When set the form opens filled in with this event, as an edit; "Save changes" posts the whole event with its `Id`
+   * (the server replaces every field and the solution / contributor links, EVF-EDIT-002).
+   */
   row?: EventRow;
   onClose: () => void;
 }) {
@@ -83,9 +86,10 @@ export function EventForm({
   const submit = () => {
     setTouched(true);
     if (invalid) return;
-    if (row) return void NOT_WIRED();
     save.mutate(
       {
+        // Editing keeps the row's own id; the subsidiary starts as the id the row is stored with (EVF-EDIT-002).
+        Id: row?.id,
         SubsidiaryId: subsidiary[0],
         EventTypeId: Number(eventType[0]),
         EventDate: date,
@@ -102,7 +106,7 @@ export function EventForm({
       },
       {
         onSuccess: () => {
-          toast.success("Event added");
+          toast.success(row ? "Event updated" : "Event added");
           onClose();
         },
       },

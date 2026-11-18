@@ -1,7 +1,7 @@
 # Tasks — Development Agents
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 14 tasks — ✅ 10 · 🔄 1 · ⬜ 2 · ⛔ 1
+**Summary:** 15 tasks — ✅ 10 · 🔄 1 · ⬜ 3 · ⛔ 1
 
 ### Phase 1: specify and check
 - [x] **DEVA-T01** CR-20261117-1, constitution v1.1.0 (Article XII), AI data policy, specs 022–026, ADR-0007 and ADR-0008.
@@ -41,6 +41,9 @@
 
 - [ ] **DEVA-T14** Run the skill trigger evals (`.claude/skills/trigger-evals.json`) with the skill-creator eval loop; record results; tune descriptions that misfire.
   - Status: ⬜ Not started · Covers: DEVA-SKILL-002 · Depends on: DEVA-T09
+
+- [ ] **DEVA-T15** Enforce the implementer's Bash limits (gate commands and read-only git only): its `tools` field allows any command, so it could write files through Bash and skip the spec-guard and post-edit hooks (seen once in SUM-T08, self-reported). Options: a PreToolUse Bash hook that refuses file-writing commands under protected folders, or permission rules if subagent-scoped rules become available.
+  - Status: ⬜ Not started · Covers: DEVA-SUB-001, DEVA-GUARD-001 · Files: `.claude/hooks/`, `.claude/agents/implementer.md` · Found 2026-11-18 in the SUM-T08 review.
 
 ## Test tasks
 - [x] **DEVA-T13** Hook tests (allow and block cases, fail-open and fail-closed).

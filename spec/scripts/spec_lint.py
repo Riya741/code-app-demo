@@ -485,6 +485,11 @@ def check_handoffs(spec_root: str, root: str, f: Findings) -> None:
             f.error(where, f"verdict must be one of {sorted(HANDOFF_VERDICTS)}")
         if f.task_status.get(tid) == "✅" and (fm.get("verdict") != "pass" or not fm.get("reviewer")):
             f.error(where, f"{tid} is ✅ Done, so its hand-off needs 'verdict: pass' and a reviewer (DEVA-HAND-003)")
+        if fm.get("verdict") in ("pass", "fail"):
+            review = md_sections(read(p)).get("Review", "")
+            if not re.sub(r"<[^>]*>", "", review).strip():
+                f.error(where, f"verdict is '{fm['verdict']}' but the '## Review' section is missing or empty; "
+                               "record the reviewer's verdict and findings there (DEVA-HAND-003)")
         covers = fm.get("covers")
         if "covers" in fm:
             if not isinstance(covers, list) or not covers:

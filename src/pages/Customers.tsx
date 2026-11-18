@@ -13,10 +13,17 @@ const handleCls =
 
 const Customers = () => {
   const { data, isLoading, isFetching, error, refetch } = useCustomers();
-  const [selected, setSelected] = useState<Record<string, unknown> | null>(null);
+  const [picked, setSelected] = useState<Record<string, unknown> | null>(null);
 
   // Full customer list is loaded in the background and never rendered as a list.
   const rows = useMemo(() => data?.rows ?? [], [data]);
+  // `picked` is the row snapshot taken when the customer was chosen. After the customers query refetches (for example
+  // once the executive summary is saved, SUM-EDIT-001) the same customer is re-picked by `id`, so the panels show the
+  // stored values and the new "Last modified" time. Falls back to the snapshot if the row is no longer in the list.
+  const selected = useMemo(
+    () => (picked && picked.id != null ? rows.find((r) => r.id === picked.id) ?? picked : picked),
+    [picked, rows],
+  );
   const desktop = useMediaQuery("(min-width: 1024px)");
   const errorMessage = error ? (error as Error).message : undefined;
 

@@ -47,6 +47,10 @@
 | `tests/unit/search.test.ts` | customer-search (SRCH-RANK-001..004) |
 | `tests/component/*.test.tsx` (Testing Library) | design-system (DS-COMP-003), use-cases-panel (UCP-DEL-002), workspace-layout (LAY-SHELL-001) |
 | `tests/integration/harness.ts`, `tests/integration/*.test.ts` | quality (QA-TEST-003), workbook-api (API-GEN-001..004, API-READ-004, API-WRITE-001, API-WRITE-007, API-DEL-001, API-DEL-002, API-SUMM-001) |
+| `tests/component/UseCaseForm.test.tsx`, `tests/integration/use-case-edit.test.ts` | use-case-form (UCF-EDIT-002, UCF-EDIT-004, UCF-ADD-002, UCF-ADD-004) |
+| `tests/component/EventForm.test.tsx`, `tests/integration/event-edit.test.ts` | event-form (EVF-EDIT-002, EVF-ADD-003) |
+| `tests/component/CustomerDetails.test.tsx`, `tests/unit/fmtUtc.test.ts` | executive-summary (SUM-EDIT-001, SUM-EDIT-004..006, SUM-VIEW-004) |
+| `src/lib/customerSource.ts` (`saveSummary`), `src/hooks/useCustomers.ts` (`useSaveSummary`) | executive-summary (SUM-EDIT-001), client-data-layer |
 | `tests/hooks/test_hooks.py` | dev-agents (DEVA-GUARD-001..004, DEVA-GATE-001, DEVA-GATE-002, DEVA-CTX-001) |
 | `tests/unit/csv.test.ts` | export (EXP-CSV-001..003, EXP-CSV-005, EXP-NAME-001, EXP-NAME-002) |
 | `vitest.config.ts` | quality |

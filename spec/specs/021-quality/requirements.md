@@ -17,14 +17,14 @@ How the acceptance criteria in every spec are verified, and what "done" means.
 - **Source:** `package.json`
 
 #### QA-TEST-002: Component tests
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** Component tests SHALL use Testing Library.
-- **Source:** `package.json`
+- **Source:** `package.json`, `vitest.config.ts`, `tests/setup.ts`
 
 #### QA-TEST-003: Server integration tests
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** Server integration tests SHALL run each test against a temp copy of a fixture workbook via `WORKBOOK_PATH`.
-- **Source:** `package.json`
+- **Source:** `tests/integration/harness.ts`
 
 #### QA-TEST-004: End-to-end smoke and axe
 - **Status:** 📝 Planned

@@ -16,7 +16,7 @@
 | POST | `/use-cases` | `saveUseCase` → save |
 | POST | `/events` | `saveEvent` → save |
 | DELETE | `/use-cases/:id`, `/events/:id` | `softDelete` → save |
-| POST *(planned)* | `/customers/:id/summary` | `saveSummary` → save |
+| POST | `/customers/:id/summary` | `saveSummary` → save (API-T09) |
 
 ## Request bodies
 **`UseCaseInput`** (snake_case): `id?`, `parent_id`★, `subsidiary_id`★, `solution_id`★, `status_id`★,
@@ -52,9 +52,10 @@ Before assigning, check each provided FK exists (`subsidiary`, `department`, `st
 `(solution_id, use_case_type_id)` in `solution_use_case_type` when type is given. 400 with "Unknown <field>: <id>"
 or "Status <id> is not allowed for solution <id>".
 
-## Planned design — API-SUMM-001 summary
-`saveSummary(s, id, body)`: find customer by `id` (404), set `executive_summary = text(body.executive_summary)`,
-`summary_last_modified = now()`, return `{ id, summary_last_modified }`.
+## Implemented — API-SUMM-001 summary (API-T09, 2026-11-17)
+`saveSummary(s, id, body)`: find customer by `id` (404 "Customer <id> was not found."), set
+`executive_summary = text(body.executive_summary)`, `summary_last_modified = now()`, return `{ id, summary_last_modified }`.
+Open spec question (owner): a body without `executive_summary` clears the summary, as API-WRITE-002's full-replace rule implies.
 
 ## Constitution check
 | Article | Compliance |

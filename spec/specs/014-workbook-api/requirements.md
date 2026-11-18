@@ -126,7 +126,7 @@ JSON API at `/api/workbook` served by the Vite dev/preview server. Contract deta
 ### API-R5 — Customer summary (planned)
 
 #### API-SUMM-001: Save customer summary
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** `POST /customers/:id/summary` with `{ executive_summary }` SHALL store the text (blank → null) and `summary_last_modified = now`, returning `{ id, summary_last_modified }`; 404 if the customer does not exist.
 - **Source:** `server/workbook.ts`
 

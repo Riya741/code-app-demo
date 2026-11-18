@@ -14,7 +14,7 @@ Rules:
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
-| SUM-EDIT-001 | High | Persist summary edits (Kept on screen for the session only) | [003-executive-summary](../specs/003-executive-summary/requirements.md) | SUM-T07 ⬜, SUM-T08 ⬜, SUM-T11 ⬜, API-T09 ⬜ | Open |
+| SUM-EDIT-001 | High | Persist summary edits (Kept on screen for the session only) | [003-executive-summary](../specs/003-executive-summary/requirements.md) | SUM-T07 ✅, API-T09 ✅ (server), SUM-T08 ⬜, SUM-T09 ⛔, SUM-T11 ⬜ | Open (server part done 2026-11-17) |
 | UCF-EDIT-002 | High | Save use case edits (Shows "Editing isn't connected yet" and saves nothing) | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T07 ⬜, UCF-T10 ⬜ | Open |
 | UCF-EDIT-004 | High | Preserve target fields on edit | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T08 ⬜ | Open |
 | EVF-EDIT-002 | High | Save event edits (Shows "Editing isn't connected yet") | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T06 ⬜, EVF-T09 ⬜ | Open |

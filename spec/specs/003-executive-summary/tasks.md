@@ -1,7 +1,7 @@
 # Tasks — Executive Summary
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 11 tasks — ✅ 6 · 🔄 0 · ⬜ 4 · ⛔ 1
+**Summary:** 11 tasks — ✅ 7 · 🔄 0 · ⬜ 3 · ⛔ 1
 
 - [x] **SUM-T01** Panel with stone theme; sanitised rich or plain text; empty state.
   - Status: ✅ Done · Covers: SUM-VIEW-001..003 · Files: `CustomerDetails.tsx`
@@ -17,8 +17,9 @@
   - Status: ✅ Done · Covers: SUM-WORD-002
 
 ### Persist the summary (SUM-EDIT-001)
-- [ ] **SUM-T07** Server endpoint `POST /customers/:id/summary`.
-  - Status: ⬜ Not started · Covers: SUM-EDIT-001, API-SUMM-001 · Files: `server/workbook.ts` · Tracked also as API-T09
+- [x] **SUM-T07** Server endpoint `POST /customers/:id/summary`.
+  - Status: ✅ Done · Covers: SUM-EDIT-001, API-SUMM-001 · Files: `server/workbook.ts` · Tracked also as API-T09
+  - Verified 2026-11-17 via the agent workflow (implementer subagent, read-only reviewer subagent; hand-off `spec/handoffs/API-T09.md`, verdict pass): delivered as API-T09 (server part of SUM-EDIT-001; the client follows in SUM-T08..T10).
 - [ ] **SUM-T08** Client fetcher `saveSummary` + `useSaveSummary` hook invalidating `["customers"]`.
   - Status: ⬜ Not started · Covers: SUM-EDIT-001 · Files: `lib/customerSource.ts`, `hooks/useCustomers.ts`
 - [ ] **SUM-T09** Wire Save: pending state, error message, keep draft on failure; re-pick selected row after refetch.

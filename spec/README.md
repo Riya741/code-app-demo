@@ -44,7 +44,7 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | **Features** | | | | | | | | | | | |
 | [001-customer-search](specs/001-customer-search/) | SRCH | 20 | 19 | 0 | 1 | 0 | 9 | 7 | 0 | 2 | 0 |
 | [002-workspace-layout](specs/002-workspace-layout/) | LAY | 17 | 15 | 2 | 0 | 0 | 8 | 6 | 0 | 2 | 0 |
-| [003-executive-summary](specs/003-executive-summary/) | SUM | 14 | 11 | 1 | 1 | 1 | 11 | 6 | 0 | 4 | 1 |
+| [003-executive-summary](specs/003-executive-summary/) | SUM | 14 | 11 | 1 | 1 | 1 | 11 | 7 | 0 | 3 | 1 |
 | [004-use-cases-panel](specs/004-use-cases-panel/) | UCP | 21 | 20 | 1 | 0 | 0 | 9 | 7 | 0 | 2 | 0 |
 | [005-use-case-form](specs/005-use-case-form/) | UCF | 20 | 17 | 0 | 2 | 1 | 10 | 6 | 0 | 4 | 0 |
 | [006-use-case-bulk](specs/006-use-case-bulk/) | UCB | 25 | 24 | 1 | 0 | 0 | 11 | 8 | 0 | 3 | 0 |
@@ -56,7 +56,7 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | **Data & backend** | | | | | | | | | | | |
 | [012-data-model](specs/012-data-model/) | DATA | 19 | 17 | 1 | 1 | 0 | 9 | 7 | 0 | 1 | 1 |
 | [013-workbook-storage](specs/013-workbook-storage/) | STO | 18 | 16 | 1 | 0 | 1 | 7 | 5 | 0 | 2 | 0 |
-| [014-workbook-api](specs/014-workbook-api/) | API | 22 | 20 | 0 | 1 | 1 | 11 | 8 | 0 | 3 | 0 |
+| [014-workbook-api](specs/014-workbook-api/) | API | 22 | 21 | 0 | 1 | 0 | 11 | 9 | 0 | 2 | 0 |
 | [015-client-data-layer](specs/015-client-data-layer/) | CDL | 15 | 14 | 1 | 0 | 0 | 7 | 5 | 0 | 1 | 1 |
 | [016-data-pipeline](specs/016-data-pipeline/) | PIPE | 28 | 28 | 0 | 0 | 0 | 8 | 5 | 0 | 3 | 0 |
 | **Cross-cutting** | | | | | | | | | | | |
@@ -64,14 +64,14 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [018-accessibility](specs/018-accessibility/) | A11Y | 15 | 10 | 2 | 3 | 0 | 6 | 1 | 0 | 5 | 0 |
 | [019-security](specs/019-security/) | SEC | 9 | 6 | 1 | 1 | 1 | 6 | 3 | 0 | 3 | 0 |
 | [020-performance-reliability](specs/020-performance-reliability/) | PERF/REL/COMP/DT | 23 | 16 | 4 | 1 | 2 | 7 | 2 | 0 | 5 | 0 |
-| [021-quality](specs/021-quality/) | QA | 15 | 10 | 0 | 0 | 5 | 10 | 4 | 0 | 6 | 0 |
+| [021-quality](specs/021-quality/) | QA | 15 | 12 | 0 | 0 | 3 | 11 | 6 | 0 | 5 | 0 |
 | **AI & agents** (CR-20261117-1) | | | | | | | | | | | |
 | [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 25 | 0 | 0 | 0 | 25 | 9 | 0 | 0 | 7 | 2 |
 | [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 10 | 0 | 0 | 9 | 1 |
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 27 | 0 | 0 | 0 | 27 | 10 | 0 | 0 | 10 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
 | [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 14 | 0 | 0 | 4 | 14 | 10 | 1 | 2 | 1 |
-| **Total** | | **490** | **337** | **19** | **14** | **120** | **225** | **120** | **1** | **95** | **9** |
+| **Total** | | **490** | **340** | **19** | **14** | **117** | **226** | **124** | **1** | **92** | **9** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,

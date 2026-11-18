@@ -2,7 +2,7 @@
 
 | Spec | Prefix | Status | Constitution |
 |---|---|---|---|
-| 026-dev-agents | DEVA | ⚠️ Lint, hooks and subagents built; skills in progress; headless review planned (CR-20261117-1) | I, III, X, XII |
+| 026-dev-agents | DEVA | ⚠️ Lint, hooks, subagents and skills built and used; trigger evals and headless review planned (CR-20261117-1) | I, III, X, XII |
 
 ## Introduction
 How AI agents that *build* this project are governed: every agent has a spec, hands off through a checked file, and
@@ -38,8 +38,9 @@ governed by reviewed specs rather than by unreviewed prompts.
 what was done against what the task promised.
 
 #### DEVA-HAND-001: Implementer writes a hand-off file
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN the implementer agent finishes a task THE agent SHALL write `spec/handoffs/<TASK-ID>.md` from the hand-off template ([task-handoff.v1](../../contracts/task-handoff.v1.schema.json)): requirements covered, files changed, tests added, gates run with results, open questions.
+- **Source:** `.claude/agents/implementer.md`, `spec/templates/handoff.md`
 
 #### DEVA-HAND-002: Hand-off files are checked
 - **Status:** ✅ Implemented
@@ -108,8 +109,9 @@ or agent follows the same steps.
 - **Source:** `.claude/agents/reviewer.md`
 
 #### DEVA-SKILL-001: Workflow skills
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE project SHALL provide the skills `spec-change`, `task-implement`, `task-close`, `gap-report` and `eval-run` in `.claude/skills/`, each encoding its workflow steps and ending with gate G1.
+- **Source:** `.claude/skills/task-implement/SKILL.md`, `.claude/skills/task-close/SKILL.md`, `.claude/skills/spec-change/SKILL.md`, `.claude/skills/gap-report/SKILL.md`, `.claude/skills/eval-run/SKILL.md`
 
 #### DEVA-SKILL-002: Skill triggering is evaluated
 - **Status:** 📝 Planned

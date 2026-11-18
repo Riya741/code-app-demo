@@ -14,7 +14,7 @@ Rules:
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
-| SUM-EDIT-001 | High | Persist summary edits (Kept on screen for the session only) | [003-executive-summary](../specs/003-executive-summary/requirements.md) | SUM-T07 ✅, API-T09 ✅, SUM-T08 ✅, SUM-T11 ✅, SUM-T09 🔄 (review passed) | Fixed and tested 2026-11-18; awaiting G5 |
+| SUM-EDIT-001 | High | Persist summary edits | [003-executive-summary](../specs/003-executive-summary/requirements.md) | SUM-T07 ✅, API-T09 ✅, SUM-T08 ✅, SUM-T11 ✅, SUM-T09 🔄 (review passed) | Fixed and tested 2026-11-18; awaiting G5 |
 | UCF-EDIT-002 | High | Save use case edits | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T07 🔄 (review passed), UCF-T10 ⬜ | Fixed and tested 2026-11-18; awaiting G5 |
 | EVF-EDIT-002 | High | Save event edits | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T06 🔄 (review passed), EVF-T09 ⬜ | Fixed and tested 2026-11-18; awaiting G5 |
 | API-WRITE-008 | High | Validate references | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T08 ⬜, API-T11 ⬜ | Open |

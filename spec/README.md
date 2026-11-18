@@ -70,16 +70,19 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 10 | 0 | 0 | 9 | 1 |
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 27 | 0 | 0 | 0 | 27 | 10 | 0 | 0 | 10 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
-| [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 14 | 0 | 0 | 4 | 15 | 10 | 1 | 3 | 1 |
-| **Total** | | **489** | **340** | **23** | **10** | **116** | **230** | **127** | **5** | **90** | **8** |
+| [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 16 | 0 | 0 | 2 | 15 | 12 | 0 | 2 | 1 |
+| **Total** | | **489** | **342** | **23** | **10** | **114** | **230** | **129** | **4** | **89** | **8** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,
 EXP-T07, PIPE-T07 demo data generator, DATA-T09 test fixture.
 Done in Phase 1 (2026-11-17): DEVA-T01..T04: Article XII, AI data policy, specs 022–026, 12 agent specs, 6 contracts,
 ADR-0007 (Proposed) and ADR-0008, spec lint checks 10–13.
+Done in Phase 2 (2026-11-18): DEVA-T05..T11, T13 (subagents, hooks, skills); QA-T02, QA-T03, API-T09/SUM-T07,
+UCF-T08, SUM-T08, SUM-T11 through the agent workflow. Review passed, awaiting the owner's G5 check: UCF-T07, EVF-T06,
+SUM-T09, SUM-T10.
 
-1. **DEVA-T05..T09** subagents, hooks and skills (Phase 2), then deliver the next tasks through them
+1. **G5 manual checks** for UCF-T07, EVF-T06, SUM-T09, SUM-T10 (lists in their hand-offs), then `/task-close`
 2. **UCF-T07 / UCF-T08**, **EVF-T06** save edits
 3. **API-T09 → SUM-T08 → SUM-T09 → SUM-T10** persist the executive summary (also unblocks AIB-T07)
 4. **QA-T02 → QA-T03** component tests and server integration harness (fixture: DATA-T09)

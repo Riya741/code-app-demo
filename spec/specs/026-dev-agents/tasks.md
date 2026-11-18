@@ -1,7 +1,7 @@
 # Tasks — Development Agents
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 15 tasks — ✅ 10 · 🔄 1 · ⬜ 3 · ⛔ 1
+**Summary:** 15 tasks — ✅ 12 · 🔄 0 · ⬜ 2 · ⛔ 1
 
 ### Phase 1: specify and check
 - [x] **DEVA-T01** CR-20261117-1, constitution v1.1.0 (Article XII), AI data policy, specs 022–026, ADR-0007 and ADR-0008.
@@ -27,13 +27,15 @@
 - [x] **DEVA-T08** Session-start context hook.
   - Status: ✅ Done · Covers: DEVA-CTX-001 · Files: `.claude/hooks/session_context.py`
   - Verified 2026-11-17: run against the repo, it listed the 7 🔄 tasks and the 6 open High gaps.
-- [ ] **DEVA-T09** Skills `spec-change`, `task-implement`, `task-close`, `gap-report`, `eval-run`, and their trigger-eval sets.
-  - Status: 🔄 In progress · Covers: DEVA-SKILL-001, DEVA-HAND-001 · Files: `.claude/skills/`, `spec/scripts/dashboard.py`
+- [x] **DEVA-T09** Skills `spec-change`, `task-implement`, `task-close`, `gap-report`, `eval-run`, and their trigger-eval sets.
+  - Status: ✅ Done · Covers: DEVA-SKILL-001, DEVA-HAND-001 · Files: `.claude/skills/`, `spec/scripts/dashboard.py`
+  - Verified 2026-11-18: the 5 skills load in Claude Code (they appear in the session's skill list after the settings reload). Their steps were run end to end for 11 tasks: set 🔄, implementer, gates, independent reviewer, verdict in the hand-off, then close with `spec/scripts/dashboard.py`. Trigger evals are DEVA-T14.
 - [x] **DEVA-T10** Lint check: a ✅ task with a hand-off needs `verdict: pass` and a reviewer.
   - Status: ✅ Done · Covers: DEVA-HAND-003 · Files: `spec/scripts/spec_lint.py`
   - Verified 2026-11-17: probe hand-off for a ✅ task rejected with `verdict: pending` and with no reviewer, accepted with `verdict: pass` + reviewer; probe removed.
-- [ ] **DEVA-T11** First five tasks delivered through `/task-implement` with hand-off files (start with UCF-T07, UCF-T08, EVF-T06).
-  - Status: ⬜ Not started · Covers: DEVA-HAND-001, DEVA-HAND-003 · Depends on: DEVA-T05, DEVA-T09
+- [x] **DEVA-T11** First five tasks delivered through `/task-implement` with hand-off files (start with UCF-T07, UCF-T08, EVF-T06).
+  - Status: ✅ Done · Covers: DEVA-HAND-001, DEVA-HAND-003 · Depends on: DEVA-T05, DEVA-T09
+  - Verified 2026-11-18: 11 tasks went through the workflow with hand-off files and recorded reviews: QA-T02, QA-T03, API-T09 (= SUM-T07), UCF-T07, UCF-T08, EVF-T06, SUM-T08..T11. Wave 1 used general-purpose agents loading `.claude/agents/implementer.md`, because project subagent types load at session start. Wave 2 used the project `reviewer` subagent. The reviewers failed 2 tasks: API-T09 on scope, and UCF-T07 on a real data-loss defect.
 
 ### Phase 5: headless review
 - [ ] **DEVA-T12** Headless `claude -p` spec-compliance review on pull requests.

@@ -5,7 +5,7 @@ agent: AGENT-IMPLEMENTER
 covers: [SUM-EDIT-007]
 files_changed: [src/components/customers/CustomerDetails.tsx, spec/specs/017-design-system/messages-catalog.md]
 tests: [tests/component/CustomerDetails.test.tsx]
-gates: {G1: pass, G3: pass, G4: pass}
+gates: {G1: pass, G3: pass, G4: pass, G5: pass}
 verdict: pass
 reviewer: AGENT-REVIEWER
 ---
@@ -62,3 +62,5 @@ Minor findings:
 - [minor] Spec clean-up beyond the hand-off's list: SUM-WORD-001 still says export includes "unsaved on-screen edits"; the spec header says "⚠️ Edit is not persisted"; a scenario still says "(today: original text returns)". All are handled at close.
 
 GATES (reviewer's own run): G1 pass (0 errors) · G3 pass (lint 0 errors, 8 warnings; typecheck 0) · G4 pass (13 files, 86 passed + 1 expected fail).
+
+**G5:** G5 manual check reported passed by the owner on 2026-11-18 (light and dark themes, ≥ 1024px and < 1024px, every item in the hand-off list).

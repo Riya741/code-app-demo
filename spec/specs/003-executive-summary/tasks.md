@@ -1,7 +1,7 @@
 # Tasks — Executive Summary
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 12 tasks — ✅ 9 · 🔄 2 · ⬜ 1 · ⛔ 0
+**Summary:** 12 tasks — ✅ 11 · 🔄 0 · ⬜ 1 · ⛔ 0
 
 - [x] **SUM-T01** Panel with stone theme; sanitised rich or plain text; empty state.
   - Status: ✅ Done · Covers: SUM-VIEW-001..003 · Files: `CustomerDetails.tsx`
@@ -23,12 +23,12 @@
 - [x] **SUM-T08** Client fetcher `saveSummary` + `useSaveSummary` hook invalidating `["customers"]`.
   - Status: ✅ Done · Covers: SUM-EDIT-001 · Files: `lib/customerSource.ts`, `hooks/useCustomers.ts`
   - Verified 2026-11-18 via the agent workflow (implementer subagent, then the project reviewer subagent; hand-off `spec/handoffs/SUM-T08.md`, verdict pass): fetcher and hook; layering proven by the component test that stubs only `fetch`. G5 n/a (no visual change).
-- [ ] **SUM-T09** Wire Save: pending state, error message, keep draft on failure; re-pick selected row after refetch.
-  - Status: 🔄 In progress · Covers: SUM-EDIT-005, SUM-EDIT-006 · Files: `CustomerDetails.tsx`, `pages/Customers.tsx`
-  - Review passed 2026-11-18 (hand-off `spec/handoffs/SUM-T09.md`, verdict pass); code and tests in place. Stays 🔄 until the owner records the G5 manual check listed in the hand-off.
-- [ ] **SUM-T10** Remove `editedSummaries`, interim label and toast description; retire SUM-EDIT-007.
-  - Status: 🔄 In progress · Covers: SUM-EDIT-007 · Depends on: SUM-T09
-  - Review passed 2026-11-18 (hand-off `spec/handoffs/SUM-T10.md`, verdict pass); code and tests in place. Stays 🔄 until the owner records the G5 manual check listed in the hand-off.
+- [x] **SUM-T09** Wire Save: pending state, error message, keep draft on failure; re-pick selected row after refetch.
+  - Status: ✅ Done · Covers: SUM-EDIT-005, SUM-EDIT-006 · Files: `CustomerDetails.tsx`, `pages/Customers.tsx`
+  - Verified 2026-11-18: agent workflow review passed (hand-off `spec/handoffs/SUM-T09.md`); G5 manual check reported passed by the owner on 2026-11-18 (light and dark themes, ≥ 1024px and < 1024px, every item in the hand-off list).
+- [x] **SUM-T10** Remove `editedSummaries`, interim label and toast description; retire SUM-EDIT-007.
+  - Status: ✅ Done · Covers: SUM-EDIT-007 · Depends on: SUM-T09
+  - Verified 2026-11-18: agent workflow review passed (hand-off `spec/handoffs/SUM-T10.md`); G5 manual check reported passed by the owner on 2026-11-18 (light and dark themes, ≥ 1024px and < 1024px, every item in the hand-off list).
 - [x] **SUM-T11** Tests: `fmtUtc` unit, endpoint integration, save/cancel component test.
   - Status: ✅ Done · Covers: SUM-VIEW-004, SUM-EDIT-001 · Depends on: QA-T01, QA-T03
   - Verified 2026-11-18 via the agent workflow (implementer subagent, then the project reviewer subagent; hand-off `spec/handoffs/SUM-T11.md`, verdict pass): 7 `fmtUtc` unit tests and 12 component tests (`tests/component/CustomerDetails.test.tsx`); endpoint tests reused from API-T09.

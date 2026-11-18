@@ -61,7 +61,7 @@ A dialog to log an event with one of the customer's subsidiaries, or to edit an 
 - **Source:** `src/components/customers/EventForm.tsx`
 
 #### EVF-EDIT-002: Save event edits
-- **Status:** ⚠️ Partial — implemented and reviewed (EVF-T06, 2026-11-18); awaiting the owner's manual G5 check
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN "Save changes" is submitted THE system SHALL post the full `EventInput` with `Id`, toast "Event updated", close and refresh.
 - **Source:** `src/components/customers/EventForm.tsx`
 

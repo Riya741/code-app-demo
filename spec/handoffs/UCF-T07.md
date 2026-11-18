@@ -5,7 +5,7 @@ agent: AGENT-IMPLEMENTER
 covers: [UCF-EDIT-002]
 files_changed: [src/components/customers/UseCaseForm.tsx, src/lib/parentData.ts, spec/specs/017-design-system/messages-catalog.md, tests/component/UseCaseForm.test.tsx, tests/integration/use-case-edit.test.ts]
 tests: [tests/component/UseCaseForm.test.tsx]
-gates: {G1: pass, G3: pass, G4: pass}
+gates: {G1: pass, G3: pass, G4: pass, G5: pass}
 verdict: pass
 reviewer: AGENT-REVIEWER
 ---
@@ -103,3 +103,5 @@ No flakiness in 7 runs.
 GATES: G1 pass · G3 pass (0 errors, 8 warnings, none from these files) · G4 pass (13 files, 89 passed + 1 expected fail).
 
 **G5 pending:** the owner's manual check (in Open questions) is required before ✅.
+
+**G5:** G5 manual check reported passed by the owner on 2026-11-18 (light and dark themes, ≥ 1024px and < 1024px, every item in the hand-off list).

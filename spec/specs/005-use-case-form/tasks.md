@@ -1,7 +1,7 @@
 # Tasks — Add / Edit Use Case
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 10 tasks — ✅ 7 · 🔄 1 · ⬜ 2 · ⛔ 0
+**Summary:** 10 tasks — ✅ 8 · 🔄 0 · ⬜ 2 · ⛔ 0
 
 - [x] **UCF-T01** Dialog shell, fields, labels and placeholders.
   - Status: ✅ Done · Covers: UCF-FIELD-001, UCF-ADD-006, UCF-ADD-007 · Files: `UseCaseForm.tsx`
@@ -15,9 +15,9 @@
   - Status: ✅ Done · Covers: UCF-ADD-002..005 · Files: `UseCaseForm.tsx`, `hooks/useParentActivity.ts`
 - [x] **UCF-T06** Edit mode pre-fill.
   - Status: ✅ Done · Covers: UCF-EDIT-001, UCF-EDIT-003
-- [ ] **UCF-T07** Save edits through the API.
-  - Status: 🔄 In progress · Covers: UCF-EDIT-002 · Files: `UseCaseForm.tsx`
-  - Review passed 2026-11-18 (hand-off `spec/handoffs/UCF-T07.md`, verdict pass); code and tests in place. Stays 🔄 until the owner records the G5 manual check listed in the hand-off. Round 1 failed on a real data-loss defect (premium_credit erased when Save was clicked before the solutions lookup loaded); fixed and re-reviewed.
+- [x] **UCF-T07** Save edits through the API.
+  - Status: ✅ Done · Covers: UCF-EDIT-002 · Files: `UseCaseForm.tsx`
+  - Verified 2026-11-18: agent workflow review passed (hand-off `spec/handoffs/UCF-T07.md`); G5 manual check reported passed by the owner on 2026-11-18 (light and dark themes, ≥ 1024px and < 1024px, every item in the hand-off list).
   - Step: Add `id: row.id` to the payload when editing
   - Step: Success toast "Use case updated"; add text to the messages catalog
   - Step: Remove `NOT_WIRED`

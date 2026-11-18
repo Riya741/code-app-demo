@@ -85,7 +85,9 @@ owner's decision, not the agent's.
 **Not done by agents**
 - The G5 manual UI checks (light and dark themes, ≥ 1024px and < 1024px) for UCF-T07, EVF-T06, SUM-T09 and SUM-T10 are for the owner. Those 4 tasks stay 🔄 until they are recorded.
 
+**G5:** the owner ran the manual checks for UCF-T07, EVF-T06, SUM-T09 and SUM-T10 on 2026-11-18 and reported them passed; those tasks are now closed.
+
 **Phase 2 totals:**
-- **Tasks:** 15 closed in this phase (dashboard 114 → 129 done).
+- **Tasks:** 19 closed in this phase (dashboard 114 → 133 done).
 - **Tests:** 19 → 89 unit, component and integration tests, plus 17 hook tests.
-- **High gaps:** 1 closed (UCF-EDIT-004); 3 fixed and tested, awaiting G5 (UCF-EDIT-002, EVF-EDIT-002, SUM-EDIT-001).
+- **High gaps:** 4 closed (UCF-EDIT-004, UCF-EDIT-002, EVF-EDIT-002, SUM-EDIT-001), 6 → 2 open; the remaining two are API-WRITE-008 and DT-TIME-003.

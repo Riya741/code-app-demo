@@ -1,7 +1,7 @@
 # Tasks — Add / Edit Event
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 9 tasks — ✅ 5 · 🔄 1 · ⬜ 2 · ⛔ 1
+**Summary:** 9 tasks — ✅ 6 · 🔄 0 · ⬜ 2 · ⛔ 1
 
 - [x] **EVF-T01** Dialog, fields, stage suggestions.
   - Status: ✅ Done · Covers: EVF-FIELD-001, EVF-FIELD-002 · Files: `EventForm.tsx`
@@ -13,9 +13,9 @@
   - Status: ✅ Done · Covers: EVF-ADD-002, EVF-ADD-003 · Files: `EventForm.tsx`, `hooks/useParentActivity.ts`
 - [x] **EVF-T05** Edit pre-fill.
   - Status: ✅ Done · Covers: EVF-EDIT-001
-- [ ] **EVF-T06** Save event edits.
-  - Status: 🔄 In progress · Covers: EVF-EDIT-002
-  - Review passed 2026-11-18 (hand-off `spec/handoffs/EVF-T06.md`, verdict pass); code and tests in place. Stays 🔄 until the owner records the G5 manual check listed in the hand-off.
+- [x] **EVF-T06** Save event edits.
+  - Status: ✅ Done · Covers: EVF-EDIT-002
+  - Verified 2026-11-18: agent workflow review passed (hand-off `spec/handoffs/EVF-T06.md`); G5 manual check reported passed by the owner on 2026-11-18 (light and dark themes, ≥ 1024px and < 1024px, every item in the hand-off list).
   - Step: Add `Id: row.id` when editing
   - Step: Toast "Event updated" (add to messages catalog)
   - Step: Remove `NOT_WIRED`

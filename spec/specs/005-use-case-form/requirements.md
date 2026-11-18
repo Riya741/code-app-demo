@@ -105,7 +105,7 @@ combinations can be chosen.
 - **Source:** `src/components/customers/UseCaseForm.tsx`
 
 #### UCF-EDIT-002: Save use case edits
-- **Status:** ⚠️ Partial — implemented and reviewed (UCF-T07, 2026-11-18); awaiting the owner's manual G5 check
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN "Save changes" is submitted THE system SHALL post the full `UseCaseInput` with `id`, toast "Use case updated", close and refresh.
 - **Source:** `src/components/customers/UseCaseForm.tsx`
 

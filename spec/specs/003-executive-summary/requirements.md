@@ -2,7 +2,7 @@
 
 | Spec | Prefix | Status | Constitution |
 |---|---|---|---|
-| executive-summary | SUM | ⚠️ Edit saved to the workbook; awaiting manual G5 check (SUM-T09, SUM-T10) | I, II, III, V, VI, XII |
+| executive-summary | SUM | ✅ Edits saved to the workbook (2026-11-18) | I, II, III, V, VI, XII |
 
 ## Introduction
 The right-hand panel shows the customer's rich-text executive summary, lets the user edit it with formatting and
@@ -37,9 +37,9 @@ export it to Word.
 **User story:** As a CSS, I want to update the summary with formatting so the account narrative stays current for everyone.
 
 #### SUM-EDIT-001: Persist summary edits
-- **Status:** ⚠️ Partial — server (API-T09) and client (SUM-T08..T10) implemented and reviewed 2026-11-18; the selected-row refresh is awaiting the owner's manual G5 check (SUM-T09)
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN the user saves an edit THE system SHALL write `executive_summary` and `summary_last_modified = now (UTC)` for that customer to the workbook and refresh the customer data.
-- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/RichTextEditor.tsx`
+- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/hooks/useCustomers.ts`, `src/lib/customerSource.ts`, `src/pages/Customers.tsx`, `server/workbook.ts`
 
 #### SUM-EDIT-002: Open editor by click or key
 - **Status:** ✅ Implemented
@@ -57,14 +57,14 @@ export it to Word.
 - **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/RichTextEditor.tsx`
 
 #### SUM-EDIT-005: Save success and failure feedback
-- **Status:** ⚠️ Partial — implemented and tested (SUM-T09); awaiting the owner's manual G5 check
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN save succeeds THE system SHALL show the toast "Executive summary updated". IF save fails THEN THE editor SHALL stay open with the draft and show "Could not save: <message>".
-- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/RichTextEditor.tsx`
+- **Source:** `src/components/customers/CustomerDetails.tsx`
 
 #### SUM-EDIT-006: Disable buttons while saving
-- **Status:** ⚠️ Partial — implemented and tested (SUM-T09); awaiting the owner's manual G5 check
+- **Status:** ✅ Implemented
 - **Criterion:** WHILE the save is in progress Save and Cancel SHALL be disabled with a spinner.
-- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/RichTextEditor.tsx`
+- **Source:** `src/components/customers/CustomerDetails.tsx`
 
 #### SUM-EDIT-007: Interim on-screen-only marker
 - **Status:** Deprecated — retired by SUM-T10 (2026-11-18): summaries are saved, so the on-screen-only marker is gone
@@ -91,6 +91,6 @@ export it to Word.
 
 ## Scenarios
 - HTML summary with red bold text → red bold in light and legible in dark mode.
-- Edit → Save → reload → new text shown and present in the workbook (SUM-T08..T10; manual G5 check pending).
+- Edit → Save → reload → new text shown and present in the workbook (SUM-T08..T10; G5 passed 2026-11-18).
 - Click a link in the summary → opens in a new tab, editor does not open.
 - Customer "Acme Corp." exported on 2026-11-11 → `Acme_Corp_executive-summary_2026-11-11.doc`.

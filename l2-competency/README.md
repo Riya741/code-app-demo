@@ -135,7 +135,7 @@ Tick as you go; each line maps to a section in the topic files.
 
 - [x] Phase 0 — git, `.gitignore`, localhost bind, typecheck, Vitest, fixture workbook, `CLAUDE.md` (2026-11-16, merged into `main` 2026-11-17; see [evidence/ai-dev-log.md](evidence/ai-dev-log.md))
 - [x] Phase 1 — CR + Article XII, specs 022–026, agent specs, hand-off schemas, lint extension (2026-11-17, branch `phase-1-specify-ai`; DEVA-T01..T04)
-- [x] Phase 2 — subagents, skills, hooks, settings; High gaps closed via the agent workflow (2026-11-18, branch `phase-2-agentic-dev`; 15 tasks closed. The owner's G5 check is still open for UCF-T07, EVF-T06, SUM-T09 and SUM-T10.)
+- [x] Phase 2 — subagents, skills, hooks, settings; High gaps closed via the agent workflow (2026-11-18, branch `phase-2-agentic-dev`; 19 tasks closed, including UCF-T07, EVF-T06, SUM-T09 and SUM-T10 after the owner's G5 check; 4 High gaps closed)
 - [ ] Phase 3 — AI pipeline, failure handling, checkpoints, traces, Run Inspector, chaos tests
 - [ ] Phase 4 — eval dataset, graders, judge calibration, experiment matrix, ADR-0007, G7
 - [ ] Phase 5 — MCP server, `sdd-toolkit` plugin, CI with headless Claude review

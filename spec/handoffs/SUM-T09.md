@@ -5,7 +5,7 @@ agent: AGENT-IMPLEMENTER
 covers: [SUM-EDIT-005, SUM-EDIT-006]
 files_changed: [src/components/customers/CustomerDetails.tsx, src/pages/Customers.tsx]
 tests: [tests/component/CustomerDetails.test.tsx]
-gates: {G1: pass, G3: pass, G4: pass}
+gates: {G1: pass, G3: pass, G4: pass, G5: pass}
 verdict: pass
 reviewer: AGENT-REVIEWER
 ---
@@ -88,3 +88,5 @@ Minor findings:
 - [minor] `Customers.tsx` had CRLF in the working copy; `.gitattributes` normalises it to LF on commit.
 
 GATES (reviewer's own run): G1 pass (0 errors) · G3 pass (lint 0 errors, 8 warnings; typecheck 0) · G4 pass (13 files, 86 passed + 1 expected fail).
+
+**G5:** G5 manual check reported passed by the owner on 2026-11-18 (light and dark themes, ≥ 1024px and < 1024px, every item in the hand-off list).

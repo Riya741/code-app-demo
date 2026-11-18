@@ -5,7 +5,7 @@ agent: AGENT-IMPLEMENTER
 covers: [EVF-EDIT-002]
 files_changed: [src/components/customers/EventForm.tsx, spec/specs/017-design-system/messages-catalog.md, tests/component/EventForm.test.tsx, tests/integration/event-edit.test.ts]
 tests: [tests/component/EventForm.test.tsx, tests/integration/event-edit.test.ts]
-gates: {G1: pass, G3: pass, G4: pass, G5: n/a}
+gates: {G1: pass, G3: pass, G4: pass, G5: pass}
 verdict: pass
 reviewer: AGENT-REVIEWER
 ---
@@ -100,3 +100,5 @@ Minor findings:
 - [minor] The catalog row "Edit saved (not wired)" is retired at close. Hand-off open question 4 is out of date: the parentData comment is correct now.
 
 GATES (reviewer's own run): G1 pass · G3 pass (0 errors, 8 warnings, none in EventForm) · G4 pass (13 files, 88 passed + 1 expected fail, run 3 times; EVF files 6/6 each time). G5 pending a human check.
+
+**G5:** G5 manual check reported passed by the owner on 2026-11-18 (light and dark themes, ≥ 1024px and < 1024px, every item in the hand-off list).

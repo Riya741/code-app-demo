@@ -5,17 +5,22 @@
 | executive-summary | SUM | ✅ Edits saved to the workbook (2026-11-18) | I, II, III, V, VI, XII |
 
 ## Introduction
-The right-hand panel shows the customer's rich-text executive summary, lets the user edit it with formatting and
-export it to Word.
+The Executive Summary shows the customer's rich-text executive summary, lets the user edit it with formatting and
+export it to Word. Today it is the right-hand panel of the workspace; CR-20261120-2 (the owner's decision of
+2026-11-20, "Dialog over the grids", which supersedes the band of CR-20261120-1) moves it, with every criterion below
+unchanged, into a modal dialog that opens when a customer is selected
+([002-workspace-layout](../002-workspace-layout/requirements.md) LAY-R7, SUM-VIEW-006). With AI on, the dialog also
+hosts the AI Account Brief draft ([022-ai-account-brief](../022-ai-account-brief/requirements.md)).
 
 ---
 
 ### SUM-R1 — View the summary
 **User story:** As a CSS, I want to read the account narrative next to the customer's activity.
 
-#### SUM-VIEW-001: Summary panel title and colours
+#### SUM-VIEW-001: Summary title and colours
 - **Status:** ✅ Implemented
-- **Criterion:** THE panel SHALL be titled "Executive Summary" in a warm stone colour scheme and SHALL NOT repeat the name/ID shown in the top bar.
+- **Criterion:** THE Executive Summary, wherever it is shown (panel, band or dialog), SHALL be titled "Executive Summary" in a warm stone colour scheme and SHALL NOT repeat the name/ID shown in the top bar.
+- **Note:** Wording only (CR-20261120-1 added "band", CR-20261120-2 replaces it with "dialog"): the criterion holds before and after LAY-T09 and LAY-T11; behaviour unchanged.
 - **Source:** `src/components/customers/CustomerDetails.tsx`
 
 #### SUM-VIEW-002: Render HTML or plain text
@@ -32,6 +37,16 @@ export it to Word.
 - **Status:** ✅ Implemented
 - **Criterion:** WHEN `summary_last_modified` is valid and ≥ year 2000 THE header SHALL show "Last modified: <Mon D, YYYY, h:mm AM/PM> UTC", reading zone-less timestamps as UTC.
 - **Source:** `src/components/customers/CustomerDetails.tsx`
+
+#### SUM-VIEW-005: Summary lives in the workspace band
+- **Status:** Deprecated — retired by CR-20261120-2 (never shipped): the summary is shown in a dialog, not a band; replaced by SUM-VIEW-006.
+- **Criterion:** WHEN a customer is selected THE summary view, editor and Word export SHALL be shown in the full-width summary band (LAY-BAND-001) and nowhere else, with every SUM-VIEW, SUM-EDIT and SUM-WORD criterion behaving as before.
+- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/pages/Customers.tsx`
+
+#### SUM-VIEW-006: Summary lives in the summary dialog
+- **Status:** ✅ Implemented
+- **Criterion:** WHEN the Executive Summary is shown THE summary view, editor and Word export SHALL be inside the summary dialog (LAY-DLG-001) and nowhere else in the workspace (no right-hand panel, no band), with every SUM-VIEW, SUM-EDIT and SUM-WORD criterion behaving as before.
+- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/pages/Customers.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 ### SUM-R2 — Edit the summary
 **User story:** As a CSS, I want to update the summary with formatting so the account narrative stays current for everyone.
@@ -94,3 +109,5 @@ export it to Word.
 - Edit → Save → reload → new text shown and present in the workbook (SUM-T08..T10; G5 passed 2026-11-18).
 - Click a link in the summary → opens in a new tab, editor does not open.
 - Customer "Acme Corp." exported on 2026-11-11 → `Acme_Corp_executive-summary_2026-11-11.doc`.
+- After LAY-T11: pick a customer → the summary opens in a dialog over the full-width grids; click it, edit, Save → toast "Executive summary updated", the dialog closes; the "Executive summary" button in the top bar reopens it with the new Last modified (SUM-VIEW-006, LAY-DLG-009).
+- Edit, then Esc → "Discard your unsaved summary changes?" (LAY-DLG-007); the other criteria above are unchanged inside the dialog.

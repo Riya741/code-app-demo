@@ -1,6 +1,6 @@
 # Code App Demo — Constitution
 
-**Version:** 1.1.0 · **Ratified:** 2026-11-11 · **Last amended:** 2026-11-17 ([CR-20261117-1](changes/CR-20261117-1-ai-agents.md))
+**Version:** 1.1.1 · **Ratified:** 2026-11-11 · **Last amended:** 2026-11-20 ([CR-20261120-1](changes/CR-20261120-1-owner-decisions-summary-band.md), proposed)
 
 The constitution holds the non-negotiable principles for this project. Every spec, design and task must comply with
 them. Where a spec conflicts with the constitution, the constitution wins and the spec must be changed.
@@ -19,7 +19,9 @@ The mapping from each article to the specs that put it into practice is in
 1. All business data lives in the workbook (`code-app-data.xlsx`). The browser stores only UI preferences (theme, panel sizes).
 2. Every write is **atomic**: it lands completely or leaves the file untouched.
 3. Writes are **serialised**; two requests never interleave.
-4. Use cases and events are **soft-deleted**; history and link rows are never destroyed by the app.
+4. Use cases and events are **soft-deleted**; their rows and their status history are never destroyed by the app.
+   An edit updates the record in place (same `id`) and replaces that record's own link rows (personnel, content
+   types, solutions) with the set the user saved; no other record's link rows are touched.
 5. Sheet and column names are a contract. Changing them requires a spec change to the data model and the API.
 
 ## Article III — Safe by Default
@@ -103,3 +105,4 @@ The mapping from each article to the specs that put it into practice is in
 |---|---|---|---|
 | 1.0.0 | 2026-11-11 | Ratified: Articles I–XI | — |
 | 1.1.0 | 2026-11-17 | Article XII (AI Agents and Data) added; qualifies III.3 and VIII.3 for AI features | [CR-20261117-1](changes/CR-20261117-1-ai-agents.md) |
+| 1.1.1 | 2026-11-20 | PATCH: Article II.4 worded to match the specified write rule (API-WRITE-004): an edit replaces the record's own link rows; soft delete and history unchanged | [CR-20261120-1](changes/CR-20261120-1-owner-decisions-summary-band.md) |

@@ -149,5 +149,6 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 ## Scenarios
 - 30% injected 429s → runs succeed with ~1.4 retries each; traces show each retry and its delay.
 - Dev server killed during "Writing" → restart → *Resume* in the Run Inspector → the run continues from the Analyst's checkpoint.
-- Two quick clicks → one run.
-- Five failures in a minute → button disabled with the unavailable tooltip → after two minutes a probe succeeds → button back.
+- Two quick clicks on *Regenerate with AI* → one run.
+- Five failures in a minute → *Regenerate with AI* disabled with the unavailable tooltip and no automatic runs → after two minutes a probe succeeds → enabled again (AIB-GEN-012).
+- Automatic run for customer A, user switches to customer B after one step → A's run is `cancelled`, no further steps start, B gets its own run if it has no summary (AIB-GEN-008, AOPS-REC-002).

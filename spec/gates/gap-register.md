@@ -24,8 +24,10 @@ Rules:
 | A11Y-KEY-001 | Medium | Keyboard row expansion | [018-accessibility](../specs/018-accessibility/requirements.md) | GRID-T06 ⬜, A11Y-T03 ⬜ | Open |
 | A11Y-FORM-002 | Medium | Announce validation errors | [018-accessibility](../specs/018-accessibility/requirements.md) | A11Y-T05 ⬜ | Open |
 | SEC-SUPPLY-004 | Medium | Remove unused dependencies (30 unused) | [019-security](../specs/019-security/requirements.md) | SEC-T03 ⬜ | Open |
-| LAY-PANEL-004 | Low | Persist all split sizes (Only the horizontal split is saved) | [002-workspace-layout](../specs/002-workspace-layout/requirements.md) | LAY-T08 ⬜ | Open |
 | LAY-TOP-004 | Low | Refresh reloads all data (Only the customer list reloads) | [002-workspace-layout](../specs/002-workspace-layout/requirements.md) | LAY-T07 ⬜ | Open |
+| UCF-EDIT-005 | Low | Value saved as plain text on edit (Implemented; no test names it yet) | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T11 ⬜ | Open |
+| UCF-EDIT-006 | Low | Launch date saved as a calendar date on edit (Implemented; no test names it yet) | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T11 ⬜ | Open |
+| EVF-EDIT-003 | Low | Attendee names saved as plain text on edit (Implemented; no test names it yet) | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T10 ⬜ | Open |
 | UCP-GRID-004 | Low | Launch date sort and display (Displayed one day early west of UTC (see performance-reliability DT-TIME-003)) | [004-use-cases-panel](../specs/004-use-cases-panel/requirements.md) | UCP-T08 ⬜ | Open |
 | UCB-PASTE-004 | Low | Split on tabs only when present (Splits on tabs and commas together) | [006-use-case-bulk](../specs/006-use-case-bulk/requirements.md) | UCB-T09 ⬜ | Open |
 | EVP-GRID-003 | Low | Show stored calendar day (One day early west of UTC) | [007-events-panel](../specs/007-events-panel/requirements.md) | EVP-T07 ⬜ | Open |
@@ -53,6 +55,8 @@ Known limits agreed as acceptable at the current data size. Revisit using the tr
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
+| ~~LAY-PANEL-004~~ | Low | ~~Persist all split sizes~~ | [002-workspace-layout](../specs/002-workspace-layout/requirements.md) | LAY-T08 ✅ | Closed 2026-11-20 |
+| ~~API-SUMM-002~~ | Medium | ~~Reject a summary body without a string summary~~ | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T14 ✅ | Closed 2026-11-20 |
 | ~~UCF-EDIT-002~~ | High | ~~Save use case edits~~ | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T07 ✅ | Closed 2026-11-18 |
 | ~~EVF-EDIT-002~~ | High | ~~Save event edits~~ | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T06 ✅ | Closed 2026-11-18 |
 | ~~SUM-EDIT-001~~ | High | ~~Persist summary edits~~ | [003-executive-summary](../specs/003-executive-summary/requirements.md) | API-T09 ✅, SUM-T07..T11 ✅ | Closed 2026-11-18 |

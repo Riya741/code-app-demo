@@ -72,3 +72,80 @@ describe("POST /customers/:id/summary", () => {
     expect(sha(api.file)).toBe(before);
   });
 });
+
+describe("POST /customers/:id/summary body check (API-SUMM-002)", () => {
+  /** Posts a rejected body and checks the status, the message, the file bytes and the re-read customer. */
+  const expectRejected = async (body: unknown, error: string) => {
+    const withSummary = (await customers()).find((c) => c.executive_summary && c.summary_last_modified);
+    expect(withSummary).toBeDefined();
+    const customer = withSummary as Customer;
+    const before = sha(api.file);
+    const res = await save(customer.id, body);
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ error });
+    expect(sha(api.file)).toBe(before);
+    const reread = await fromFile(customer.id);
+    expect(reread.executive_summary).toBe(customer.executive_summary);
+    expect(reread.summary_last_modified).toBe(customer.summary_last_modified);
+    // The same running server (not just the file) must still serve the old values.
+    const live = (await customers()).find((c) => c.id === customer.id);
+    expect(live?.executive_summary).toBe(customer.executive_summary);
+    expect(live?.summary_last_modified).toBe(customer.summary_last_modified);
+  };
+
+  it("API-SUMM-002 rejects a body without executive_summary with 400 and changes nothing", async () => {
+    await expectRejected({}, "Missing: executive_summary");
+  });
+
+  it("API-SUMM-002 rejects a body whose other fields are present but executive_summary is absent", async () => {
+    await expectRejected({ summary: "<p>Wrong field name</p>" }, "Missing: executive_summary");
+  });
+
+  it("API-SUMM-002 rejects a JSON body that is not an object with 400 and changes nothing", async () => {
+    await expectRejected(null, "Missing: executive_summary");
+  });
+
+  it("API-SUMM-002 rejects a numeric executive_summary with 400 and changes nothing", async () => {
+    await expectRejected({ executive_summary: 5 }, "executive_summary must be a string.");
+  });
+
+  it("API-SUMM-002 rejects a null executive_summary with 400 and changes nothing", async () => {
+    await expectRejected({ executive_summary: null }, "executive_summary must be a string.");
+  });
+
+  it("API-SUMM-002 rejects a boolean executive_summary with 400 and changes nothing", async () => {
+    await expectRejected({ executive_summary: true }, "executive_summary must be a string.");
+  });
+
+  it("API-SUMM-002 rejects an object executive_summary with 400 and changes nothing", async () => {
+    await expectRejected({ executive_summary: { html: "<p>x</p>" } }, "executive_summary must be a string.");
+  });
+
+  it("API-SUMM-002 still clears the summary for an explicit empty string (200, stored as null)", async () => {
+    const customer = (await customers()).find((c) => c.executive_summary) as Customer;
+    expect(customer).toBeDefined();
+    const before = stamp();
+    const { status } = await save(customer.id, { executive_summary: "" });
+    expect(status).toBe(200);
+    const saved = await fromFile(customer.id);
+    expect(saved.executive_summary).toBeNull();
+    expect(saved.summary_last_modified >= before).toBe(true);
+  });
+
+  it("API-SUMM-002 answers 400, not 404, for an unknown customer when the body fails the check", async () => {
+    const before = sha(api.file);
+    const missing = await save(999999, {});
+    expect(missing.status).toBe(400);
+    expect(missing.body).toEqual({ error: "Missing: executive_summary" });
+    const wrongType = await save(999999, { executive_summary: 5 });
+    expect(wrongType.status).toBe(400);
+    expect(wrongType.body).toEqual({ error: "executive_summary must be a string." });
+    expect(sha(api.file)).toBe(before);
+  });
+
+  it("API-SUMM-002 keeps answering 404 for an unknown customer when the body is valid", async () => {
+    const { status, body } = await save(999999, { executive_summary: "" });
+    expect(status).toBe(404);
+    expect(body).toEqual({ error: "Customer 999999 was not found." });
+  });
+});

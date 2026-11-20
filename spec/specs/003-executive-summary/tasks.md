@@ -1,7 +1,7 @@
 # Tasks — Executive Summary
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 12 tasks — ✅ 11 · 🔄 0 · ⬜ 1 · ⛔ 0
+**Summary:** 13 tasks — ✅ 12 · 🔄 0 · ⬜ 1 · ⛔ 0
 
 - [x] **SUM-T01** Panel with stone theme; sanitised rich or plain text; empty state.
   - Status: ✅ Done · Covers: SUM-VIEW-001..003 · Files: `CustomerDetails.tsx`
@@ -34,3 +34,13 @@
   - Verified 2026-11-18 via the agent workflow (implementer subagent, then the project reviewer subagent; hand-off `spec/handoffs/SUM-T11.md`, verdict pass): 7 `fmtUtc` unit tests and 12 component tests (`tests/component/CustomerDetails.test.tsx`); endpoint tests reused from API-T09.
 - [ ] **SUM-T12** Harden the summary save: update the cached customer from the save response (so a failed refetch cannot show the old text), move the selected-row re-pick into a tested helper, move `fmtUtc` to `src/lib/dates.ts`, and narrow the over-claiming component test title.
   - Status: ⬜ Not started · Covers: SUM-EDIT-001, SUM-VIEW-004 · Files: `src/hooks/useCustomers.ts`, `src/pages/Customers.tsx`, `src/lib/dates.ts` · Found 2026-11-18 in the SUM-T08/T09/T11 reviews (minor findings).
+
+### Summary dialog (CR-20261120-2: replaces the band of CR-20261120-1, owner decision D2)
+- [x] **SUM-T13** Summary content in the dialog: `CustomerDetails` loses the band's collapse props, reports its editing, dirty and saving state and its successful save, and keeps every existing summary behaviour.
+  - Status: ✅ Done · Covers: SUM-VIEW-001, SUM-VIEW-006 · Files: `src/components/customers/CustomerDetails.tsx`, `tests/component/CustomerDetails.test.tsx` · Depends on: LAY-T11 (same change) · Do with: LAY-T09, LAY-T11, LAY-T12, LAY-T08 · Re-scoped by CR-20261120-2 (was: collapse props for the band, Covers SUM-VIEW-001, SUM-VIEW-005, LAY-BAND-007)
+  - Step: Remove `collapsed`, `onToggleCollapsed` and the `collapse` pass-through to `Panel` (the unreleased band work added them)
+  - Step: Add `onStateChange?({ editing, dirty, saving })` and `onSaved?()` (design: "Planned — the summary dialog"); without them the component behaves as today; Cancel still returns to the view inside the dialog
+  - Step: Tests that must change (rewritten, not weakened): in `tests/component/CustomerDetails.test.tsx` the band section is replaced: the three kept `SUM-VIEW-005 …` behaviours (view, Last modified and Export; editor opens and Save/Cancel work; export from the header) are retitled `SUM-VIEW-006 …` without the collapse props; `SUM-VIEW-005 behaves as before when no collapse props are passed` is deleted with the props; the four `LAY-BAND-007 …` tests become `LAY-DLG-007/008 …` tests on `onStateChange` and a `LAY-DLG-009 …` test on `onSaved`; `SUM-VIEW-001 …` and the twelve earlier tests stay unchanged
+  - Step: G5 with LAY-T11: view, empty state, Last modified, click/Enter to edit, lazy editor, Cancel/Save, save error, Word export inside the dialog, both themes, ≥ 1024px and < 1024px
+  - Step: Hand-off: [SUM-T13.md](../../handoffs/SUM-T13.md) describes the band delivery; it is marked superseded and its front matter reset (`covers: [SUM-VIEW-001]`, `verdict: pending`); fresh hand-off at re-delivery
+  - Verified 2026-11-20 via the agent workflow (implementer subagent, read-only reviewer subagent; hand-off `spec/handoffs/SUM-T13.md`, verdict pass), delivered as one change with LAY-T08, LAY-T09, LAY-T11, LAY-T12 and SUM-T13: G1 spec lint 0 errors; G3 lint 0 errors (8 existing warnings), typecheck clean; G4 16 files, 163 passed + 1 expected fail; G5 by the owner on 2026-11-20, light and dark, ≥ 1024px and < 1024px, all 11 checks passed (dialog centred at 80% width and at most 85vh, full-screen sheet below 1024px, × placement, focus start, trap and return, editor clicks and toolbar, discard confirm, save, failed save and no close while saving, no reopen on Refresh, top-bar button, full-width grids with the split restored after reload, dark theme and the SUM-T09 checks inside the dialog). The missing focus ring on the dialog container was accepted.

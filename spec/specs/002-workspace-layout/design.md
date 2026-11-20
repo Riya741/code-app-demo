@@ -13,24 +13,12 @@ is reopened from a top-bar button.
 | `src/pages/Customers.tsx` | State (`selected`, `summaryOpen`), backdrop, layout switch, resizable group, the selection handlers |
 | `src/components/customers/TopBar.tsx` | Chip, summary button slot, search slot, refresh, theme toggle |
 | `src/components/customers/Panel.tsx` | Shared panel shell |
-| `src/components/customers/SummaryDialog.tsx` | Planned (LAY-T11): the modal around `CustomerDetails`; owns the discard confirm and the close rules |
+| `src/components/customers/SummaryDialog.tsx` | The modal around `CustomerDetails` (LAY-T11, LAY-T12); owns the discard confirm and the close rules |
 | `src/components/ui/dialog.tsx`, `alert-dialog.tsx` | Existing Radix wrappers; reused unchanged (CONV-001) |
 | `src/hooks/useMediaQuery.ts` | `matchMedia` subscription |
 | `src/components/ui/resizable.tsx` | react-resizable-panels wrapper |
 
-## Layout tree (shipped, until LAY-T09)
-```
-ResizablePanelGroup horizontal  autoSaveId="terra-split-h-v3"  key=<customer>
-├─ Panel "left" 60/min25
-│   └─ ResizablePanelGroup vertical            (no autoSaveId → LAY-PANEL-004 gap)
-│       ├─ "usecases" 60/min20 → UseCasesPanel
-│       └─ "events"   40/min20 → EventsPanel
-└─ Panel "summary" 40/min20 → CustomerDetails
-```
-This is the deprecated LAY-PANEL-002 / LAY-PANEL-005 layout. The band layout of CR-20261120-1 was built in the working
-tree but never released; CR-20261120-2 replaces it, so it is not documented here any more.
-
-## Planned layout tree — dialog over full-width grids (LAY-T09, LAY-T11, CR-20261120-2)
+## Layout tree — dialog over full-width grids (LAY-T09, LAY-T11, CR-20261120-2; delivered 2026-11-20)
 ```
 desktop (≥ 1024px), height = viewport − top bar (LAY-PANEL-001)       key=<customer>
 div relative min-h-0 flex-1
@@ -43,15 +31,9 @@ narrow (< 1024px): UseCasesPanel (60vh) · EventsPanel (60vh); page scrolls (LAY
 either width, over the workspace (portal):
 SummaryDialog open → DialogContent → CustomerDetails (Panel shell: title, Last modified / Export or Cancel / Save, body)
 ```
-- **What survives from the unreleased band work (working tree, LAY-T09/LAY-T08):** the full-width vertical
-  `ResizablePanelGroup` with `autoSaveId="terra-split-v-v1"`, `usecases` 60/min 20 and `events` 40/min 20, inside the
-  `relative min-h-0 flex-1` wrapper, and the narrow stack with the `max-h-[60vh]` panels. These already match
-  LAY-PANEL-007 and LAY-PANEL-008 once the summary is taken out of them.
-- **What is removed by LAY-T09:** the band `CustomerDetails` element and its `max-h-[40%]` / `max-h-[60vh]` wrapper in
-  `Customers.tsx`; `summaryCollapsed` / `toggleSummary` state; the `collapsed` / `onToggleCollapsed` props of
-  `CustomerDetails` (SUM-T13); and the `collapse` prop, `PanelCollapse` type, chevron toggle, `useId` / `useLayoutEffect`
-  focus code of `Panel`, which exist only for the band. `Panel` returns to the LAY-SHELL-001 shell it was at `HEAD`
-  (nothing the band added is kept). The band and `collapse` tests are rewritten (see Testing approach).
+- **History:** the right-hand panel layout (LAY-PANEL-002, LAY-PANEL-005, horizontal group `terra-split-h-v3`) and the
+  band of CR-20261120-1 (built but never released) are gone; `Panel` is the LAY-SHELL-001 shell plus an optional
+  `titleId`.
 - **Why not keep the band collapsible *and* add the dialog?** Two places for the same summary is more UI to build, test
   and explain than the owner asked for ("the band is NOT wanted any more"); a dialog the user can reopen replaces
   collapse and expand (Article VIII.1).
@@ -83,28 +65,32 @@ as the only exit, like `UseCaseForm` and `EventForm` (`!o && !save.isPending && 
 3. otherwise → close.
 *Dirty* = the editor is open and its HTML differs from the text it was opened with. `RichTextEditor` reports only real
 edits (`text-change`), never its own initial load, so a dialog opened and left alone is not dirty. `CustomerDetails`
-reports `{ editing, dirty, saving }` upward through one callback and calls `onSaved()` after a successful save; the
-dialog closes on `onSaved` (LAY-DLG-009). A failed save keeps `editing` and `dirty`, so closing still asks.
+reports `{ editing, dirty, saving }` upward through one callback (once on mount, then whenever one changes) and calls `onSaved()` after a successful save; the
+dialog closes on `onSaved` (LAY-DLG-009). A failed save keeps `editing` and `dirty`, so closing still asks. *Discard* uses the destructive button tokens, as in `ConfirmDelete`.
 
 **Focus (LAY-DLG-004, -006).** Radix returns focus to the element that was focused before opening; after an
 automatic open that is `body`. `DialogContent` therefore gets `onCloseAutoFocus` that prevents the default and focuses
 the reopen button (a ref owned by `Customers.tsx`, passed to the button it renders into `TopBar`). Initial focus goes to
 the dialog container (`onOpenAutoFocus` prevented, container `tabIndex={-1}`), so an auto-opened dialog does not put
 the cursor in the text or start the editor and Enter does nothing until the user moves focus. The focus trap and Esc
-come from Radix (A11Y-KEY-003).
+come from Radix (A11Y-KEY-003). The container itself has no visible focus ring (`outline-none`); the owner accepted this at G5
+on 2026-11-20 (an exception to A11Y-KEY-005 for this one container; every control inside keeps its ring).
 
 **Accessible name (LAY-DLG-003).** The dialog is labelled by its visible title, "Executive Summary", once: no second
 hidden heading. `CustomerDetails` keeps its `Panel` shell, so SUM-VIEW-001..004 and the existing tests hold; the
-shell's `h2` carries an id that `DialogContent` references with `aria-labelledby` (a generic optional `titleId` on
-`Panel` if needed; it is not band-specific). The implementation must not log Radix's missing-`DialogTitle` warning;
-if the `aria-labelledby` route cannot avoid it, wrap the title in `DialogTitle asChild` instead. LAY-T11 records which
-one in its hand-off.
+shell's `h2` carries an id that `DialogContent` references with `aria-labelledby`: `CustomerDetails` takes an optional
+`titleId` and passes it to the generic optional `Panel.titleId` (`DialogTitle asChild` cannot wrap the panel's own
+`h2`). Radix Dialog 1.3.1 logs no missing-`DialogTitle` warning on this route; a test pins that nothing is logged.
 
-**Size and sheet (LAY-DLG-011, -012).** The content classes override the shared defaults (`max-w-lg`, `p-6`, `gap-4`)
-as `UseCaseForm` does with its `className`: ≥ 1024px `w-[80vw] max-w-none max-h-[85vh] p-0 gap-0
-overflow-hidden`, the panel body scrolling (`min-h-0 overflow-auto`) under a fixed header; below 1024px `inset-0
-h-dvh w-screen max-w-none translate-x-0 translate-y-0 rounded-none`. `Panel` inside the dialog drops its own card
-border, radius, shadow and entry animation through `className`.
+**Size and sheet (LAY-DLG-011, -012).** The content classes override the shared defaults (`grid`, `max-w-lg`, `p-6`,
+`gap-4`, centring translate) as `UseCaseForm` does with its `className`. Below 1024px a full-screen sheet:
+`left-0 top-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0 rounded-none` (not `inset-0`, whose `right-0` and
+`bottom-0` would stretch the desktop popup). From 1024px centred again: `lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2
+lg:-translate-y-1/2 lg:w-[80vw] lg:h-auto lg:max-h-[85vh] lg:rounded-lg lg:border`. The panel header is the fixed title
+bar and the panel body scrolls (`min-h-0 overflow-auto`). The shared × is moved into the 32px title bar with
+`[&>button]:right-3 [&>button]:top-2` (it is a direct child button of the content; `ui/dialog.tsx` is not edited) and
+the panel header keeps `[&>header]:pr-10` clear for it. `Panel` inside the dialog drops its own card border, radius,
+shadow and entry animation through `className`.
 
 **Reopen button (LAY-DLG-010).** `TopBar` gains an optional `summaryButton?: ReactNode` slot rendered right of the
 chip (`TopBar` stays presentational; `Customers.tsx` builds the button so it can own the ref and the AI indicator of
@@ -118,21 +104,20 @@ already has in both themes; the button uses `Button` ghost tokens. G5 covers bot
 ## Interfaces
 ```ts
 TopBar({ selectedLabel?: {name, id?}, onClear, onRefresh, refreshing, children?, summaryButton? })
-//   planned (LAY-T11): summaryButton?: ReactNode, rendered next to the customer chip while a customer is selected
+//   summaryButton?: ReactNode, rendered next to the customer chip while a customer is selected (LAY-DLG-010)
 Panel({ title, count?, badges?, headerRight?, className?, bodyClassName?, headerClassName?, children, titleId? })
-//   unchanged shell (LAY-SHELL-001). The `collapse` prop and `PanelCollapse` type that the unreleased band work added are
-//   removed by LAY-T09. `titleId?` is optional and only added if LAY-T11 needs it for aria-labelledby.
-SummaryDialog({ row, open, onOpenChange(open: boolean), returnFocusRef })   // planned (LAY-T11)
-CustomerDetails({ row, className?, onSaved?(), onStateChange?({ editing, dirty, saving }) })   // SUM-T13, used by LAY-T11 and LAY-T12
+//   LAY-SHELL-001 shell; titleId? puts an id on the h2 for aria-labelledby
+SummaryDialog({ row, open, onOpenChange(open: boolean), returnFocusRef })   // LAY-T11, LAY-T12
+CustomerDetails({ row, className?, titleId?, onSaved?(), onStateChange?({ editing, dirty, saving }) })   // SUM-T13
 ```
 
 ## Planned changes
-- **LAY-PANEL-004:** `autoSaveId="terra-split-v-v1"` on the vertical group (LAY-T08; ships with LAY-T09). Already in the
-  working tree; the saved-split round trip is only visible in a browser (G5), see the LAY-T08 hand-off.
+- **LAY-PANEL-004:** `autoSaveId="terra-split-v-v1"` on the vertical group (LAY-T08; ships with LAY-T09). Delivered 2026-11-20;
+  the saved-split round trip was checked in the owner's G5.
 - **LAY-TOP-004:** `onRefresh` → `queryClient.invalidateQueries()` (all keys); `refreshing` → `useIsFetching() > 0`.
-- **LAY-PANEL-007, LAY-PANEL-008:** full-width grids (LAY-T09).
+- **LAY-PANEL-007, LAY-PANEL-008:** full-width grids (LAY-T09 ✅ 2026-11-20).
 - **LAY-DLG-001..006, -010..014:** dialog shell, open on selection, close controls, focus, size, themes, reset and the
-  reopen button (LAY-T11); **LAY-DLG-007..009:** discard confirm, no close while saving, close after save (LAY-T12).
+  reopen button (LAY-T11 ✅); **LAY-DLG-007..009:** discard confirm, no close while saving, close after save (LAY-T12 ✅, 2026-11-20).
 - **Dropped:** collapse state and its storage (LAY-BAND-003, task LAY-T10). `terra-summary-band-v1` is never created.
   The old `terra-split-h-v3` entry stops being read when the horizontal group goes.
 
@@ -153,7 +138,7 @@ open after a failed one; a customer change resets it; the button's name and its 
 no right-hand panel, no band, no collapse control. jsdom has no layout engine, so pixel sizes (85vh, 80vw, centring, sheet) and
 both themes are G5.
 
-**Tests that must change (written in the uncommitted band work; rewritten by the tasks, not weakened):**
+**Tests changed by the delivery (2026-11-20; band tests from the unreleased work, rewritten, not weakened):**
 - `tests/component/Panel.test.tsx`: the `describe("Panel collapse")` block (nine tests: five `LAY-BAND-006`, two
   `LAY-BAND-002`, one `LAY-BAND-007`, and "LAY-SHELL-001 shows no toggle button and never hides the body when collapse is
   absent") tests a prop that LAY-T09 removes, so the block is deleted with the prop. The two original `LAY-SHELL-001`
@@ -173,7 +158,7 @@ the dialog's G5 check (LAY-T11).
 | II Single source of truth | Only theme and split sizes in browser storage; dialog open state and the editor draft are not stored. ✅ |
 | V Clear feedback | Refresh spinner; but refresh scope incomplete → LAY-T07 ⚠️. The discard confirm protects typed text (V.3); save success and failure feedback unchanged (SUM-EDIT-005). |
 | VI Theme-aware, responsive | Light/dark; ≥ 1024 full-width split, < 1024 stack; dialog centred, 80vw wide and 85vh at most on desktop, sheet on narrow; tokens only, stone summary kept (G5 in LAY-T11). ✅ |
-| VII Accessible | Modal with accessible name, focus trap, Esc, focus returned to a named, keyboard-operable button (LAY-DLG-003..006, -010; A11Y-KEY-003, -005). ✅ |
+| VII Accessible | Modal with accessible name, focus trap, Esc, focus returned to a named, keyboard-operable button (LAY-DLG-003..006, -010; A11Y-KEY-003, -005); the dialog container shows no focus ring (owner-accepted exception at G5). ✅ |
 | VIII Simple | Reuses `Dialog`, `AlertDialog`, `Panel` and `Button`; one `useState`; no new dependency; the band's `Panel.collapse` prop is removed rather than kept unused. ✅ |
 | IX Layered | No data access in the layout or dialog; saves go through `useSaveSummary`. ✅ |
 | XII AI agents & data | The dialog hosts the optional AI draft (022); with AI off it is the plain summary and still opens (LAY-DLG-001, AIB-GEN-019). ✅ |

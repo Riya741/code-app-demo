@@ -43,8 +43,8 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | **Features** | | | | | | | | | | | |
 | [001-customer-search](specs/001-customer-search/) | SRCH | 20 | 19 | 0 | 1 | 0 | 9 | 7 | 0 | 2 | 0 |
-| [002-workspace-layout](specs/002-workspace-layout/) | LAY | 31 | 13 | 2 | 0 | 16 | 12 | 7 | 2 | 3 | 0 |
-| [003-executive-summary](specs/003-executive-summary/) | SUM | 14 | 13 | 0 | 0 | 1 | 13 | 11 | 1 | 1 | 0 |
+| [002-workspace-layout](specs/002-workspace-layout/) | LAY | 31 | 30 | 1 | 0 | 0 | 12 | 11 | 0 | 1 | 0 |
+| [003-executive-summary](specs/003-executive-summary/) | SUM | 14 | 14 | 0 | 0 | 0 | 13 | 12 | 0 | 1 | 0 |
 | [004-use-cases-panel](specs/004-use-cases-panel/) | UCP | 21 | 20 | 1 | 0 | 0 | 9 | 7 | 0 | 2 | 0 |
 | [005-use-case-form](specs/005-use-case-form/) | UCF | 23 | 20 | 2 | 0 | 1 | 11 | 8 | 0 | 3 | 0 |
 | [006-use-case-bulk](specs/006-use-case-bulk/) | UCB | 25 | 24 | 1 | 0 | 0 | 11 | 8 | 0 | 3 | 0 |
@@ -71,7 +71,7 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 27 | 0 | 0 | 0 | 27 | 10 | 0 | 0 | 10 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
 | [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 16 | 0 | 0 | 2 | 15 | 12 | 0 | 2 | 1 |
-| **Total** | | **519** | **348** | **21** | **10** | **140** | **239** | **136** | **3** | **94** | **6** |
+| **Total** | | **519** | **366** | **20** | **10** | **123** | **239** | **141** | **0** | **92** | **6** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,
@@ -83,7 +83,7 @@ UCF-T08, SUM-T08, SUM-T11, and (after the owner's G5 check) UCF-T07, EVF-T06, SU
 workflow.
 
 1. **API-T13** decided by the owner on 2026-11-20: Article II.4 amended (constitution v1.1.1, [CR-20261120-1](changes/CR-20261120-1-owner-decisions-summary-band.md)); closed when the owner approved that CR. Next **API-T08** validate references and **API-T14** reject a summary POST without `executive_summary`
-2. **CR-20261120-2** (proposed, supersedes the band of CR-20261120-1) once approved: summary dialog over full-width grids (**LAY-T09 + LAY-T11 + LAY-T12 + SUM-T13 + LAY-T08**, one change; LAY-T10 closes spec-only with the approval), then the automatic AI draft in the dialog (**AIB-T10**, AIB-T07); CR-20261120-1 still gives the edit-normalisation tests (**UCF-T11**, **EVF-T10**)
+2. **CR-20261120-2** (approved): summary dialog over full-width grids delivered 2026-11-20 (LAY-T08, LAY-T09, LAY-T11, LAY-T12, SUM-T13 ✅; LAY-T10 closed spec-only). Next: the automatic AI draft in the dialog (**AIB-T10**, AIB-T07); CR-20261120-1 still gives the edit-normalisation tests (**UCF-T11**, **EVF-T10**)
 3. **UCF-T07 / UCF-T08**, **EVF-T06** save edits
 4. **API-T09 → SUM-T08 → SUM-T09 → SUM-T10** persist the executive summary (also unblocks AIB-T07)
 5. **QA-T02 → QA-T03** component tests and server integration harness (fixture: DATA-T09)

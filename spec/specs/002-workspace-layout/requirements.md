@@ -53,7 +53,7 @@ and the deprecated LAY-PANEL-005 stack) is what the app shows.
 - **Source:** `src/pages/Customers.tsx`, `src/hooks/useMediaQuery.ts`, `src/components/ui/resizable.tsx`
 
 #### LAY-PANEL-002: Desktop split proportions
-- **Status:** Deprecated — retired by CR-20261120-1 (owner decision D2, 2026-11-20): the right-hand Executive Summary panel is removed; replaced by LAY-PANEL-006 and the summary band (LAY-BAND-001..007). Still the shipped layout until LAY-T09.
+- **Status:** Deprecated — retired by CR-20261120-1 (owner decision D2, 2026-11-20): the right-hand Executive Summary panel is removed; replaced by LAY-PANEL-006 and the summary band (LAY-BAND-001..007). Replaced in the code by LAY-T09 (2026-11-20).
 - **Criterion:** THE desktop layout SHALL split horizontally: left 60% (min 25%) holding Use Cases 60% (min 20%) over Events 40% (min 20%); right 40% (min 20%) Executive Summary.
 - **Source:** `src/pages/Customers.tsx`, `src/hooks/useMediaQuery.ts`, `src/components/ui/resizable.tsx`
 
@@ -63,12 +63,12 @@ and the deprecated LAY-PANEL-005 stack) is what the app shows.
 - **Source:** `src/pages/Customers.tsx`, `src/hooks/useMediaQuery.ts`, `src/components/ui/resizable.tsx`
 
 #### LAY-PANEL-004: Persist all split sizes
-- **Status:** ⚠️ Partial — Only the horizontal split is saved
+- **Status:** ✅ Implemented — the only split left (Use Cases / Events) is saved under `terra-split-v-v1` (LAY-T08); save and restore after reload checked by the owner in G5 (2026-11-20)
 - **Criterion:** WHEN the user resizes any split THE sizes SHALL be restored after reload.
 - **Source:** `src/pages/Customers.tsx`, `src/hooks/useMediaQuery.ts`, `src/components/ui/resizable.tsx`
 
 #### LAY-PANEL-005: Stacked panels below 1024px
-- **Status:** Deprecated — retired by CR-20261120-2 (owner decision, 2026-11-20): the Executive Summary leaves the stack and opens as a dialog (LAY-R7); replaced by LAY-PANEL-008. Still the shipped layout until LAY-T09.
+- **Status:** Deprecated — retired by CR-20261120-2 (owner decision, 2026-11-20): the Executive Summary leaves the stack and opens as a dialog (LAY-R7); replaced by LAY-PANEL-008. Replaced in the code by LAY-T09 (2026-11-20).
 - **Criterion:** WHILE the viewport is < 1024px THE panels SHALL stack (Summary, Use Cases, Events), each at most 60vh, and the page SHALL scroll.
 - **Source:** `src/pages/Customers.tsx`, `src/hooks/useMediaQuery.ts`, `src/components/ui/resizable.tsx`
 
@@ -78,12 +78,12 @@ and the deprecated LAY-PANEL-005 stack) is what the app shows.
 - **Source:** `src/pages/Customers.tsx`, `src/components/ui/resizable.tsx`
 
 #### LAY-PANEL-007: Desktop full-width grids
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHILE the viewport is ≥ 1024px and a customer is selected THE layout SHALL show only the Use Cases and Events panels, across the full workspace width, as one vertical split of Use Cases 60% (min 20%) over Events 40% (min 20%), with no Executive Summary panel or band and no horizontal split, and LAY-PANEL-001 SHALL still hold.
 - **Source:** `src/pages/Customers.tsx`, `src/components/ui/resizable.tsx`
 
 #### LAY-PANEL-008: Stacked panels below 1024px, without the summary
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHILE the viewport is < 1024px THE panels SHALL stack (Use Cases, Events) with no Executive Summary in the stack, each at most 60vh, and the page SHALL scroll.
 - **Source:** `src/pages/Customers.tsx`, `src/hooks/useMediaQuery.ts`, `src/components/ui/resizable.tsx`
 
@@ -132,72 +132,72 @@ the seven criteria below was built for release; the blocks stay as history and a
 narrative first, and I want to close it and work in the full-width grids, with a button to bring it back.
 
 #### LAY-DLG-001: Summary dialog opens on selection
-- **Status:** 📝 Planned — also opens when AI is off; proposed, owner to confirm (CR-20261120-2 open question c)
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN the user selects a customer THE system SHALL open the Executive Summary in a modal dialog over the workspace, at every viewport width, whether or not AI is enabled.
 - **Source:** `src/pages/Customers.tsx`, `src/components/customers/CustomerDetails.tsx`, `src/components/ui/dialog.tsx`
 
 #### LAY-DLG-002: Opens once per selection
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHILE a customer stays selected THE dialog SHALL open only because of a selection: a refetch of the customer data (after a summary save, on Refresh or in the background) SHALL NOT reopen it once it was closed, and SHALL NOT close it or reset its content while it is open.
 - **Source:** `src/pages/Customers.tsx`
 
 #### LAY-DLG-003: Modal dialog named Executive Summary
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHILE the dialog is open THE system SHALL present it as a modal dialog (overlay; the page behind it inert to pointer and assistive technology) whose accessible name is "Executive Summary", given by `aria-labelledby` pointing at its single visible title.
-- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/CustomerDetails.tsx`
+- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/CustomerDetails.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 #### LAY-DLG-004: Initial focus and focus trap
-- **Status:** 📝 Planned — initial focus on the dialog itself is proposed (CR-20261120-2 open question h)
+- **Status:** ✅ Implemented — the dialog container that takes the initial focus shows no focus ring; accepted by the owner at G5 (2026-11-20)
 - **Criterion:** WHEN the dialog opens THE focus SHALL move into it without starting the summary editor, and WHILE it is open Tab and Shift+Tab SHALL stay inside it (A11Y-KEY-003).
-- **Source:** `src/components/ui/dialog.tsx`
+- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 #### LAY-DLG-005: Ways to close the dialog
-- **Status:** 📝 Planned — Esc and overlay click close it like the × button; proposed (CR-20261120-2 open question f)
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN the user presses Esc, activates the × button (named "Close") or clicks the overlay THE dialog SHALL close, subject to LAY-DLG-007 and LAY-DLG-008, and the Use Cases and Events grids SHALL then be usable.
-- **Source:** `src/components/ui/dialog.tsx`
+- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 #### LAY-DLG-006: Focus returns to the reopen button
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN the dialog closes, by any route and also when it was opened automatically, THE focus SHALL move to the reopen button (LAY-DLG-010).
-- **Source:** `src/components/customers/TopBar.tsx`, `src/components/ui/dialog.tsx`
+- **Source:** `src/components/customers/TopBar.tsx`, `src/components/ui/dialog.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 #### LAY-DLG-007: Confirm before discarding edits
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** IF the summary editor holds unsaved changes WHEN the user tries to close the dialog THEN THE system SHALL ask "Discard your unsaved summary changes?" with the actions *Discard* and *Keep editing*; WHEN the user chooses *Keep editing* THE dialog SHALL stay open with the editor and its text intact; WHEN the user chooses *Discard* THE dialog SHALL close, the changes SHALL be dropped and nothing SHALL be written to the workbook.
-- **Source:** `src/components/customers/CustomerDetails.tsx`
+- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 #### LAY-DLG-008: No closing while saving
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHILE a summary save is in progress THE × button, Esc and a click on the overlay SHALL have no effect, so that the dialog stays open until the save has succeeded or failed (A11Y-KEY-003).
-- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/ui/dialog.tsx`
+- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/ui/dialog.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 #### LAY-DLG-009: Dialog closes after a successful save
-- **Status:** 📝 Planned — proposed, owner to confirm (CR-20261120-2 open question i)
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN a summary save succeeds THE system SHALL show the toast "Executive summary updated" (SUM-EDIT-005) and close the dialog; IF the save fails THEN THE dialog SHALL stay open with the editor, the draft and the message "Could not save: <message>" (SUM-EDIT-005).
-- **Source:** `src/components/customers/CustomerDetails.tsx`
+- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 #### LAY-DLG-010: Reopen button in the top bar
-- **Status:** 📝 Planned — label and placement proposed (CR-20261120-2 open question b)
+- **Status:** ✅ Implemented
 - **Criterion:** WHILE a customer is selected THE top bar SHALL show, next to the customer chip, a button named "Executive summary" that opens the dialog, showing its label from 640px width and only its icon below that while keeping the accessible name, operable with Enter and Space and with visible focus (A11Y-KEY-005).
 - **Source:** `src/components/customers/TopBar.tsx`, `src/pages/Customers.tsx`
 
 #### LAY-DLG-011: Dialog size on desktop
-- **Status:** 📝 Planned — size set by the owner on 2026-11-20 (CR-20261120-2 open question a)
+- **Status:** ✅ Implemented — centred, 80% of the viewport width, at most 85vh (owner decision, CR-20261120-2 question a)
 - **Criterion:** WHILE the viewport is ≥ 1024px THE dialog SHALL be centred in the page, horizontally and vertically, and 80% of the viewport width wide and at most 85vh tall, so that it reads as a popup over the grids, its title bar SHALL stay in view and its body SHALL scroll when the content is taller.
-- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/CustomerDetails.tsx`
+- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/CustomerDetails.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 #### LAY-DLG-012: Dialog as a sheet on narrow screens
-- **Status:** 📝 Planned — full-screen sheet proposed (CR-20261120-2 open question g)
+- **Status:** ✅ Implemented
 - **Criterion:** WHILE the viewport is < 1024px THE dialog SHALL fill the viewport width and height as a sheet, with its title bar and × button in view and its body scrolling.
-- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/CustomerDetails.tsx`
+- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/CustomerDetails.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 #### LAY-DLG-013: Dialog and button in both themes
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE dialog, its overlay and the reopen button SHALL take their colours from design tokens, THE summary SHALL keep its stone scheme (SUM-VIEW-001), and all three SHALL be legible in the light and the dark theme (Article VI.1).
-- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/TopBar.tsx`, `src/components/ui/dialog.tsx`
+- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/TopBar.tsx`, `src/components/ui/dialog.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 #### LAY-DLG-014: Dialog state resets with the customer
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN the selected customer changes or the selection is cleared THE system SHALL close the dialog and drop its editor state without a confirmation, and a new selection SHALL open it again (LAY-DLG-001, LAY-STATE-002).
 - **Source:** `src/pages/Customers.tsx`
 

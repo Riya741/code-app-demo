@@ -44,9 +44,9 @@ hosts the AI Account Brief draft ([022-ai-account-brief](../022-ai-account-brief
 - **Source:** `src/components/customers/CustomerDetails.tsx`, `src/pages/Customers.tsx`
 
 #### SUM-VIEW-006: Summary lives in the summary dialog
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHEN the Executive Summary is shown THE summary view, editor and Word export SHALL be inside the summary dialog (LAY-DLG-001) and nowhere else in the workspace (no right-hand panel, no band), with every SUM-VIEW, SUM-EDIT and SUM-WORD criterion behaving as before.
-- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/pages/Customers.tsx`
+- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/pages/Customers.tsx`, `src/components/customers/SummaryDialog.tsx`
 
 ### SUM-R2 — Edit the summary
 **User story:** As a CSS, I want to update the summary with formatting so the account narrative stays current for everyone.

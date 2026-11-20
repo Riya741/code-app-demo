@@ -5,8 +5,8 @@
 | Spec | Prefix | Implemented in |
 |---|---|---|
 | customer-search | SRCH | `src/lib/search.ts`, `src/components/customers/SearchBox.tsx`, `src/lib/customerSource.ts`, `src/hooks/useCustomers.ts` |
-| workspace-layout | LAY | `src/App.tsx`, `src/pages/Customers.tsx`, `src/components/customers/TopBar.tsx`, `src/components/customers/Panel.tsx`, `src/hooks/useMediaQuery.ts` · planned summary dialog (LAY-T09, LAY-T11, LAY-T12; CR-20261120-2): `Customers.tsx`, `TopBar.tsx` (summary button slot), new `SummaryDialog.tsx`, `src/components/ui/dialog.tsx` and `alert-dialog.tsx` (reused); `Panel.tsx` unchanged (the band's `collapse` prop is removed) |
-| executive-summary | SUM | `src/components/customers/CustomerDetails.tsx`, `src/lib/wordDoc.ts` |
+| workspace-layout | LAY | `src/App.tsx`, `src/pages/Customers.tsx`, `src/components/customers/TopBar.tsx` (summary button slot), `src/components/customers/Panel.tsx`, `src/components/customers/SummaryDialog.tsx` (LAY-T11, LAY-T12), `src/hooks/useMediaQuery.ts`, `src/components/ui/dialog.tsx` and `alert-dialog.tsx` (reused) |
+| executive-summary | SUM | `src/components/customers/CustomerDetails.tsx`, `src/components/customers/SummaryDialog.tsx` (SUM-VIEW-006), `src/lib/wordDoc.ts` |
 | use-cases-panel | UCP | `src/components/customers/ParentActivity.tsx` (`UseCasesPanel`), `src/components/customers/ConfirmDelete.tsx` |
 | use-case-form | UCF | `src/components/customers/UseCaseForm.tsx` |
 | use-case-bulk | UCB | `src/components/customers/UseCaseBulkForm.tsx` |
@@ -40,17 +40,18 @@
 | `src/components/customers/ParentActivity.tsx` | use-cases-panel, events-panel, design-system |
 | `src/components/customers/UseCaseForm.tsx` | use-case-form, use-case-bulk (helpers) |
 | `src/components/customers/CustomerDetails.tsx` | executive-summary, rich-text |
+| `src/components/customers/SummaryDialog.tsx` | workspace-layout (LAY-DLG-001..014), executive-summary (SUM-VIEW-006) |
 | `src/lib/html.ts` | rich-text, security, export |
 | `src/lib/csv.ts` | export, security, data-grid |
 | `src/lib/search.ts` | customer-search |
 | `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json` | data-pipeline (PIPE-GEN-001..008), data-model (DATA-QUAL-001, -002, -004) |
 | `tests/unit/search.test.ts` | customer-search (SRCH-RANK-001..004) |
-| `tests/component/*.test.tsx` (Testing Library) | design-system (DS-COMP-003), use-cases-panel (UCP-DEL-002), workspace-layout (LAY-SHELL-001; planned LAY-PANEL-004, LAY-PANEL-007, LAY-PANEL-008 and LAY-DLG-001..014 in `Customers.test.tsx`, `SummaryDialog.test.tsx`, `TopBar.test.tsx` — the unreleased band tests there are rewritten by LAY-T09/LAY-T11, CR-20261120-2) |
+| `tests/component/*.test.tsx` (Testing Library) | design-system (DS-COMP-003), use-cases-panel (UCP-DEL-002), workspace-layout (LAY-SHELL-001, LAY-PANEL-004, LAY-PANEL-007, LAY-PANEL-008, LAY-DLG-001..014 in `Customers.test.tsx`, `SummaryDialog.test.tsx`, `TopBar.test.tsx`) |
 | `tests/integration/harness.ts`, `tests/integration/*.test.ts` | quality (QA-TEST-003), workbook-api (API-GEN-001..004, API-READ-004, API-WRITE-001, API-WRITE-007, API-DEL-001, API-DEL-002, API-SUMM-001, API-SUMM-002) |
 | `tests/component/UseCaseForm.test.tsx`, `tests/integration/use-case-edit.test.ts` | use-case-form (UCF-EDIT-002, UCF-EDIT-004, UCF-ADD-002, UCF-ADD-004; UCF-EDIT-007 evidence under UCF-EDIT-002 titles until UCF-T11) |
 | `tests/component/EventForm.test.tsx`, `tests/integration/event-edit.test.ts` | event-form (EVF-EDIT-002, EVF-ADD-003; EVF-EDIT-004 evidence under an EVF-EDIT-002 title until EVF-T10) |
 | `tests/integration/summary.test.ts` | workbook-api (API-SUMM-001, API-SUMM-002) |
-| `tests/component/CustomerDetails.test.tsx`, `tests/unit/fmtUtc.test.ts` | executive-summary (SUM-EDIT-001, SUM-EDIT-004..006, SUM-VIEW-004; planned SUM-VIEW-001, SUM-VIEW-006 and the `onStateChange` / `onSaved` tests for LAY-DLG-007..009 from SUM-T13) |
+| `tests/component/CustomerDetails.test.tsx`, `tests/unit/fmtUtc.test.ts` | executive-summary (SUM-EDIT-001, SUM-EDIT-004..006, SUM-VIEW-004; SUM-VIEW-001, SUM-VIEW-006, and LAY-DLG-007..009 through `onStateChange` / `onSaved`) |
 | `src/lib/customerSource.ts` (`saveSummary`), `src/hooks/useCustomers.ts` (`useSaveSummary`) | executive-summary (SUM-EDIT-001), client-data-layer |
 | `tests/hooks/test_hooks.py` | dev-agents (DEVA-GUARD-001..004, DEVA-GATE-001, DEVA-GATE-002, DEVA-CTX-001) |
 | `tests/unit/csv.test.ts` | export (EXP-CSV-001..003, EXP-CSV-005, EXP-NAME-001, EXP-NAME-002) |

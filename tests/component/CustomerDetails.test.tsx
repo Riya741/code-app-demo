@@ -7,9 +7,13 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { CustomerDetails } from "@/components/customers/CustomerDetails";
+import { CustomerDetails, type SummaryState } from "@/components/customers/CustomerDetails";
+import { downloadWordDoc } from "@/lib/wordDoc";
 
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
+
+// The Word download needs Blob URLs and an anchor click, which jsdom does not provide; the export test only checks the call.
+vi.mock("@/lib/wordDoc", () => ({ downloadWordDoc: vi.fn() }));
 
 // The real editor is lazy-loaded Quill, which needs browser layout and selection APIs that jsdom does not provide.
 // A plain textarea stands in for it; it keeps the same props (html, onChange).
@@ -48,14 +52,15 @@ afterEach(() => {
   vi.unstubAllGlobals();
   fetchMock.mockReset();
   vi.mocked(toast.success).mockClear();
+  vi.mocked(downloadWordDoc).mockClear();
 });
 
-function setup(row: Record<string, unknown> = ROW) {
+function setup(row: Record<string, unknown> = ROW, props: Partial<React.ComponentProps<typeof CustomerDetails>> = {}) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
   const invalidate = vi.spyOn(client, "invalidateQueries");
   const ui = (r: Record<string, unknown>) => (
     <QueryClientProvider client={client}>
-      <CustomerDetails row={r} />
+      <CustomerDetails row={r} {...props} />
     </QueryClientProvider>
   );
   const { rerender } = render(ui(row));
@@ -237,5 +242,158 @@ describe("CustomerDetails save and cancel", () => {
     setup();
 
     expect(screen.getByText(/^Last modified: Oct 16, 2026, 3:42\sPM UTC$/)).toBeInTheDocument();
+  });
+});
+
+// The summary inside the summary dialog (SUM-T13, CR-20261120-2). The dialog hosts this component; it renders on its own
+// here, as in the tests above. The dialog's own rules are tested in SummaryDialog.test.tsx.
+describe("CustomerDetails as the content of the summary dialog", () => {
+  it("SUM-VIEW-001 is still titled Executive Summary and does not repeat the customer name or ID", () => {
+    setup();
+
+    expect(screen.getByRole("heading", { level: 2, name: "Executive Summary" })).toBeInTheDocument();
+    expect(screen.queryByText(/Northwind Demo/)).toBeNull();
+    expect(screen.queryByText(/1007/)).toBeNull();
+  });
+
+  it("SUM-VIEW-006 shows the view, Last modified and Export", () => {
+    setup();
+    const header = screen.getByRole("heading", { level: 2, name: "Executive Summary" }).closest("header") as HTMLElement;
+
+    expect(header).toContainElement(screen.getByText(/^Last modified: /));
+    expect(header).toContainElement(screen.getByRole("button", { name: /Export/ }));
+    expect(header).not.toContainElement(screen.getByText("Old summary"));
+    expect(screen.getByText("Old summary")).toBeVisible();
+    // The band's collapse control is gone with its props.
+    expect(screen.queryByRole("button", { name: /(Collapse|Expand) executive summary/ })).toBeNull();
+  });
+
+  it("SUM-VIEW-006 opens the editor, and Save and Cancel work as before", async () => {
+    fetchMock.mockResolvedValue(reply(200, { id: 7, summary_last_modified: "2026-11-17T09:30:00" }));
+    const { user } = setup();
+
+    await user.click(screen.getByTitle("Click to edit"));
+    await screen.findByLabelText("Summary editor");
+    await user.click(cancelButton());
+    expect(screen.queryByLabelText("Summary editor")).toBeNull();
+    expect(screen.getByText("Old summary")).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    await editTo(user, NEW_HTML);
+    await user.click(saveButton());
+
+    await waitFor(() => expect(toast.success).toHaveBeenCalledWith("Executive summary updated"));
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toEqual({ executive_summary: NEW_HTML });
+    expect(screen.queryByLabelText("Summary editor")).toBeNull();
+  });
+
+  it("SUM-VIEW-006 exports the summary from the header", async () => {
+    const { user } = setup();
+
+    await user.click(screen.getByRole("button", { name: /Export/ }));
+
+    expect(downloadWordDoc).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(downloadWordDoc).mock.calls[0][1]).toBe("Northwind Demo - Executive Summary");
+    expect(toast.success).toHaveBeenCalledWith("Executive summary exported");
+  });
+
+  it("SUM-VIEW-006 puts the id it is given on the Executive Summary heading, so the dialog can be named by it", () => {
+    setup(ROW, { titleId: "summary-title" });
+
+    expect(screen.getByRole("heading", { level: 2, name: "Executive Summary" })).toHaveAttribute("id", "summary-title");
+  });
+});
+
+// What the dialog needs to know to decide whether closing asks, waits or just closes (LAY-DLG-007, -008, -009).
+describe("CustomerDetails state reporting", () => {
+  const lastState = (fn: ReturnType<typeof vi.fn>) => fn.mock.lastCall?.[0] as SummaryState;
+  const NOT_EDITING: SummaryState = { editing: false, dirty: false, saving: false };
+
+  it("LAY-DLG-007 reports not editing, not dirty and not saving while the summary is only viewed", () => {
+    const onStateChange = vi.fn();
+    setup(ROW, { onStateChange });
+
+    expect(lastState(onStateChange)).toEqual(NOT_EDITING);
+  });
+
+  it("LAY-DLG-007 reports editing but not dirty when the editor opens, dirty after an edit, and nothing after Cancel", async () => {
+    const onStateChange = vi.fn();
+    const { user } = setup(ROW, { onStateChange });
+
+    await user.click(screen.getByTitle("Click to edit"));
+    const editor = await screen.findByLabelText("Summary editor");
+    expect(lastState(onStateChange)).toEqual({ editing: true, dirty: false, saving: false });
+
+    await user.type(editor, " more");
+    expect(lastState(onStateChange)).toEqual({ editing: true, dirty: true, saving: false });
+
+    await user.click(cancelButton());
+    expect(lastState(onStateChange)).toEqual(NOT_EDITING);
+  });
+
+  it("LAY-DLG-007 is not dirty again when the text is back to what the editor was opened with", async () => {
+    const onStateChange = vi.fn();
+    const { user } = setup(ROW, { onStateChange });
+
+    const editor = await editTo(user, NEW_HTML);
+    expect(lastState(onStateChange).dirty).toBe(true);
+    await user.clear(editor);
+    await user.type(editor, "<p>Old summary</p>");
+
+    expect(lastState(onStateChange)).toEqual({ editing: true, dirty: false, saving: false });
+  });
+
+  it("LAY-DLG-008 reports saving, still editing and dirty, while the save is pending, and not saving when it has finished", async () => {
+    let finish!: (r: Response) => void;
+    fetchMock.mockReturnValue(new Promise<Response>((resolve) => (finish = resolve)));
+    const onStateChange = vi.fn();
+    const { user } = setup(ROW, { onStateChange });
+
+    await editTo(user, NEW_HTML);
+    await user.click(saveButton());
+
+    await waitFor(() => expect(lastState(onStateChange)).toEqual({ editing: true, dirty: true, saving: true }));
+
+    finish(reply(200, { id: 7, summary_last_modified: "2026-11-17T09:30:00" }));
+
+    await waitFor(() => expect(lastState(onStateChange)).toEqual(NOT_EDITING));
+  });
+
+  it("LAY-DLG-007 keeps reporting editing and dirty, and not saving, after a failed save", async () => {
+    fetchMock.mockResolvedValue(reply(423, { error: "code-app-data.xlsx is open in Excel. Close it and try again." }));
+    const onStateChange = vi.fn();
+    const { user } = setup(ROW, { onStateChange });
+
+    await editTo(user, NEW_HTML);
+    await user.click(saveButton());
+    await screen.findByRole("alert");
+
+    expect(lastState(onStateChange)).toEqual({ editing: true, dirty: true, saving: false });
+  });
+
+  it("LAY-DLG-009 calls onSaved once after a successful save, after the toast", async () => {
+    fetchMock.mockResolvedValue(reply(200, { id: 7, summary_last_modified: "2026-11-17T09:30:00" }));
+    const onSaved = vi.fn();
+    const { user } = setup(ROW, { onSaved });
+
+    await editTo(user, NEW_HTML);
+    expect(onSaved).not.toHaveBeenCalled();
+    await user.click(saveButton());
+
+    await waitFor(() => expect(onSaved).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(toast.success).mock.invocationCallOrder[0]).toBeLessThan(onSaved.mock.invocationCallOrder[0]);
+  });
+
+  it("LAY-DLG-009 does not call onSaved after a failed save, and keeps the editor, the draft and the message", async () => {
+    fetchMock.mockResolvedValue(reply(423, { error: "code-app-data.xlsx is open in Excel. Close it and try again." }));
+    const onSaved = vi.fn();
+    const { user } = setup(ROW, { onSaved });
+
+    await editTo(user, NEW_HTML);
+    await user.click(saveButton());
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Could not save: code-app-data.xlsx is open in Excel.");
+    expect(screen.getByLabelText("Summary editor")).toHaveValue(NEW_HTML);
+    expect(onSaved).not.toHaveBeenCalled();
   });
 });

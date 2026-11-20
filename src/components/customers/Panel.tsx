@@ -11,6 +11,7 @@ export function Panel({
   className,
   bodyClassName,
   headerClassName,
+  titleId,
 }: {
   title: string;
   count?: number;
@@ -22,6 +23,8 @@ export function Panel({
   className?: string;
   bodyClassName?: string;
   headerClassName?: string;
+  /** `id` of the title heading, so a dialog around the panel can name itself with `aria-labelledby` (LAY-DLG-003). */
+  titleId?: string;
 }) {
   return (
     <section
@@ -32,7 +35,7 @@ export function Panel({
     >
       <header className={cn("flex shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-0.5 border-b bg-slate-100/80 min-h-8 px-3.5 py-1 dark:bg-slate-800/60", headerClassName)}>
         <div className="flex shrink-0 items-center gap-2">
-          <h2 className="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-title">{title}</h2>
+          <h2 id={titleId} className="whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-title">{title}</h2>
           {count != null && (
             <span className="rounded-full bg-title/10 px-2 text-[10.5px] leading-4 font-semibold text-title ring-1 ring-inset ring-title/20">
               {count}

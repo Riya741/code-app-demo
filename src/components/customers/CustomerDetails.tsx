@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Check, Loader2, Pencil, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,20 +24,52 @@ export function fmtUtc(v: unknown): string | null {
 
 const RichTextEditor = lazy(() => import("@/components/customers/RichTextEditor").then((m) => ({ default: m.RichTextEditor })));
 
-/** Shows only the executive summary. Name and ID live in the top bar; everything else stays internal. Click the text to edit it. */
-export function CustomerDetails({ row, className }: { row: Row; className?: string }) {
+/** What `CustomerDetails` tells its host: the editor is open, holds unsaved changes, or a save is running (LAY-DLG-007, -008). */
+export type SummaryState = { editing: boolean; dirty: boolean; saving: boolean };
+
+/**
+ * Shows only the executive summary. Name and ID live in the top bar; everything else stays internal. Click the text to edit it.
+ * It is shown inside the summary dialog (SUM-VIEW-006). The host can follow `onStateChange` to decide whether closing needs
+ * a confirmation or must wait, and `onSaved` to close after a successful save. Without them it works on its own.
+ */
+export function CustomerDetails({
+  row,
+  className,
+  titleId,
+  onStateChange,
+  onSaved,
+}: {
+  row: Row;
+  className?: string;
+  /** `id` for the "Executive Summary" heading, so a dialog can reference it with `aria-labelledby`. */
+  titleId?: string;
+  /** Called with the current state when the component mounts and whenever `editing`, `dirty` or `saving` changes. */
+  onStateChange?: (state: SummaryState) => void;
+  /** Called once after a successful save, after the success toast. */
+  onSaved?: () => void;
+}) {
   const summary = typeof row.executive_summary === "string" ? row.executive_summary.trim() : "";
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
+  // The text the editor was opened with. The editor reports only real edits, so draft !== opened means unsaved changes.
+  const [opened, setOpened] = useState("");
   const saveSummary = useSaveSummary();
   const saving = saveSummary.isPending;
+  const dirty = editing && draft !== opened;
   const { resolvedTheme } = useTheme();
   const dark = resolvedTheme === "dark";
   const modified = fmtUtc(row.summary_last_modified);
 
+  const onStateChangeRef = useRef(onStateChange);
+  onStateChangeRef.current = onStateChange;
+  useEffect(() => {
+    onStateChangeRef.current?.({ editing, dirty, saving });
+  }, [editing, dirty, saving]);
+
   const startEdit = () => {
     saveSummary.reset();
     setDraft(summary);
+    setOpened(summary);
     setEditing(true);
   };
   const cancel = () => {
@@ -63,6 +95,7 @@ export function CustomerDetails({ row, className }: { row: Row; className?: stri
         onSuccess: () => {
           setEditing(false);
           toast.success("Executive summary updated");
+          onSaved?.();
         },
       },
     );
@@ -88,6 +121,7 @@ export function CustomerDetails({ row, className }: { row: Row; className?: stri
           </div>
         )
       }
+      titleId={titleId}
       className={cn("border-stone-300/70 bg-stone-100 dark:border-stone-700/60 dark:bg-stone-900/50", className)}
       headerClassName="border-stone-300/70 bg-stone-200/70 dark:border-stone-700/60 dark:bg-stone-800/60"
     >

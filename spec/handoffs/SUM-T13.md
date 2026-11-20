@@ -2,147 +2,99 @@
 contract: task-handoff.v1
 task: SUM-T13
 agent: AGENT-IMPLEMENTER
-covers: [SUM-VIEW-001]
-files_changed: [src/components/customers/CustomerDetails.tsx, tests/component/CustomerDetails.test.tsx]
-tests: [tests/component/CustomerDetails.test.tsx]
-gates: {G1: pass, G3: pass, G4: pass, G5: n/a}
-verdict: pending
+covers: [SUM-VIEW-001, SUM-VIEW-006]
+files_changed: [src/components/customers/CustomerDetails.tsx, src/components/customers/Panel.tsx, tests/component/CustomerDetails.test.tsx]
+tests: [tests/component/CustomerDetails.test.tsx, tests/component/SummaryDialog.test.tsx]
+gates: {G1: pass, G3: pass, G4: pass, G5: pass}
+verdict: pass
 reviewer: AGENT-REVIEWER
 ---
-> **SUPERSEDED 2026-11-20 by [CR-20261120-2](../changes/CR-20261120-2-summary-dialog.md) (spec author).** Everything
-> below is the record of the **band** delivery, kept unchanged as history (reviewed pass for code and tests only; G5
-> never done). SUM-T13 was re-scoped to SUM-VIEW-001 and SUM-VIEW-006 (the summary content inside a dialog, no collapse
-> props), so to keep lint check 12 valid the front matter `covers` was reset to the one ID that is still on the Covers
-> line and proven here (SUM-VIEW-001), and `verdict` from `pass` to `pending`. The reviewer's verdict below does not apply
-> to the re-scoped task. The implementer writes a fresh hand-off when the new scope is delivered.
+# Hand-off: SUM-T13 Summary content in the dialog (done together with LAY-T09, LAY-T11, LAY-T12 and LAY-T08)
 
-# Hand-off: SUM-T13 Summary in the workspace band (delivered in one change with LAY-T09; the full write-up is spec/handoffs/LAY-T09.md)
-
-This one change implements three tasks: **LAY-T09** (band layout and the `Panel` `collapse` prop), **SUM-T13**
-(`CustomerDetails` takes the collapse props and disables collapsing while editing or saving; Covers SUM-VIEW-001,
-SUM-VIEW-005, LAY-BAND-007) and **LAY-T08** (Covers LAY-PANEL-004: `autoSaveId="terra-split-v-v1"` on the vertical group,
-misleading comment fixed). The front matter `covers` lists only LAY-T09's Covers line (lint check 12); the SUM-T13 and
-LAY-T08 IDs are in the evidence table below. LAY-T10 (storing the collapsed state), any AI behaviour and LAY-TOP-004 are
-not built.
+This replaces the hand-off of the superseded band delivery. SUM-T13 is the `CustomerDetails` half of the change; the dialog
+that hosts it is LAY-T11.md and LAY-T12.md.
 
 ## What changed
-- `Panel` has an optional `collapse?: { collapsed; onToggle(); disabled? }`. When set, the header gets a real `<button>`
-  with `aria-expanded` and `aria-controls` = the body id (`useId`), whose accessible name is `Collapse <title>` /
-  `Expand <title>` with the title in lower case, so "Executive Summary" gives exactly "Collapse executive summary" /
-  "Expand executive summary" (the catalog §6 names) without a label prop; icon ChevronDown / ChevronRight (lucide), focus
-  ring `ring-ring`, `disabled` honoured. The body gets `hidden` when collapsed but stays mounted. A layout effect moves
-  focus to the toggle when the panel collapses while `document.activeElement` is inside the body (LAY-BAND-006). The
-  header drops its bottom border while collapsed. Without `collapse` the panel renders as before (the body div now also
-  carries an `id`, nothing else).
-- `CustomerDetails` takes optional `collapsed` and `onToggleCollapsed`; when `onToggleCollapsed` is given it passes
-  `collapse` to its `Panel` with `disabled: editing || saving` (`saveSummary.isPending`). Without the props nothing
-  changes. No other summary behaviour was touched.
-- `Customers.tsx`: the horizontal group (`terra-split-h-v3`) and the right-hand panel are gone. Desktop is
-  `div flex h-full flex-col gap-4` -> `CustomerDetails` (`max-h-[40%] shrink-0`, body scrolls via the panel's
-  `overflow-auto`) -> `div relative min-h-0 flex-1` holding the `ResizablePanelGroup direction="vertical"
-  autoSaveId="terra-split-v-v1"` (`absolute inset-0`, the same sized-positioned-parent pattern as before) with
-  `usecases` 60 (min 20) and `events` 40 (min 20). Narrow: band (`max-h-[60vh]`), Use Cases, Events stacked as before.
-  The collapsed flag is `useState(false)` in `Customers`, above the `key={key}` workspace, so it survives a customer
-  change; no storage (LAY-T10). Comments updated to the new layout.
+`CustomerDetails` lost the band's `collapsed`, `onToggleCollapsed` and the `collapse` pass-through to `Panel`. It gained
+`onStateChange?({ editing, dirty, saving })` and `onSaved?()`: `onStateChange` is called when the component mounts and
+whenever one of the three changes; `onSaved` once after a successful save, after the toast. `dirty` is "the editor is open
+and its draft differs from the text it was opened with" (the design's definition; the opening text is kept in state so a
+background refetch of the row cannot change it); `saving` is the mutation's pending state, so after a failed save
+`editing` and `dirty` stay true. Without the callbacks it behaves exactly as before (the 12 earlier tests are unchanged;
+Cancel returns to the view). It also takes an optional `titleId`, passed to `Panel`'s heading, so a dialog can name itself
+with `aria-labelledby` (see the open question). `Panel` has the matching optional `titleId` and is otherwise the
+LAY-SHELL-001 shell (LAY-T09.md). Save, export, `fmtUtc`, sanitising and the stone colours are untouched.
 
 ## Criteria -> evidence
 | Requirement | Evidence (test title or manual check) |
 |---|---|
-| LAY-PANEL-006 | `Customers.test.tsx`: "LAY-PANEL-006 shows the Executive Summary band before Use Cases and Events, with no horizontal split or right-hand panel"; "LAY-PANEL-006 splits Use Cases over Events in one vertical group of two panels at 60% and 40%". Pixel layout at >= 1024px: manual G5 |
-| LAY-PANEL-004 (LAY-T08) | `Customers.test.tsx`: "LAY-PANEL-004 gives the vertical Use Cases / Events group the autoSaveId terra-split-v-v1 and renders no other group". Saving on drag and restore after reload: manual G5 (see surprises) |
-| LAY-BAND-001 | `Customers.test.tsx`: "LAY-BAND-001 puts the band in the workspace as a full-width sibling above the grids, not inside any panel"; "LAY-BAND-001 keeps the band above both grids and the collapsed state across a customer change when narrow" |
-| LAY-BAND-002 | `Customers.test.tsx`: "LAY-BAND-002 starts expanded; the control collapses the band to its header row and expands it again"; "LAY-BAND-002 keeps the collapsed state when another customer is picked (the state lives above the keyed workspace)". `Panel.test.tsx`: "LAY-BAND-002 hides the body when collapsed but keeps it mounted, keeps the header visible, and expanding restores it"; "LAY-BAND-002 can start collapsed". The grids growing into the freed height: manual G5 |
-| LAY-BAND-004 | `Customers.test.tsx`: "LAY-BAND-004 caps the expanded band at 40% of the workspace and lets its body scroll" (class check only). Real heights: manual G5 |
-| LAY-BAND-005 | `Customers.test.tsx`: "LAY-BAND-005 stacks the band first, then Use Cases, then Events, with no resizable group"; "LAY-BAND-005 limits the expanded band to 60vh and shows only the header row when collapsed" |
-| LAY-BAND-006 | `Panel.test.tsx`: "LAY-BAND-006 names the toggle Collapse executive summary when expanded and Expand executive summary when collapsed"; "LAY-BAND-006 sets aria-expanded to match the state and aria-controls to the body that holds the content"; "LAY-BAND-006 moves the focus to the toggle when the band collapses while focus is inside the body"; "LAY-BAND-006 does not steal the focus when the band collapses while focus is elsewhere"; "LAY-BAND-006 toggles with the Enter key and with the Space key". Visible focus ring: manual G5 |
-| LAY-BAND-007 | `Panel.test.tsx`: "LAY-BAND-007 disables the toggle when collapse.disabled is set and does not toggle on click". `CustomerDetails.test.tsx`: "LAY-BAND-007 leaves the collapse control enabled while the summary is only being viewed"; "... disables the collapse control while the editor is open and enables it again after Cancel"; "... keeps the collapse control disabled while a save is pending and enables it when the save finishes"; "... keeps the collapse control disabled after a failed save, because the editor is still open" |
-| SUM-VIEW-001 (SUM-T13) | `CustomerDetails.test.tsx`: "SUM-VIEW-001 is still titled Executive Summary and does not repeat the customer name or ID" |
-| SUM-VIEW-005 (SUM-T13) | `CustomerDetails.test.tsx`: "SUM-VIEW-005 shows the view, Last modified and Export in the collapsible band, and keeps the view mounted when collapsed"; "SUM-VIEW-005 opens the editor inside the band, and Save and Cancel work as before with the collapse props passed"; "SUM-VIEW-005 exports the summary from the band header"; "SUM-VIEW-005 behaves as before when no collapse props are passed: no collapse control". The 12 existing tests in that file pass unchanged |
-| LAY-SHELL-001 | `Panel.test.tsx`: the two existing tests pass unchanged; added "LAY-SHELL-001 shows no toggle button and never hides the body when collapse is absent" |
+| SUM-VIEW-001 | `CustomerDetails.test.tsx`: "SUM-VIEW-001 is still titled Executive Summary and does not repeat the customer name or ID" (title kept; it now renders the component through `setup()`, since the band host and its props are gone) |
+| SUM-VIEW-006 | `CustomerDetails.test.tsx`: "SUM-VIEW-006 shows the view, Last modified and Export" (also: no collapse control); "SUM-VIEW-006 opens the editor, and Save and Cancel work as before"; "SUM-VIEW-006 exports the summary from the header"; "SUM-VIEW-006 puts the id it is given on the Executive Summary heading, so the dialog can be named by it". `SummaryDialog.test.tsx`: "LAY-DLG-003 mounts its content only while open and shows the summary, Last modified and Export" (the summary is inside the dialog). `Customers.test.tsx`: "LAY-PANEL-007 shows only Use Cases over Events: …" (nowhere else in the workspace). Every other SUM-VIEW/EDIT/WORD behaviour inside the dialog: manual G5 |
+| LAY-DLG-007/008/009 (reporting, LAY-T12) | `CustomerDetails.test.tsx`: "LAY-DLG-007 reports not editing, not dirty and not saving while the summary is only viewed"; "LAY-DLG-007 reports editing but not dirty when the editor opens, dirty after an edit, and nothing after Cancel"; "LAY-DLG-007 is not dirty again when the text is back to what the editor was opened with"; "LAY-DLG-008 reports saving, still editing and dirty, while the save is pending, and not saving when it has finished"; "LAY-DLG-007 keeps reporting editing and dirty, and not saving, after a failed save"; "LAY-DLG-009 calls onSaved once after a successful save, after the toast"; "LAY-DLG-009 does not call onSaved after a failed save, and keeps the editor, the draft and the message" |
 
-Verified to fail against the old code: with `Panel.tsx`, `CustomerDetails.tsx` and `Customers.tsx` temporarily reset to
-`HEAD` (then restored), 22 of the 62 component tests failed: every `LAY-BAND-002/004/006/007` test, both
-`LAY-PANEL-006` tests, `LAY-PANEL-004`, the `LAY-BAND-001` desktop test, the narrow `LAY-BAND-005` 60vh/collapse test, the
-narrow `LAY-BAND-001` test and the two band `SUM-VIEW-005` tests. The tests that pass on both are the ones that assert
-behaviour that did not change (narrow stack order, `SUM-VIEW-001` title, `SUM-VIEW-005` "no props" and export, the
-`LAY-SHELL-001` tests).
+Tests retitled, deleted and replaced, as the task lists (rewritten, not weakened): the three kept band tests became
+`SUM-VIEW-006 shows the view, Last modified and Export` (the "keeps the view mounted when collapsed" half went with the
+collapse), `SUM-VIEW-006 opens the editor, and Save and Cancel work as before`, `SUM-VIEW-006 exports the summary from the
+header`. Deleted with the props: `SUM-VIEW-005 behaves as before when no collapse props are passed: no collapse control`
+(retired by SUM-VIEW-006; SUM-VIEW-005 is Deprecated). The four `LAY-BAND-007 …` tests (control enabled in view; disabled
+while the editor is open, enabled after Cancel; disabled while a save is pending; disabled after a failed save) became the
+five `onStateChange` tests and two `onSaved` tests listed above (LAY-DLG-007/008/009). The `Band` / `setupBand` host and
+the `useState` import were removed; `setup()` takes an optional second argument for props, so the 12 earlier tests are
+unchanged. The `@/lib/wordDoc` mock stays.
 
-Test helpers: `Customers.test.tsx` stubs `window.matchMedia` per describe block, seeds the query cache with two fictional
-customers (never stale, so nothing is fetched), and replaces `SearchBox` and `ParentActivity` with small stand-ins so the
-test stays on layout. It also wraps `ResizablePanelGroup` to record the props it is rendered with (the real group still
-renders). `CustomerDetails.test.tsx` now mocks `@/lib/wordDoc` (no existing test used the export).
+Verified to fail against the previous code: with `CustomerDetails.tsx` and `Panel.tsx` reset to `HEAD`, the `titleId` test and
+six of the seven `onStateChange` / `onSaved` tests failed (no such props; "does not call onSaved after a failed save" passes
+vacuously without the prop); the other `SUM-VIEW-006` and `SUM-VIEW-001` tests pass on
+both, as they assert behaviour that did not change.
 
 ## Gates
 | Gate | Command | Result |
 |---|---|---|
-| G1 | `py -I spec/scripts/spec_lint.py` | spec_lint: 26 specs, 519 requirements, 237 tasks, 12 agents, 6 contracts, 5 prompts, 12 hand-offs, 0 error(s) |
-| G3 | `npm run lint` · `npm run typecheck` | lint 0 errors, 8 warnings (all `react-refresh/only-export-components`, in files this change does not add; the `CustomerDetails.tsx` one is the existing `fmtUtc` export); typecheck clean |
-| G4 | `npm test` | 14 files passed; 127 passed, 1 expected fail (`it.fails`), 128 total |
+| G1 | `py -I spec/scripts/spec_lint.py` | spec_lint: 26 specs, 544 requirements, 239 tasks, 12 agents, 6 contracts, 5 prompts, 16 hand-offs, 0 error(s) |
+| G3 | `npm run lint` · `npm run typecheck` | lint 0 errors, 8 warnings (the `CustomerDetails.tsx` one is the existing `fmtUtc` export); typecheck clean |
+| G4 | `npm test` | 16 files passed; 163 passed + 1 expected fail (`it.fails`), 164 total |
 | G5 | manual | not done: no browser available to the implementer |
 
-Smoke test: with a generated fixture workbook (`--customers 8`, kept in the session scratchpad, not in the repo) the dev
-server started on http://localhost:3001 (port 3000 was already taken by another process, so Vite moved on) and served `/`,
-`/src/pages/Customers.tsx`, `/src/components/customers/Panel.tsx` and `/api/workbook/table/customer` with HTTP 200. That
-proves it compiles and serves, nothing about how it looks.
-
-## G5 manual checks a person still has to do (light and dark themes, >= 1024px and < 1024px)
-1. At >= 1024px: the band spans the full width above Use Cases over Events; the page does not scroll (LAY-PANEL-001); no
-   right-hand panel. Check the `absolute inset-0` group really fills the flex-1 wrapper (the grids must not collapse to
-   zero height or overflow the viewport).
-2. Short summary: band is as tall as its content. Long summary: band stops at 40% of the workspace and scrolls inside;
-   the header stays put (LAY-BAND-004). Empty summary: "No executive summary yet. Click to add one." shows.
-3. Collapse: only the header row remains (title, Last modified, Export), the grids take the freed height; expand
-   restores; the chevron and the focus ring are visible in both themes (A11Y-KEY-005). Keyboard: Tab to the chevron,
-   Enter and Space toggle it.
-4. Collapse, then pick another customer: still collapsed. Reload: expanded again (storage is LAY-T10).
-5. Open the editor: the chevron is dimmed and inert; Save in progress: still inert; Cancel / successful Save: usable.
-6. Repeat the SUM-T09 checks inside the band: click and Enter to edit, lazy editor, Cancel, Save (toast, new Last
-   modified), save error (close Excel lock case), Word export; HTML sanitising still applies.
-7. LAY-PANEL-004: drag the Use Cases / Events divider, reload, open a customer: split restored; DevTools ->
-   localStorage shows `react-resizable-panels:terra-split-v-v1` and the old `terra-split-h-v3` entry is no longer touched.
-8. < 1024px: band (<= 60vh, scrolls inside), Use Cases, Events stacked, the page scrolls; collapsed band is just its
-   header.
+## G5 manual checks a person still has to do (both themes, >= 1024px and < 1024px)
+Inside the dialog (LAY-T11.md has the dialog's own list): view, empty state ("No executive summary yet. Click to add
+one."), Last modified, click and Enter to edit, the lazy editor loads, Cancel returns to the view without closing the
+dialog, Save (toast, dialog closes, reopening shows the new Last modified), save error (Excel open: "Could not save: …",
+draft kept), Word export, HTML sanitising; the stone colours in both themes.
 
 ## Open questions
-- None blocking. The G5 list above needs a person; the orchestrator closes tasks, requirement statuses, gap register
-  and traceability.
-- Housekeeping for the orchestrator: lint check 12 requires one file per task, so `spec/handoffs/SUM-T13.md` and
-  `spec/handoffs/LAY-T08.md` do not exist; copy this file if wanted (with `task:` and `covers:` changed to that task's
-  own line).
-
-## Surprises
-- The saved-split behaviour cannot be observed in jsdom: Vitest loads `react-resizable-panels` through Node's `node`
-  export condition, which is the server build; there its layout effects never compute or save a layout (a minimal group
-  with an `autoSaveId` wrote nothing to `localStorage`). So the LAY-PANEL-004 test checks the `autoSaveId` handed to the
-  group, not a save/restore round trip. Changing `vitest.config.ts` (for example inlining that package) would make it
-  testable, but that file is outside this task, so I left it.
-- Port 3000 was already in use during the smoke test (see above).
-- Percent `max-h-[40%]` works because the chain main (`flex-1 min-h-0` in a `h-screen` column) -> `h-full` column has a
-  definite height; this is the part most likely to need a tweak after G5.
+- `titleId` on `CustomerDetails` is not in the design's interface line for the component (`Panel`'s is). Needed for
+  LAY-DLG-003; please confirm or choose another way.
+- `onStateChange` is also called once on mount with all three false (so a host always knows the state); the design says
+  "whenever one of the three changes". Say if you want the first call dropped.
+- None blocking.
 
 ## Review
-**Verdict: pass** (AGENT-REVIEWER, 2026-11-20) for the code and tests. **G5 is not done**, so the three tasks (LAY-T09,
-SUM-T13, LAY-T08) stay 🔄 until the owner records the manual checks above. G1, G3 and G4 pass (spec lint 0 errors; lint
-0 errors, 8 existing warnings; typecheck clean; 14 files, 127 passed + 1 expected fail).
+**G5 recorded 2026-11-20 by the owner:** all 11 manual checks passed in light and dark themes at ≥ 1024px and < 1024px; the missing focus ring on the dialog container (A11Y-KEY-005 finding) was accepted.
+
+**Verdict: pass** (AGENT-REVIEWER, 2026-11-20) for code and tests of the one change LAY-T09, LAY-T11, LAY-T12, LAY-T08,
+SUM-T13. **G5 is not done**: the task stays 🔄 until the owner records the manual checks. G1, G3, G4 pass (spec lint 0 errors;
+lint 0 errors, 8 existing warnings; typecheck clean; 16 files, 163 passed + 1 expected fail). The superseded band
+delivery and its earlier review are in git at b16dec2.
 
 Findings (no blocker, no major):
-- [minor] LAY-BAND-004, LAY-PANEL-006, LAY-BAND-002 (grids take the freed height): the jsdom tests assert classes and
-  structure only; the 40% cap, the internal scroll and the remainder fill are layout and depend on G5 (items 1-3).
-  Reading the code, the percent cap should resolve (`main` is `lg:min-h-0 lg:flex-1` in an `h-screen` flex column, then
-  `h-full`, then `max-h-[40%]`); if it did not, the band would be uncapped and push the grids out. Check in Chrome and Edge.
-- [minor] LAY-PANEL-004: the only automated evidence is the `autoSaveId="terra-split-v-v1"` prop and that no other group
-  renders (save and restore belong to react-resizable-panels, which loads its server build in jsdom). LAY-PANEL-004 and
-  LAY-T08 go to ✅ only after G5 item 7 (drag, reload, split restored) is recorded.
-- [minor] LAY-BAND-006 / Article V: the toggle's name is built as `Collapse|Expand <title in lower case>` instead of being
-  read from the messages catalog. It matches the catalog exactly for "Executive Summary" and both names are pinned by
-  tests; a future Panel title would change the name silently. Accepted for now.
-- [minor] Front matter `gates: {G5: n/a}` understates that G5 applies and is outstanding (the contract has no "pending");
-  set it to `pass` when the owner's checks are recorded.
-- [minor] LAY-BAND-001, -005: `ParentActivity` and `SearchBox` are mocked in `Customers.test.tsx`, so the grids are
-  stand-ins; ordering and nesting are covered, `max-h-[60vh]` is a class assertion (G5 item 8).
+- [minor] LAY-DLG-007/008: `requestClose` (SummaryDialog.tsx) reads the state `CustomerDetails` reports from an effect, a
+  few ms behind; an Esc/×/overlay in that window after Save or the first keystroke sees the old state. Not reachable by
+  a person in practice; optional hardening: derive `saving` synchronously (e.g. `useIsMutating`).
+- [minor] LAY-DLG-006/007: the `discarded` ref in SummaryDialog.tsx is dead (reset by the `[open]` effect before the
+  confirm's deferred `onCloseAutoFocus`); focus still lands on the reopen button through the Dialog's own handler. Tested.
+- [minor] A11Y-KEY-005: the dialog container that takes the initial focus has `outline-none`; decide at G5 whether to add
+  a focus-visible style or record the exception in the 002 design.
+- [minor] LAY-DLG-001/002 (CR question h): no test re-picks the already-selected customer from the top-bar search without
+  clearing; the code reopens it without a remount.
+- [minor] LAY-DLG-012: tailwindcss-animate enter/exit classes are not merged away, so the narrow-screen sheet may sweep in
+  from the upper left; check at G5.
+- [minor] CLAUDE.md rule 6: `CustomerDetails.titleId`, `onStateChange` on mount, `left-0 top-0` instead of `inset-0`,
+  the moved × (`[&>button]:right-3 top-2`, header `pr-10`) and the destructive *Discard* go beyond the design text;
+  all accepted, the design and Source fields are updated at close.
+- [minor] Hand-off accuracy: front matter `G5: n/a` although G5 applies (the contract has no "pending"); LAY-T09
+  `files_changed` lists `tests/component/Panel.test.tsx`, which equals HEAD.
 
-Criteria: LAY-BAND-002, -006, -007 and SUM-VIEW-001/005 are proven by behavioural tests (toggle, `aria-expanded`/
-`aria-controls`, Enter/Space, focus move, disabled while editing, saving and after a failed save, the 12 existing
-CustomerDetails tests unchanged). LAY-PANEL-006 and LAY-BAND-001/004/005 are implemented and proven structurally.
-Scope: no localStorage (LAY-T10), no AI, no right-hand panel code, no dead imports, no `fetch` in components, tokens only,
-no test weakened or deleted.
+Checked clean: every Covers ID has tests titled with its ID; `summaryOpen` only set by select/clear (no effect on
+`selected`); focus start, trap and return on every close path; `Panel.tsx` = HEAD shell + `titleId`; `Panel.test.tsx`
+identical to HEAD; no `src/components/ui/` edits, no `fetch` in components, no AI code, no band leftovers; texts match
+catalog §6; tokens only; the 12 earlier CustomerDetails tests and SUM-VIEW-001 unchanged; no test weakened.

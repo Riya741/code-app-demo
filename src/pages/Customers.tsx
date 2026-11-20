@@ -1,7 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { FileText } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { TopBar } from "@/components/customers/TopBar";
 import { SearchBox } from "@/components/customers/SearchBox";
-import { CustomerDetails } from "@/components/customers/CustomerDetails";
+import { SummaryDialog } from "@/components/customers/SummaryDialog";
 import { EventsPanel, UseCasesPanel } from "@/components/customers/ParentActivity";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { useCustomers } from "@/hooks/useCustomers";
@@ -24,12 +26,26 @@ const Customers = () => {
     () => (picked && picked.id != null ? rows.find((r) => r.id === picked.id) ?? picked : picked),
     [picked, rows],
   );
+  // The Executive Summary dialog (LAY-DLG-001). It opens because the user selects a customer, never because `selected`
+  // changed: the selection handlers below set it, no effect watches `selected`. The re-pick of the row after a refetch
+  // (a summary save, Refresh) builds a new `selected` object but calls no handler, so it cannot reopen or reset the
+  // dialog (LAY-DLG-002). Not stored anywhere (Article II).
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const summaryButtonRef = useRef<HTMLButtonElement>(null);
+  const select = (row: Record<string, unknown>) => {
+    setSelected(row);
+    setSummaryOpen(true);
+  };
+  const clear = () => {
+    setSelected(null);
+    setSummaryOpen(false);
+  };
   const desktop = useMediaQuery("(min-width: 1024px)");
   const errorMessage = error ? (error as Error).message : undefined;
 
   return (
     // With a customer selected on desktop the page is exactly one viewport tall (top bar + flexible main),
-    // so Use Cases and Events are always both on screen and scroll internally instead of the page.
+    // so Use Cases and Events are always on screen and scroll internally instead of the page.
     <div className={`relative overflow-hidden ${selected && desktop ? "flex h-screen flex-col" : "min-h-screen"}`}>
       {/* Ambient backdrop: muted navy/steel glow + fine grid, fades out toward the bottom */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
@@ -53,9 +69,25 @@ const Customers = () => {
             ? { name: String(selected.parent_name ?? ""), id: selected.parent_id == null ? undefined : String(selected.parent_id) }
             : undefined
         }
-        onClear={() => setSelected(null)}
+        onClear={clear}
         onRefresh={() => refetch()}
         refreshing={isFetching}
+        summaryButton={
+          selected ? (
+            // Reopens the summary dialog (LAY-DLG-010). The label shows from 640px; the name is always "Executive summary".
+            <Button
+              ref={summaryButtonRef}
+              variant="ghost"
+              size="sm"
+              aria-label="Executive summary"
+              className="h-7 shrink-0 gap-1.5 px-2 text-xs"
+              onClick={() => setSummaryOpen(true)}
+            >
+              <FileText className="h-3.5 w-3.5" aria-hidden />
+              <span className="hidden sm:inline">Executive summary</span>
+            </Button>
+          ) : undefined
+        }
       >
         {selected && (
           <SearchBox
@@ -64,7 +96,7 @@ const Customers = () => {
             loading={isLoading}
             error={errorMessage}
             onRetry={() => refetch()}
-            onSelect={setSelected}
+            onSelect={select}
           />
         )}
       </TopBar>
@@ -75,41 +107,54 @@ const Customers = () => {
         }`}
       >
         {selected ? (
-          // Executive Summary on the right, Use Cases over Events on the left. On desktop every divider
-          // is draggable (sizes are remembered); on small screens the panels simply stack.
+          // Use Cases over Events, both full width. On desktop the divider between them is draggable and its size is
+          // remembered (`autoSaveId`, LAY-PANEL-004); on small screens they simply stack and the page scrolls. The
+          // Executive Summary is not part of the workspace: it opens as a dialog over it (LAY-DLG-001).
           // The use case / event procs take the parent record's `id`.
           (() => {
             const parentId = selected.id == null ? null : Number(selected.id);
             const key = String(selected.id ?? selected.parent_id);
             // How the subsidiary table refers to this customer: by `id` (as the activity procedures do), else by `parent_id`.
             const customerKeys = [selected.id, selected.parent_id].filter((v) => v != null).map(Number);
+            // Keyed by customer like the workspace, so a customer change drops the dialog's editor state (LAY-DLG-014).
+            const summary = (
+              <SummaryDialog
+                key={`summary-${key}`}
+                row={selected}
+                open={summaryOpen}
+                onOpenChange={setSummaryOpen}
+                returnFocusRef={summaryButtonRef}
+              />
+            );
             if (!desktop) {
               return (
-                <div key={key} className="flex flex-col gap-4">
-                  <CustomerDetails row={selected} className="max-h-[60vh]" />
-                  <UseCasesPanel parentId={parentId} customerKeys={customerKeys} customerName={String(selected.parent_name ?? '')} className="max-h-[60vh]" />
-                  <EventsPanel parentId={parentId} customerKeys={customerKeys} customerName={String(selected.parent_name ?? '')} className="max-h-[60vh]" />
-                </div>
+                <>
+                  <div key={key} className="flex flex-col gap-4">
+                    <UseCasesPanel parentId={parentId} customerKeys={customerKeys} customerName={String(selected.parent_name ?? '')} className="max-h-[60vh]" />
+                    <EventsPanel parentId={parentId} customerKeys={customerKeys} customerName={String(selected.parent_name ?? '')} className="max-h-[60vh]" />
+                  </div>
+                  {summary}
+                </>
               );
             }
             return (
-              <ResizablePanelGroup key={key} direction="horizontal" autoSaveId="terra-split-h-v3" className="h-full">
-                <ResizablePanel id="left" order={1} defaultSize={60} minSize={25} className="relative">
-                  <ResizablePanelGroup direction="vertical" className="absolute inset-0">
-                    <ResizablePanel id="usecases" order={1} defaultSize={60} minSize={20} className="relative">
-                      <UseCasesPanel parentId={parentId} customerKeys={customerKeys} customerName={String(selected.parent_name ?? '')} className="absolute inset-0" />
-                    </ResizablePanel>
-                    <ResizableHandle withHandle className={handleCls} />
-                    <ResizablePanel id="events" order={2} defaultSize={40} minSize={20} className="relative">
-                      <EventsPanel parentId={parentId} customerKeys={customerKeys} customerName={String(selected.parent_name ?? '')} className="absolute inset-0" />
-                    </ResizablePanel>
-                  </ResizablePanelGroup>
-                </ResizablePanel>
-                <ResizableHandle withHandle className={handleCls} />
-                <ResizablePanel id="summary" order={2} defaultSize={40} minSize={20} className="relative">
-                  <CustomerDetails row={selected} className="absolute inset-0" />
-                </ResizablePanel>
-              </ResizablePanelGroup>
+              <>
+                <div key={key} className="flex h-full flex-col">
+                  {/* The group is absolutely positioned inside a flex-1 wrapper: it needs a sized, positioned parent to get a height. */}
+                  <div className="relative min-h-0 flex-1">
+                    <ResizablePanelGroup direction="vertical" autoSaveId="terra-split-v-v1" className="absolute inset-0">
+                      <ResizablePanel id="usecases" order={1} defaultSize={60} minSize={20} className="relative">
+                        <UseCasesPanel parentId={parentId} customerKeys={customerKeys} customerName={String(selected.parent_name ?? '')} className="absolute inset-0" />
+                      </ResizablePanel>
+                      <ResizableHandle withHandle className={handleCls} />
+                      <ResizablePanel id="events" order={2} defaultSize={40} minSize={20} className="relative">
+                        <EventsPanel parentId={parentId} customerKeys={customerKeys} customerName={String(selected.parent_name ?? '')} className="absolute inset-0" />
+                      </ResizablePanel>
+                    </ResizablePanelGroup>
+                  </div>
+                </div>
+                {summary}
+              </>
             );
           })()
         ) : (
@@ -120,7 +165,7 @@ const Customers = () => {
               loading={isLoading}
               error={errorMessage}
               onRetry={() => refetch()}
-              onSelect={setSelected}
+              onSelect={select}
               autoFocus
             />
           </>

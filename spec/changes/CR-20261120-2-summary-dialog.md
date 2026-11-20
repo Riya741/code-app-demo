@@ -217,7 +217,7 @@ assertions about the retired collapse feature go away with it):
 - [x] requirements.md approved by: project owner, 2026-11-20
 - [x] design.md approved by: project owner, 2026-11-20
 - [x] tasks.md approved by: project owner, 2026-11-20
-- [ ] Implementation verified on:
+- [x] Implementation verified on: 2026-11-20 for the layout and dialog (LAY-T08, LAY-T09, LAY-T11, LAY-T12, SUM-T13: G1, G3, G4 and the owner's G5, all checks passed). The AI part (AIB-T06, AIB-T07, AIB-T09, AIB-T10) is verified per task when built.
 
 ## 6. Open questions for the owner
 

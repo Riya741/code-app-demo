@@ -9,6 +9,7 @@ export function TopBar({
   onRefresh,
   refreshing,
   children,
+  summaryButton,
 }: {
   /** "Name" + "Parent ID: 1234" of the selected customer; shown as a chip on the left. */
   selectedLabel?: { name: string; id?: string };
@@ -17,6 +18,8 @@ export function TopBar({
   refreshing: boolean;
   /** Slot for the compact search bar once a customer is selected. */
   children?: ReactNode;
+  /** Button that reopens the Executive Summary dialog, shown right of the customer chip (LAY-DLG-010). Built by the page. */
+  summaryButton?: ReactNode;
 }) {
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -48,6 +51,8 @@ export function TopBar({
             </div>
           )}
         </div>
+
+        {selectedLabel && summaryButton && <div className="shrink-0">{summaryButton}</div>}
 
         <div className="min-w-0 flex-1">
           {children && <div className="mx-auto w-full max-w-md animate-in fade-in duration-500">{children}</div>}

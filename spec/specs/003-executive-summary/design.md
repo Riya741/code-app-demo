@@ -5,7 +5,7 @@
 `downloadWordDoc`. Save writes the summary through `useSaveSummary` → `saveSummary` → `POST /customers/:id/summary`
 (SUM-T08..T10, 2026-11-18); the interim on-screen-only map is gone.
 
-## Planned — the summary dialog (SUM-T13 with LAY-T09, LAY-T11, LAY-T12; CR-20261120-2)
+## The summary dialog (SUM-T13 with LAY-T09, LAY-T11, LAY-T12; CR-20261120-2; delivered 2026-11-20)
 `CustomerDetails` stays the one summary component; only its place changes. `SummaryDialog` (002 design, "Summary
 dialog design") renders it inside a modal `Dialog` that opens when a customer is selected; the component keeps its
 `Panel` shell (title, Last modified / Export or Cancel / Save in the header, scrolling body), so SUM-VIEW-001..004,
@@ -14,11 +14,12 @@ so. SUM-T13 changes only its props:
 - **Removed** (added by the unreleased band work in the working tree, never released): `collapsed`,
   `onToggleCollapsed` and the `collapse` pass-through to `Panel`.
 - **Added:** `onSaved?()`, called once after a successful save (after the toast), which the dialog uses to close
-  (LAY-DLG-009); and `onStateChange?({ editing, dirty, saving })`, called whenever one of the three changes, which the
+  (LAY-DLG-009); and `onStateChange?({ editing, dirty, saving })`, called once on mount and whenever one of the three changes, which the
   dialog uses for the discard confirm and the no-close-while-saving rule (LAY-DLG-007, LAY-DLG-008). `dirty` is "the
   editor's HTML differs from the text it was opened with"; `RichTextEditor` reports only real edits, so opening and
   leaving the editor is not dirty. Without the callbacks the component behaves as it does today (it renders on its own
   in the unit tests).
+- **Added:** `titleId?`, passed to `Panel.titleId` so the dialog can name itself with `aria-labelledby` (LAY-DLG-003).
 - **Cancel** inside the dialog still returns to the view inside the dialog (SUM-EDIT-004); it does not close the dialog.
 Export always exports the **stored** summary (SUM-WORD-001), never an unsaved AI draft. With AI on, the dialog adds the
 AI states of [022 design](../022-ai-account-brief/design.md) ("Dialog states"); with AI off it is exactly this design.

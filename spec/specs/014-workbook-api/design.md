@@ -56,10 +56,10 @@ or "Status <id> is not allowed for solution <id>".
 `saveSummary(s, id, body)`: find customer by `id` (404 "Customer <id> was not found."), set
 `executive_summary = text(body.executive_summary)`, `summary_last_modified = now()`, return `{ id, summary_last_modified }`.
 
-## Planned design — API-SUMM-002 summary body check (API-T14, owner decision D3, CR-20261120-1)
+## API-SUMM-002 summary body check (API-T14 ✅, owner decision D3, CR-20261120-1)
 The owner decided on 2026-11-20 that a body without `executive_summary` must not clear the summary (it does today,
 through `text(undefined) → null`). In `saveSummary`, before touching the row:
-- `!("executive_summary" in body)` → `HttpError(400, "Missing: executive_summary")` (same wording as `required()`).
+- A body that is not an object (JSON `null`, number, string) or has no `executive_summary` field → `HttpError(400, "Missing: executive_summary")` (same wording as `required()`); the guard keeps `in` from throwing a TypeError (500).
 - `typeof body.executive_summary !== "string"` (number, boolean, object, `null`) → `HttpError(400, "executive_summary must be a string.")`.
 - Do **not** use `required()`: it treats `""` as missing, but an explicit empty string is the documented way to clear
   the summary (API-SUMM-001, blank → null).
@@ -78,5 +78,5 @@ exception (exit task API-T13) is closed by that amendment. Use cases and events 
 |---|---|
 | II | Atomic saves, soft delete, history; an edit replaces only the record's own link rows, as Article II.4 (v1.1.1) allows. ✅ |
 | III | Message-only errors (SEC-SAFE-003); local-only by default (SEC-EXPO-001). ✅ |
-| IV | Required fields enforced; FK/allowed-value checks missing (API-T08); summary body not checked (API-SUMM-002, API-T14). ⚠️ |
+| IV | Required fields enforced; FK/allowed-value checks missing (API-T08). ⚠️ |
 | IX | Server owns joins and persistence. ✅ |

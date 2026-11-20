@@ -22,7 +22,7 @@
 
 ## Surfaces
 Page wash (radial gradients) · Panel (card, `rounded-2xl`, soft shadow, slate header strip) · Executive Summary
-(stone palette; a full-width collapsible band from LAY-T09, CR-20261120-1) · Top bar (75% background, blur) · Dialogs (shadcn).
+(stone palette; a modal dialog that opens on selection, from LAY-T11, CR-20261120-2) · Top bar (75% background, blur) · Dialogs (shadcn).
 
 ## Component APIs
 ```ts

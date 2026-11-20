@@ -8,7 +8,15 @@
   specs/022-ai-account-brief, specs/024-agent-ops (design note and scenarios only)
 - **Constitution articles affected:** Article II.4 reworded (v1.1.0 → **v1.1.1**, PATCH); compliance re-checked for
   II, IV, V, VI, VII, X and XII in the specs above
-- **Status:** Approved 2026-11-20 by the project owner · branch `cr-owner-decisions-summary-band`
+- **Status:** Approved; D2 layout superseded by CR-20261120-2 · approved 2026-11-20 by the project owner · branch `cr-owner-decisions-summary-band`
+
+> **Superseded in part (2026-11-20):** the owner revised the **layout half of D2** the same day, choosing "Dialog over the
+> grids" instead of the summary band. [CR-20261120-2](CR-20261120-2-summary-dialog.md) replaces the band, its collapse
+> control, its sizing and the stored collapsed state (LAY-PANEL-006, LAY-BAND-001..007, SUM-VIEW-005, LAY-T10 and the
+> band wording of AIB-GEN-007..015 / AIB-HUMAN-004..008 are Deprecated or re-scoped there). The **AI half of D2**
+> (automatic draft, *Regenerate with AI*, unsaved draft, AI off = plain summary) stands and moves from the band to the
+> dialog. **D1, D3 and D4, API-T13 and API-T14 are unchanged.** The text below is kept as history; where it says "band",
+> read CR-20261120-2.
 
 ## 1. Problem
 
@@ -45,6 +53,12 @@ solutions) with the set the user saved; no other record's link rows are touched.
   when this CR is approved.
 
 ### D2. A full-width, collapsible Executive Summary band, with the AI draft in it
+
+> **The layout half of D2 is superseded by [CR-20261120-2](CR-20261120-2-summary-dialog.md)** (the owner chose "Dialog over
+> the grids" on 2026-11-20): the band, collapse/expand, the band height, the `terra-summary-band-v1` storage and the
+> "Layout" and "Summary" paragraphs below no longer apply; the full-width vertical Use Cases / Events split and LAY-T08
+> are kept. The "AI Account Brief" paragraph below still describes the behaviour, with "band" read as "summary dialog"
+> and the IDs replaced as listed in CR-20261120-2 section 2.4.
 
 **Layout (spec 002).** No right-hand panel. With a customer selected the workspace shows the Executive Summary as a
 full-width band above the Use Cases / Events split; the grids keep their 60/40 vertical split, now full width.

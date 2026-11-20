@@ -2,14 +2,17 @@
 
 | Spec | Prefix | Status | Constitution |
 |---|---|---|---|
-| workspace-layout | LAY | ⚠️ Implemented with 2 partial criteria · summary band planned (CR-20261120-1) | II, V, VI, VII, VIII |
+| workspace-layout | LAY | ⚠️ Implemented with 2 partial criteria · summary dialog planned (CR-20261120-2) | II, V, VI, VII, VIII |
 
 ## Introduction
 The app is a single screen with two states: a landing page with a hero search, and a customer workspace showing the
-Executive Summary, Use Cases and Events panels. The top bar carries the selected customer, the compact search,
-refresh and theme toggle. CR-20261120-1 (owner decision D2) replaces the right-hand Executive Summary panel with a
-full-width, collapsible summary band above the Use Cases and Events grids (LAY-R6); until LAY-T09 ships, the
-deprecated LAY-PANEL-002 split is what the app shows.
+Use Cases and Events panels. The Executive Summary opens in a modal dialog when a customer is selected (LAY-R7) and
+can be reopened from a button in the top bar. The top bar carries the selected customer, that button, the compact
+search, refresh and theme toggle. CR-20261120-1 (owner decision D2) first replaced the right-hand Executive Summary
+panel with a collapsible band above the grids; CR-20261120-2 (the owner's revised decision of the same day, "Dialog
+over the grids") supersedes that layout: the grids fill the page and the summary is a dialog. The band requirements
+(LAY-R6) never shipped and are Deprecated; until LAY-T09 ships, the shipped layout (the deprecated LAY-PANEL-002 split
+and the deprecated LAY-PANEL-005 stack) is what the app shows.
 
 ---
 
@@ -42,7 +45,7 @@ deprecated LAY-PANEL-002 split is what the app shows.
 - **Source:** `src/pages/Customers.tsx`
 
 ### LAY-R2 — Responsive panels
-**User story:** As a CSS on a wide screen, I want the summary and both grids visible at once, with the grids resizable; on a small screen I want them stacked.
+**User story:** As a CSS on a wide screen, I want both grids to fill the page at full width, with the divider resizable; on a small screen I want them stacked.
 
 #### LAY-PANEL-001: One-viewport desktop layout
 - **Status:** ✅ Implemented
@@ -65,53 +68,138 @@ deprecated LAY-PANEL-002 split is what the app shows.
 - **Source:** `src/pages/Customers.tsx`, `src/hooks/useMediaQuery.ts`, `src/components/ui/resizable.tsx`
 
 #### LAY-PANEL-005: Stacked panels below 1024px
-- **Status:** ✅ Implemented
+- **Status:** Deprecated — retired by CR-20261120-2 (owner decision, 2026-11-20): the Executive Summary leaves the stack and opens as a dialog (LAY-R7); replaced by LAY-PANEL-008. Still the shipped layout until LAY-T09.
 - **Criterion:** WHILE the viewport is < 1024px THE panels SHALL stack (Summary, Use Cases, Events), each at most 60vh, and the page SHALL scroll.
 - **Source:** `src/pages/Customers.tsx`, `src/hooks/useMediaQuery.ts`, `src/components/ui/resizable.tsx`
 
 #### LAY-PANEL-006: Desktop band over full-width grids
-- **Status:** 📝 Planned
+- **Status:** Deprecated — never shipped. Specified by CR-20261120-1 (band above the grids), superseded by CR-20261120-2 (dialog over the grids); replaced by LAY-PANEL-007.
 - **Criterion:** WHILE the viewport is ≥ 1024px and a customer is selected THE layout SHALL show the summary band across the full workspace width and, below it, a full-width vertical split of Use Cases 60% (min 20%) over Events 40% (min 20%), with no right-hand panel.
 - **Source:** `src/pages/Customers.tsx`, `src/components/ui/resizable.tsx`
 
-### LAY-R6 — Executive Summary band
-**User story:** As a CSS, I want the account narrative above my use cases and events, and out of the way when I am
-working in the grids, so that the grids get the full screen width.
+#### LAY-PANEL-007: Desktop full-width grids
+- **Status:** 📝 Planned
+- **Criterion:** WHILE the viewport is ≥ 1024px and a customer is selected THE layout SHALL show only the Use Cases and Events panels, across the full workspace width, as one vertical split of Use Cases 60% (min 20%) over Events 40% (min 20%), with no Executive Summary panel or band and no horizontal split, and LAY-PANEL-001 SHALL still hold.
+- **Source:** `src/pages/Customers.tsx`, `src/components/ui/resizable.tsx`
+
+#### LAY-PANEL-008: Stacked panels below 1024px, without the summary
+- **Status:** 📝 Planned
+- **Criterion:** WHILE the viewport is < 1024px THE panels SHALL stack (Use Cases, Events) with no Executive Summary in the stack, each at most 60vh, and the page SHALL scroll.
+- **Source:** `src/pages/Customers.tsx`, `src/hooks/useMediaQuery.ts`, `src/components/ui/resizable.tsx`
+
+### LAY-R6 — Executive Summary band (retired)
+**User story:** *(retired)* As a CSS, I wanted the account narrative above my use cases and events, and out of the way
+when I am working in the grids. CR-20261120-1 specified it; the owner chose a dialog instead (CR-20261120-2). None of
+the seven criteria below was built for release; the blocks stay as history and are never reused (Article I.3).
 
 #### LAY-BAND-001: Full-width summary band
-- **Status:** 📝 Planned
+- **Status:** Deprecated — retired by CR-20261120-2 (never shipped): the summary is a dialog, not a band; replaced by LAY-DLG-001 and LAY-PANEL-007.
 - **Criterion:** WHEN a customer is selected THE workspace SHALL show the Executive Summary in one full-width band, built on the shared panel shell (LAY-SHELL-001), above the Use Cases and Events grids at every viewport width.
 - **Source:** `src/pages/Customers.tsx`, `src/components/customers/Panel.tsx`, `src/components/customers/CustomerDetails.tsx`
 
 #### LAY-BAND-002: Collapse and expand the band
-- **Status:** 📝 Planned
+- **Status:** Deprecated — retired by CR-20261120-2 (never shipped): there is no band to collapse; the equivalent is closing and reopening the dialog (LAY-DLG-005, LAY-DLG-010).
 - **Criterion:** WHEN the user activates the band's collapse control THE band SHALL collapse to its header row (title, Last modified and actions stay visible) and the grids SHALL take the freed height; WHEN the user activates it again THE band SHALL expand; THE band SHALL start expanded unless a stored state says otherwise (LAY-BAND-003).
 - **Source:** `src/components/customers/Panel.tsx`, `src/pages/Customers.tsx`
 
 #### LAY-BAND-003: Remember the collapsed state
-- **Status:** 📝 Planned — proposed default, owner to confirm (CR-20261120-1 open question a)
+- **Status:** Deprecated — dropped by CR-20261120-2 (never shipped): the dialog opens on every selection and its state is not remembered; no replacement. Task LAY-T10 is retired with it.
 - **Criterion:** WHEN the user collapses or expands the band THE system SHALL store the state in browser storage as a UI preference and SHALL restore it after a reload and for every customer opened afterwards.
 - **Source:** `src/pages/Customers.tsx`
 
 #### LAY-BAND-004: Band height on desktop
-- **Status:** 📝 Planned — 40% is a proposed value (CR-20261120-1 open question b)
+- **Status:** Deprecated — retired by CR-20261120-2 (never shipped): replaced by the dialog size, LAY-DLG-011.
 - **Criterion:** WHILE the viewport is ≥ 1024px THE expanded band SHALL be as tall as its content up to 40% of the workspace height, its body SHALL scroll internally beyond that, and the Use Cases / Events split SHALL fill the rest of the single viewport (LAY-PANEL-001).
 - **Source:** `src/pages/Customers.tsx`, `src/components/customers/Panel.tsx`
 
 #### LAY-BAND-005: Band on narrow screens
-- **Status:** 📝 Planned
+- **Status:** Deprecated — retired by CR-20261120-2 (never shipped): replaced by LAY-PANEL-008 (stack without the summary) and LAY-DLG-012 (dialog as a sheet).
 - **Criterion:** WHILE the viewport is < 1024px THE band SHALL be first in the stack (LAY-PANEL-005), at most 60vh tall with internal scrolling when expanded, and only its header row when collapsed.
 - **Source:** `src/pages/Customers.tsx`, `src/components/customers/Panel.tsx`
 
 #### LAY-BAND-006: Accessible collapse control
-- **Status:** 📝 Planned
+- **Status:** Deprecated — retired by CR-20261120-2 (never shipped): replaced by the dialog's accessibility criteria LAY-DLG-003, LAY-DLG-004 and LAY-DLG-006 and the reopen button's LAY-DLG-010.
 - **Criterion:** THE collapse control SHALL be a button named "Collapse executive summary" or "Expand executive summary" with `aria-expanded` and `aria-controls` pointing at the band body, operable with Enter and Space and with visible focus (A11Y-KEY-005); WHEN the band collapses while focus is inside its body THE focus SHALL move to the control.
 - **Source:** `src/components/customers/Panel.tsx`
 
 #### LAY-BAND-007: No collapse while editing
-- **Status:** 📝 Planned
+- **Status:** Deprecated — retired by CR-20261120-2 (never shipped): the intent (an unsaved edit is never silently lost) is kept by LAY-DLG-007 (confirm before discarding) and LAY-DLG-008 (no close while saving).
 - **Criterion:** WHILE the summary editor is open or a summary save is in progress THE collapse control SHALL be disabled, so that an unsaved edit is never hidden.
 - **Source:** `src/components/customers/Panel.tsx`, `src/components/customers/CustomerDetails.tsx`
+
+### LAY-R7 — Executive Summary dialog
+**User story:** As a CSS, I want the Executive Summary to appear when I open a customer, so that I read the account
+narrative first, and I want to close it and work in the full-width grids, with a button to bring it back.
+
+#### LAY-DLG-001: Summary dialog opens on selection
+- **Status:** 📝 Planned — also opens when AI is off; proposed, owner to confirm (CR-20261120-2 open question c)
+- **Criterion:** WHEN the user selects a customer THE system SHALL open the Executive Summary in a modal dialog over the workspace, at every viewport width, whether or not AI is enabled.
+- **Source:** `src/pages/Customers.tsx`, `src/components/customers/CustomerDetails.tsx`, `src/components/ui/dialog.tsx`
+
+#### LAY-DLG-002: Opens once per selection
+- **Status:** 📝 Planned
+- **Criterion:** WHILE a customer stays selected THE dialog SHALL open only because of a selection: a refetch of the customer data (after a summary save, on Refresh or in the background) SHALL NOT reopen it once it was closed, and SHALL NOT close it or reset its content while it is open.
+- **Source:** `src/pages/Customers.tsx`
+
+#### LAY-DLG-003: Modal dialog named Executive Summary
+- **Status:** 📝 Planned
+- **Criterion:** WHILE the dialog is open THE system SHALL present it as a modal dialog (overlay; the page behind it inert to pointer and assistive technology) whose accessible name is "Executive Summary", given by `aria-labelledby` pointing at its single visible title.
+- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/CustomerDetails.tsx`
+
+#### LAY-DLG-004: Initial focus and focus trap
+- **Status:** 📝 Planned — initial focus on the dialog itself is proposed (CR-20261120-2 open question h)
+- **Criterion:** WHEN the dialog opens THE focus SHALL move into it without starting the summary editor, and WHILE it is open Tab and Shift+Tab SHALL stay inside it (A11Y-KEY-003).
+- **Source:** `src/components/ui/dialog.tsx`
+
+#### LAY-DLG-005: Ways to close the dialog
+- **Status:** 📝 Planned — Esc and overlay click close it like the × button; proposed (CR-20261120-2 open question f)
+- **Criterion:** WHEN the user presses Esc, activates the × button (named "Close") or clicks the overlay THE dialog SHALL close, subject to LAY-DLG-007 and LAY-DLG-008, and the Use Cases and Events grids SHALL then be usable.
+- **Source:** `src/components/ui/dialog.tsx`
+
+#### LAY-DLG-006: Focus returns to the reopen button
+- **Status:** 📝 Planned
+- **Criterion:** WHEN the dialog closes, by any route and also when it was opened automatically, THE focus SHALL move to the reopen button (LAY-DLG-010).
+- **Source:** `src/components/customers/TopBar.tsx`, `src/components/ui/dialog.tsx`
+
+#### LAY-DLG-007: Confirm before discarding edits
+- **Status:** 📝 Planned
+- **Criterion:** IF the summary editor holds unsaved changes WHEN the user tries to close the dialog THEN THE system SHALL ask "Discard your unsaved summary changes?" with the actions *Discard* and *Keep editing*; WHEN the user chooses *Keep editing* THE dialog SHALL stay open with the editor and its text intact; WHEN the user chooses *Discard* THE dialog SHALL close, the changes SHALL be dropped and nothing SHALL be written to the workbook.
+- **Source:** `src/components/customers/CustomerDetails.tsx`
+
+#### LAY-DLG-008: No closing while saving
+- **Status:** 📝 Planned
+- **Criterion:** WHILE a summary save is in progress THE × button, Esc and a click on the overlay SHALL have no effect, so that the dialog stays open until the save has succeeded or failed (A11Y-KEY-003).
+- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/ui/dialog.tsx`
+
+#### LAY-DLG-009: Dialog closes after a successful save
+- **Status:** 📝 Planned — proposed, owner to confirm (CR-20261120-2 open question i)
+- **Criterion:** WHEN a summary save succeeds THE system SHALL show the toast "Executive summary updated" (SUM-EDIT-005) and close the dialog; IF the save fails THEN THE dialog SHALL stay open with the editor, the draft and the message "Could not save: <message>" (SUM-EDIT-005).
+- **Source:** `src/components/customers/CustomerDetails.tsx`
+
+#### LAY-DLG-010: Reopen button in the top bar
+- **Status:** 📝 Planned — label and placement proposed (CR-20261120-2 open question b)
+- **Criterion:** WHILE a customer is selected THE top bar SHALL show, next to the customer chip, a button named "Executive summary" that opens the dialog, showing its label from 640px width and only its icon below that while keeping the accessible name, operable with Enter and Space and with visible focus (A11Y-KEY-005).
+- **Source:** `src/components/customers/TopBar.tsx`, `src/pages/Customers.tsx`
+
+#### LAY-DLG-011: Dialog size on desktop
+- **Status:** 📝 Planned — size set by the owner on 2026-11-20 (CR-20261120-2 open question a)
+- **Criterion:** WHILE the viewport is ≥ 1024px THE dialog SHALL be centred in the page, horizontally and vertically, and 80% of the viewport width wide and at most 85vh tall, so that it reads as a popup over the grids, its title bar SHALL stay in view and its body SHALL scroll when the content is taller.
+- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/CustomerDetails.tsx`
+
+#### LAY-DLG-012: Dialog as a sheet on narrow screens
+- **Status:** 📝 Planned — full-screen sheet proposed (CR-20261120-2 open question g)
+- **Criterion:** WHILE the viewport is < 1024px THE dialog SHALL fill the viewport width and height as a sheet, with its title bar and × button in view and its body scrolling.
+- **Source:** `src/components/ui/dialog.tsx`, `src/components/customers/CustomerDetails.tsx`
+
+#### LAY-DLG-013: Dialog and button in both themes
+- **Status:** 📝 Planned
+- **Criterion:** THE dialog, its overlay and the reopen button SHALL take their colours from design tokens, THE summary SHALL keep its stone scheme (SUM-VIEW-001), and all three SHALL be legible in the light and the dark theme (Article VI.1).
+- **Source:** `src/components/customers/CustomerDetails.tsx`, `src/components/customers/TopBar.tsx`, `src/components/ui/dialog.tsx`
+
+#### LAY-DLG-014: Dialog state resets with the customer
+- **Status:** 📝 Planned
+- **Criterion:** WHEN the selected customer changes or the selection is cleared THE system SHALL close the dialog and drop its editor state without a confirmation, and a new selection SHALL open it again (LAY-DLG-001, LAY-STATE-002).
+- **Source:** `src/pages/Customers.tsx`
 
 ### LAY-R3 — Top bar
 
@@ -155,11 +243,14 @@ working in the grids, so that the grids get the full screen width.
 - **Source:** `src/components/customers/Panel.tsx`
 
 ## Scenarios
-- 1440px wide, customer open → summary band on top across the full width, Use Cases over Events below it, no page scroll; the divider resizes Use Cases vs Events (LAY-PANEL-006).
-- Collapse the band → only its header row remains, the grids grow; reload and open another customer → still collapsed (LAY-BAND-002, LAY-BAND-003).
-- Long summary at 1440px → band stops at 40% of the workspace height and scrolls inside (LAY-BAND-004).
-- Editing the summary → the collapse control is disabled until Save or Cancel (LAY-BAND-007).
+- 1440px wide, pick a customer → the Executive Summary opens in a dialog over Use Cases (top) and Events (below), both full width, no page scroll; the focus is inside the dialog (LAY-PANEL-007, LAY-DLG-001, LAY-DLG-004).
+- Press Esc, click ×, or click outside → the dialog closes, the grids are usable, the focus is on the "Executive summary" button in the top bar; click it → the dialog opens again (LAY-DLG-005, LAY-DLG-006, LAY-DLG-010).
+- Save a summary edit → toast "Executive summary updated", the customer data refetches, the dialog closes and does not pop open again when the data arrives (LAY-DLG-009, LAY-DLG-002). Click Refresh while the dialog is closed → it stays closed.
+- Edit the summary and press Esc → "Discard your unsaved summary changes?"; *Keep editing* returns to the text, *Discard* closes the dialog and writes nothing (LAY-DLG-007). While the save is running, Esc, × and the overlay do nothing (LAY-DLG-008).
+- Pick customer A, close the dialog, pick customer B → the dialog opens for B (LAY-DLG-014, LAY-STATE-002).
+- Long summary at 1440px → the dialog stops at 85vh and its body scrolls under a fixed title bar (LAY-DLG-011).
 - Resize the Use Cases / Events split, reload, open a customer → split restored (LAY-PANEL-004, LAY-T08).
-- 800px wide → stacked summary band, Use Cases, Events; page scrolls.
+- 800px wide → stacked Use Cases and Events, page scrolls; the summary dialog is a full-screen sheet (LAY-PANEL-008, LAY-DLG-012).
+- Light and dark themes → dialog, overlay and the top-bar button are legible in both (LAY-DLG-013).
 - Filter on customer A, pick customer B → B shows unfiltered.
 - Click × → landing page.

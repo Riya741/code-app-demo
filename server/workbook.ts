@@ -369,8 +369,16 @@ function saveEvent(s: Store, body: Record<string, unknown>) {
   return id;
 }
 
-/** Stores a customer's executive summary (blank → null) and stamps `summary_last_modified` (API-SUMM-001). */
+/**
+ * Stores a customer's executive summary (blank → null) and stamps `summary_last_modified` (API-SUMM-001).
+ * The body is checked first (API-SUMM-002): no `executive_summary` field, or a non-string value, is a 400 and nothing
+ * changes. Not `required()`: that treats "" as missing, and "" is the documented way to clear the summary.
+ */
 function saveSummary(s: Store, id: number, body: Record<string, unknown>) {
+  if (body === null || typeof body !== "object" || !("executive_summary" in body)) {
+    throw new HttpError(400, "Missing: executive_summary");
+  }
+  if (typeof body.executive_summary !== "string") throw new HttpError(400, "executive_summary must be a string.");
   const row = s.table("customer").rows.find((r) => r.id === id);
   if (!row) throw new HttpError(404, `Customer ${id} was not found.`);
   row.executive_summary = text(body.executive_summary);

@@ -1,7 +1,7 @@
 # Tasks — Workbook HTTP API
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 14 tasks — ✅ 10 · 🔄 0 · ⬜ 4 · ⛔ 0
+**Summary:** 14 tasks — ✅ 11 · 🔄 0 · ⬜ 3 · ⛔ 0
 
 - [x] **API-T01** Vite plugin wiring for dev and preview; JSON responses and error mapping.
   - Status: ✅ Done · Covers: API-GEN-001..004 · Files: `server/workbook.ts`, `vite.config.ts`
@@ -33,8 +33,9 @@
   - Status: ⬜ Not started · Covers: API-WRITE-001, API-WRITE-006 · Files: `server/workbook.ts` · Found 2026-11-18 in the EVF-T06 review. Needs a new requirement through /spec-change first.
 - [x] **API-T13** Resolve Article II.4 vs API-WRITE-004 (link rows replaced on edit). Owner decision 2026-11-20 (D1): amend Article II.4 so that an edit updates the record in place and replaces that record's own link rows; soft delete unchanged. Spec-only: constitution v1.1.1, exception rows removed from steering/constitution-mapping.md §3 and the 005/008 designs; no code change (the server already does this).
   - Status: ✅ Done · Covers: API-WRITE-004 · Files: `spec/constitution.md`, `spec/steering/constitution-mapping.md`, `spec/specs/005-use-case-form/design.md`, `spec/specs/008-event-form/design.md` · Edited on branch `cr-owner-decisions-summary-band` by CR-20261120-1; Closed 2026-11-20 when the owner approved that CR. Verification: G1 only (no code).
-- [ ] **API-T14** Reject a summary POST without a string `executive_summary` (400, summary and file unchanged); an explicit empty string still clears it.
-  - Status: ⬜ Not started · Covers: API-SUMM-002 · Files: `server/workbook.ts`, `tests/integration/summary.test.ts` · Owner decision D3, CR-20261120-1
+- [x] **API-T14** Reject a summary POST without a string `executive_summary` (400, summary and file unchanged); an explicit empty string still clears it.
+  - Status: ✅ Done · Covers: API-SUMM-002 · Files: `server/workbook.ts`, `tests/integration/summary.test.ts` · Owner decision D3, CR-20261120-1
   - Step: Add the presence and type checks in `saveSummary` (design: "Planned design — API-SUMM-002"); do not reuse `required()`
   - Step: Integration tests titled `API-SUMM-002 …`: body `{}` → 400 `Missing: executive_summary`; `{ executive_summary: 5 }` and `{ executive_summary: null }` → 400 `executive_summary must be a string.`; in each case the re-read file still holds the old summary and timestamp; `{ executive_summary: "" }` → 200, summary null
   - Step: Messages catalog: mark the new 400 text as implemented
+  - Verified 2026-11-20 via the agent workflow (implementer subagent, read-only reviewer subagent; hand-off `spec/handoffs/API-T14.md`, verdict pass): `saveSummary` in `server/workbook.ts` checks the body before the customer lookup; 10 integration tests in `tests/integration/summary.test.ts` titled `API-SUMM-002 …` (8 failed against the old code); G1 0 errors, lint 0 errors, typecheck clean, 99 passed + 1 expected fail. G5 n/a (server only).

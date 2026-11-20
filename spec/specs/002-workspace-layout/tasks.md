@@ -1,7 +1,7 @@
 # Tasks — Workspace Layout, Top Bar and Theme
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 10 tasks — ✅ 6 · 🔄 0 · ⬜ 4 · ⛔ 0
+**Summary:** 12 tasks — ✅ 7 · 🔄 2 · ⬜ 3 · ⛔ 0
 
 - [x] **LAY-T01** App providers: theme (light default, no system), query client defaults, tooltip, toaster.
   - Status: ✅ Done · Covers: LAY-THEME-001 · Files: `src/App.tsx`
@@ -21,23 +21,39 @@
   - Step: Drive the spinner from `useIsFetching()`
   - Step: Manual check: edit a use case in Excel, click Refresh, see the change
 - [ ] **LAY-T08** Persist the vertical split size.
-  - Status: ⬜ Not started · Covers: LAY-PANEL-004 · Files: `pages/Customers.tsx`
+  - Status: 🔄 In progress · Covers: LAY-PANEL-004 · Files: `pages/Customers.tsx`
   - Step: Add `autoSaveId` to the inner `ResizablePanelGroup`
   - Step: Fix the misleading comment ("every divider … sizes are remembered") if behaviour differs
-  - Note (CR-20261120-1): once LAY-T09 removes the horizontal split, the vertical split is the only one left; ship LAY-T08 in the same change or LAY-PANEL-004 drops from ⚠️ to ❌
+  - Note (CR-20261120-1, kept by CR-20261120-2): once LAY-T09 removes the horizontal split, the vertical split is the only one left; ship LAY-T08 in the same change or LAY-PANEL-004 drops from ⚠️ to ❌
+  - Note (CR-20261120-2): not re-scoped. The code and the `LAY-PANEL-004` test in `tests/component/Customers.test.tsx` from the unreleased work are exactly what the dialog layout needs; its hand-off ([LAY-T08](../../handoffs/LAY-T08.md)) stays valid. Still 🔄 until G5 item "drag the divider, reload, split restored" is recorded.
 
-### Summary band (CR-20261120-1, owner decision D2)
-- [ ] **LAY-T09** Replace the right-hand summary panel with a full-width, collapsible summary band above a full-width Use Cases / Events split.
-  - Status: ⬜ Not started · Covers: LAY-PANEL-006, LAY-BAND-001, LAY-BAND-002, LAY-BAND-004, LAY-BAND-005, LAY-BAND-006, LAY-BAND-007 · Files: `src/pages/Customers.tsx`, `src/components/customers/Panel.tsx`, `tests/component/Panel.test.tsx`, new `tests/component/Customers.test.tsx` · Do with: LAY-T08, SUM-T13
-  - Step: Remove the horizontal `ResizablePanelGroup` (`terra-split-h-v3`); render the band, then the vertical Use Cases / Events group, both full width (design: "Planned layout tree")
-  - Step: Add the optional `collapse` prop to `Panel` (toggle button, `aria-expanded`, `aria-controls`, body `hidden` but mounted); the other panels are unchanged (LAY-SHELL-001 tests must still pass)
-  - Step: Band height: content height up to 40% of the workspace at ≥ 1024px, 60vh below; body scrolls inside
-  - Step: Collapse control disabled while the editor is open or saving; focus moves to the control on collapse
-  - Step: Tests titled `LAY-BAND-…` / `LAY-PANEL-006 …` for the toggle, `aria-expanded`, disabled-while-editing and the absence of a right-hand panel. No existing automated test asserts LAY-PANEL-002 (checked 2026-11-20); update any that is added before this task
-  - Step: G5: light and dark themes, ≥ 1024px and < 1024px, collapsed and expanded, long and empty summary; repeat the summary checks of SUM-T09 (save, error, cancel) inside the band
-  - Step: Steering: `tech.md` panel-memory row; messages catalog §6 control names
-- [ ] **LAY-T10** Remember the band's collapsed state across reloads and customers.
-  - Status: ⬜ Not started · Covers: LAY-BAND-003 · Files: `src/pages/Customers.tsx` · Depends on: LAY-T09 and the owner's answer to CR-20261120-1 open question (a)
-  - Step: Hold the state in `Customers.tsx` above the customer-keyed workspace, so it survives a customer change
-  - Step: Persist it in `localStorage` under `terra-summary-band-v1` (UI preference, Article II.1); read errors fall back to expanded
-  - Step: Test titled `LAY-BAND-003 …`: collapse, remount, still collapsed
+### Summary dialog (CR-20261120-2: replaces the band of CR-20261120-1, owner decision D2)
+LAY-T09, LAY-T11, LAY-T12, SUM-T13 and LAY-T08 are one change: after LAY-T09 the summary appears nowhere until the
+dialog (LAY-T11) renders `CustomerDetails`, so they ship, are verified and are closed together.
+- [ ] **LAY-T09** Full-width grids: remove the summary from the workspace layout and take the band's leftovers out of `Panel`.
+  - Status: 🔄 In progress · Covers: LAY-PANEL-007, LAY-PANEL-008 · Files: `src/pages/Customers.tsx`, `src/components/customers/Panel.tsx`, `tests/component/Panel.test.tsx`, `tests/component/Customers.test.tsx` · Do with: LAY-T08, LAY-T11, LAY-T12, SUM-T13 · Re-scoped by CR-20261120-2 (was: summary band, Covers LAY-PANEL-006, LAY-BAND-001, -002, -004, -005, -006, -007; all Deprecated)
+  - Step: Keep what the working tree already has: no horizontal group (`terra-split-h-v3` is gone), the full-width vertical group with `autoSaveId="terra-split-v-v1"`, `usecases` 60/min 20 and `events` 40/min 20 in the `relative min-h-0 flex-1` wrapper, and the narrow stack with `max-h-[60vh]` panels
+  - Step: Remove the band: the `CustomerDetails` element and its `max-h-[40%]` / `max-h-[60vh]` wrapper, `summaryCollapsed` / `toggleSummary`, the `band` props object. The workspace is then Use Cases over Events at ≥ 1024px and Use Cases, Events stacked below (design: "Planned layout tree")
+  - Step: Remove from `Panel` the `collapse` prop, the `PanelCollapse` type, the chevron toggle, `useId`, `useRef`, `useLayoutEffect` and the `hidden` body handling that exist only for the band; `Panel` goes back to the LAY-SHELL-001 shell (the body `id` the band work added goes too unless LAY-T11 needs it)
+  - Step: Tests that must change (rewritten, not weakened): in `tests/component/Panel.test.tsx` delete the `describe("Panel collapse")` block (nine tests: five `LAY-BAND-006`, two `LAY-BAND-002`, one `LAY-BAND-007`, one `LAY-SHELL-001 … when collapse is absent`), because the prop they test is removed; keep the two original `LAY-SHELL-001` tests unchanged. In `tests/component/Customers.test.tsx` replace the band tests (`LAY-PANEL-006 shows the Executive Summary band …`, all `LAY-BAND-00x` titles) with `LAY-PANEL-007` (no band, no summary panel, no horizontal group, no collapse control), `LAY-PANEL-008` (Use Cases then Events stacked, no resizable group, no summary in the stack); keep the vertical-group 60/40 test, retitled `LAY-PANEL-007 …`, and the `LAY-PANEL-004 …` test as they are
+  - Step: G5: light and dark themes, ≥ 1024px and < 1024px: the two grids fill the viewport width with no page scroll at ≥ 1024px (LAY-PANEL-001, check the `absolute inset-0` group fills its wrapper), no right-hand panel, no band; < 1024px Use Cases then Events, page scrolls; record in the task and in the hand-off
+  - Step: Hand-off: [LAY-T09.md](../../handoffs/LAY-T09.md) describes the band delivery; it is marked superseded and its front matter reset to this Covers line and `verdict: pending`. The implementer writes a fresh hand-off at re-delivery
+  - Step: Steering: `tech.md` panel-memory row (`terra-split-v-v1` only)
+- [x] **LAY-T10** Retire the band's "remember the collapsed state" work (spec only, nothing to build).
+  - Status: ✅ Done · Covers: LAY-BAND-003 · Files: `spec/specs/002-workspace-layout/requirements.md` · Re-scoped by CR-20261120-2 (was: persist the band's collapsed state in `localStorage` `terra-summary-band-v1`) · Closes ✅ when the owner approves CR-20261120-2, with G1 as its only verification, as API-T13 did for CR-20261120-1
+  - Step: Nothing is built: LAY-BAND-003 is Deprecated, the storage key `terra-summary-band-v1` is never created and no task depends on this one any more
+  - Verified 2026-11-20: spec only, closed when the owner approved CR-20261120-2; LAY-BAND-003 is Deprecated, the storage key `terra-summary-band-v1` is never created. G1: spec lint 0 errors.
+- [ ] **LAY-T11** Summary dialog: open on selection, modal behaviour, reopen button, size, themes, reset.
+  - Status: ⬜ Not started · Covers: LAY-DLG-001, LAY-DLG-002, LAY-DLG-003, LAY-DLG-004, LAY-DLG-005, LAY-DLG-006, LAY-DLG-010, LAY-DLG-011, LAY-DLG-012, LAY-DLG-013, LAY-DLG-014 · Files: new `src/components/customers/SummaryDialog.tsx`, `src/pages/Customers.tsx`, `src/components/customers/TopBar.tsx`, `tests/component/Customers.test.tsx`, new `tests/component/SummaryDialog.test.tsx`, new `tests/component/TopBar.test.tsx` · Depends on: SUM-T13 (same change) · Do with: LAY-T09, LAY-T12, LAY-T08
+  - Step: `Customers.tsx` holds `summaryOpen`; the selection handler of both search boxes sets it true, the clear handler false; never set it from an effect on `selected`, so the re-pick after a refetch cannot reopen it (design: "Summary dialog design")
+  - Step: `SummaryDialog` on the existing `Dialog` (CONV-004: content mounted only while open): modal, labelled "Executive Summary" once, initial focus on the container without starting the editor, `onCloseAutoFocus` focuses the reopen button, `CustomerDetails` inside; size classes per LAY-DLG-011 and LAY-DLG-012; do not edit `src/components/ui/`
+  - Step: `TopBar` `summaryButton` slot next to the chip; `Customers.tsx` builds the "Executive summary" button (icon, label from 640px, accessible name always) and owns its ref
+  - Step: Tests titled `LAY-DLG-001 …` to `LAY-DLG-006 …`, `LAY-DLG-010 …`, `LAY-DLG-014 …`: opens on selection with AI off; does not reopen or reset after a refetch with a changed row, after Refresh or after a save; `role="dialog"` named "Executive Summary"; focus inside and not in the editor; Esc, "Close" and the overlay close it; focus on the "Executive summary" button after closing; the button's name and the label classes; a customer change resets and reopens. Size and themes are G5 (jsdom has no layout)
+  - Step: G5: light and dark themes, ≥ 1024px and < 1024px: dialog size and position (centred, 80% of the width, up to 85vh, long and empty summary, title bar fixed, body scrolls), sheet below 1024px, overlay, the top-bar button at both widths, focus ring, Tab trap, Esc, focus returns to the button; repeat the SUM-T09 checks inside the dialog (click and Enter to edit, lazy editor, Cancel, Save, save error, Word export)
+  - Step: Steering: messages catalog §6 texts match the code
+- [ ] **LAY-T12** Summary dialog close rules: confirm before discarding, no close while saving, close after a successful save.
+  - Status: ⬜ Not started · Covers: LAY-DLG-007, LAY-DLG-008, LAY-DLG-009 · Files: `src/components/customers/SummaryDialog.tsx`, `tests/component/SummaryDialog.test.tsx` · Depends on: LAY-T11, SUM-T13 (callbacks) · Do with: LAY-T09, LAY-T11, LAY-T08
+  - Step: `onOpenChange(false)` is the only exit: saving → ignore; editor dirty → open an `AlertDialog` "Discard your unsaved summary changes?" with *Discard* and *Keep editing* (reuse the `ConfirmDelete` pattern); else close
+  - Step: `CustomerDetails` reports `{ editing, dirty, saving }` and calls `onSaved()` after a successful save; the dialog closes on `onSaved` after the toast; a failed save keeps the editor, the draft and "Could not save: <message>"
+  - Step: Tests titled `LAY-DLG-007 …`, `LAY-DLG-008 …`, `LAY-DLG-009 …`: dirty close asks, *Keep editing* keeps the text, *Discard* closes and posts nothing (`fetch` not called); a clean editor closes without asking; Esc, "Close" and overlay do nothing while a save is pending; success closes after the toast; failure stays open and a later close still asks
+  - Step: G5: both themes and both widths for the confirm dialog (stacked over the dialog, readable, focus starts on *Keep editing*)

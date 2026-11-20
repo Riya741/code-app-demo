@@ -9,7 +9,7 @@ A hand-off that fails its schema is rejected and never repaired silently (AOPS-O
 | [analyst-to-writer.v1](analyst-to-writer.v1.schema.json) | [Analyst](../agents/analyst.md) → [Writer](../agents/writer.md) | structured output + zod | AIB-CITE-002, AIB-FAITH-001 |
 | [writer-to-critic.v1](writer-to-critic.v1.schema.json) | [Writer](../agents/writer.md) → [Critic](../agents/critic.md) | structured output + zod | AIB-CITE-002, AIB-FMT-001, AIB-FMT-002 |
 | [critic-verdict.v1](critic-verdict.v1.schema.json) | [Critic](../agents/critic.md) → [Orchestrator](../agents/orchestrator.md) | structured output + zod | AIB-CITE-003, AOPS-FAIL-003 |
-| [brief-draft.v1](brief-draft.v1.schema.json) | [Guard](../agents/guard.md) → [Orchestrator](../agents/orchestrator.md) → UI | zod; API response | AIB-API-003, AIB-SAFE-002, AIB-HUMAN-002, AIB-HUMAN-004 |
+| [brief-draft.v1](brief-draft.v1.schema.json) | [Guard](../agents/guard.md) → [Orchestrator](../agents/orchestrator.md) → UI | zod; API response | AIB-API-003, AIB-SAFE-002, AIB-HUMAN-002, AIB-HUMAN-009 |
 | [task-handoff.v1](task-handoff.v1.schema.json) | [Implementer](../agents/implementer.md) → [Reviewer](../agents/reviewer.md) → human | spec lint check 12 | DEVA-HAND-001..003 |
 
 ## Rules (checked by spec lint, check 13)

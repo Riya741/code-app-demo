@@ -5,7 +5,7 @@
 | Spec | Prefix | Implemented in |
 |---|---|---|
 | customer-search | SRCH | `src/lib/search.ts`, `src/components/customers/SearchBox.tsx`, `src/lib/customerSource.ts`, `src/hooks/useCustomers.ts` |
-| workspace-layout | LAY | `src/App.tsx`, `src/pages/Customers.tsx`, `src/components/customers/TopBar.tsx`, `src/components/customers/Panel.tsx`, `src/hooks/useMediaQuery.ts` · planned summary band (LAY-T09, LAY-T10): `Customers.tsx`, `Panel.tsx` (`collapse` prop) |
+| workspace-layout | LAY | `src/App.tsx`, `src/pages/Customers.tsx`, `src/components/customers/TopBar.tsx`, `src/components/customers/Panel.tsx`, `src/hooks/useMediaQuery.ts` · planned summary dialog (LAY-T09, LAY-T11, LAY-T12; CR-20261120-2): `Customers.tsx`, `TopBar.tsx` (summary button slot), new `SummaryDialog.tsx`, `src/components/ui/dialog.tsx` and `alert-dialog.tsx` (reused); `Panel.tsx` unchanged (the band's `collapse` prop is removed) |
 | executive-summary | SUM | `src/components/customers/CustomerDetails.tsx`, `src/lib/wordDoc.ts` |
 | use-cases-panel | UCP | `src/components/customers/ParentActivity.tsx` (`UseCasesPanel`), `src/components/customers/ConfirmDelete.tsx` |
 | use-case-form | UCF | `src/components/customers/UseCaseForm.tsx` |
@@ -25,7 +25,7 @@
 | security | SEC | `src/lib/html.ts`, `src/lib/csv.ts`, `vite.config.ts`, `package.json` |
 | performance-reliability | PERF/REL/COMP/DT | cross-cutting, `package.json` |
 | quality | QA | `eslint.config.js`, `tsconfig*.json`, `package.json` (scripts) |
-| ai-account-brief | AIB | planned: `server/ai/steps/*`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`), `CustomerDetails.tsx` (summary band), `AiDraftBanner.tsx` · agents: `spec/agents/{retriever,analyst,writer,critic,guard}.md` · contracts: `spec/contracts/*.v1.schema.json` |
+| ai-account-brief | AIB | planned: `server/ai/steps/*`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`, called from `Customers.tsx`), `CustomerDetails.tsx` (summary dialog content), `AiDraftBanner.tsx` · agents: `spec/agents/{retriever,analyst,writer,critic,guard}.md` · contracts: `spec/contracts/*.v1.schema.json` |
 | ai-evaluation | EVAL | planned: `evals/**` · agents: `spec/agents/judge.md`, `spec/agents/eval-analyst.md` |
 | agent-ops | AOPS | planned: `server/ai/{orchestrator,resilience,trace,config,client,tools}.ts`, `src/pages/AiRuns.tsx`, `docs/ai-runbook.md` · agent: `spec/agents/orchestrator.md` |
 | mcp-tooling | MCP | planned: `mcp/workbook-mcp/**`, `.mcp.json` |
@@ -36,7 +36,7 @@
 | File | Specs |
 |---|---|
 | `server/workbook.ts` | workbook-storage, workbook-api, data-model |
-| `src/pages/Customers.tsx` | workspace-layout, customer-search, executive-summary (selected-row re-pick; summary band from LAY-T09/SUM-T13) |
+| `src/pages/Customers.tsx` | workspace-layout, customer-search, executive-summary (selected-row re-pick; summary dialog from LAY-T11/SUM-T13) |
 | `src/components/customers/ParentActivity.tsx` | use-cases-panel, events-panel, design-system |
 | `src/components/customers/UseCaseForm.tsx` | use-case-form, use-case-bulk (helpers) |
 | `src/components/customers/CustomerDetails.tsx` | executive-summary, rich-text |
@@ -45,12 +45,12 @@
 | `src/lib/search.ts` | customer-search |
 | `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json` | data-pipeline (PIPE-GEN-001..008), data-model (DATA-QUAL-001, -002, -004) |
 | `tests/unit/search.test.ts` | customer-search (SRCH-RANK-001..004) |
-| `tests/component/*.test.tsx` (Testing Library) | design-system (DS-COMP-003), use-cases-panel (UCP-DEL-002), workspace-layout (LAY-SHELL-001) |
-| `tests/integration/harness.ts`, `tests/integration/*.test.ts` | quality (QA-TEST-003), workbook-api (API-GEN-001..004, API-READ-004, API-WRITE-001, API-WRITE-007, API-DEL-001, API-DEL-002, API-SUMM-001) |
+| `tests/component/*.test.tsx` (Testing Library) | design-system (DS-COMP-003), use-cases-panel (UCP-DEL-002), workspace-layout (LAY-SHELL-001; planned LAY-PANEL-004, LAY-PANEL-007, LAY-PANEL-008 and LAY-DLG-001..014 in `Customers.test.tsx`, `SummaryDialog.test.tsx`, `TopBar.test.tsx` — the unreleased band tests there are rewritten by LAY-T09/LAY-T11, CR-20261120-2) |
+| `tests/integration/harness.ts`, `tests/integration/*.test.ts` | quality (QA-TEST-003), workbook-api (API-GEN-001..004, API-READ-004, API-WRITE-001, API-WRITE-007, API-DEL-001, API-DEL-002, API-SUMM-001, API-SUMM-002) |
 | `tests/component/UseCaseForm.test.tsx`, `tests/integration/use-case-edit.test.ts` | use-case-form (UCF-EDIT-002, UCF-EDIT-004, UCF-ADD-002, UCF-ADD-004; UCF-EDIT-007 evidence under UCF-EDIT-002 titles until UCF-T11) |
 | `tests/component/EventForm.test.tsx`, `tests/integration/event-edit.test.ts` | event-form (EVF-EDIT-002, EVF-ADD-003; EVF-EDIT-004 evidence under an EVF-EDIT-002 title until EVF-T10) |
-| `tests/integration/summary.test.ts` | workbook-api (API-SUMM-001; API-SUMM-002 planned in API-T14) |
-| `tests/component/CustomerDetails.test.tsx`, `tests/unit/fmtUtc.test.ts` | executive-summary (SUM-EDIT-001, SUM-EDIT-004..006, SUM-VIEW-004) |
+| `tests/integration/summary.test.ts` | workbook-api (API-SUMM-001, API-SUMM-002) |
+| `tests/component/CustomerDetails.test.tsx`, `tests/unit/fmtUtc.test.ts` | executive-summary (SUM-EDIT-001, SUM-EDIT-004..006, SUM-VIEW-004; planned SUM-VIEW-001, SUM-VIEW-006 and the `onStateChange` / `onSaved` tests for LAY-DLG-007..009 from SUM-T13) |
 | `src/lib/customerSource.ts` (`saveSummary`), `src/hooks/useCustomers.ts` (`useSaveSummary`) | executive-summary (SUM-EDIT-001), client-data-layer |
 | `tests/hooks/test_hooks.py` | dev-agents (DEVA-GUARD-001..004, DEVA-GATE-001, DEVA-GATE-002, DEVA-CTX-001) |
 | `tests/unit/csv.test.ts` | export (EXP-CSV-001..003, EXP-CSV-005, EXP-NAME-001, EXP-NAME-002) |
@@ -76,7 +76,7 @@ Do these once and mark every linked task ✅ together.
 | Remove `detectKey` | DATA-T04 → CDL-T06 |
 | Shared read-only tools for runtime agents and MCP | AOPS-T02 → MCP-T02 |
 | Lint check for a reviewed hand-off before ✅ | DEVA-T10 (uses DEVA-HAND-003) |
-| Summary band (CR-20261120-1) | LAY-T09, SUM-T13, LAY-T08 (one change; LAY-T10 after the owner's answer) |
+| Summary dialog (CR-20261120-2, replaces the band of CR-20261120-1) | LAY-T09, LAY-T11, LAY-T12, SUM-T13, LAY-T08 (one change; LAY-T10 is spec-only and closes with the CR's approval) |
 
 ## 4. Dependency chain for the main open work
 ```
@@ -89,7 +89,7 @@ DATA-T04 ──► CDL-T06
 SEC-T03 ──► SEC-T04
 A11Y-T04 ──► A11Y-T05
 SUM-T09 (✅) ──► AIB-T07 (an AI draft must be savable)
-LAY-T09 + SUM-T13 (summary band) ──► AIB-T07 ──► AIB-T09
+LAY-T09 + LAY-T11 + LAY-T12 + SUM-T13 (summary dialog) ──► AIB-T10, AIB-T07 ──► AIB-T09
 AOPS-T01 ──► AIB-T03 ──► AOPS-T04 ;  AOPS-T01 ──► AIB-T05 ──► AIB-T06 ──► AIB-T10 ──► AIB-T07
 AIB-T03 ──► EVAL-T04 ──► EVAL-T05 ──► EVAL-T06 ──► EVAL-T07 (ADR-0007)
 AOPS-T02 ──► MCP-T02

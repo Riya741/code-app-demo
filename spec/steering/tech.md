@@ -48,7 +48,7 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 | Query defaults | `refetchOnWindowFocus: false`, `retry: 1` |
 | Lookup cache | 10 min (`LOOKUP_STALE`) |
 | Theme | default light, no system theme |
-| Panel memory | `autoSaveId="terra-split-h-v3"` · planned (CR-20261120-1): `terra-split-v-v1` for the Use Cases / Events split (LAY-T08) and `localStorage` `terra-summary-band-v1` for the band's collapsed state (LAY-T10); `terra-split-h-v3` goes with the right-hand panel (LAY-T09) |
+| Panel memory | `autoSaveId="terra-split-h-v3"` · planned (CR-20261120-1, kept by CR-20261120-2): `terra-split-v-v1` for the Use Cases / Events split (LAY-T08); `terra-split-h-v3` goes with the right-hand panel (LAY-T09). The summary dialog's open state and size are not stored (CR-20261120-2 dropped the band's `terra-summary-band-v1`, LAY-BAND-003) |
 | TS | app `strict: false`; `vite.config.ts` + `server/` `strict: true` |
 | AI (planned) | `AI_ENABLED` (default off) · `ANTHROPIC_API_KEY` from the environment only, never committed (SEC-SUPPLY-002) · `AI_MODEL_<STEP>`, `AI_EFFORT_<STEP>` (defaults in the agent specs, ADR-0007) · `AI_RUN_MAX_TOKENS`, `AI_RUN_MAX_COST_USD`, `AI_RUN_MAX_SECONDS` · `AI_FAULTS` (development and test only) · `AI_RUNS_DIR` (default `../data/ai-runs`) |
 | MCP (planned) | `MCP_ALLOW_WRITE` (default off) · `WORKBOOK_PATH` |

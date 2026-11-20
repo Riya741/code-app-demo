@@ -16,7 +16,6 @@ Rules:
 |---|---|---|---|---|---|
 | API-WRITE-008 | High | Validate references | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T08 ⬜, API-T11 ⬜ | Open |
 | DT-TIME-003 | High | Date-only values show stored day (One day early west of UTC) | [020-performance-reliability](../specs/020-performance-reliability/requirements.md) | UCP-T08 ⬜, PERF-T03 ⬜ | Open |
-| API-SUMM-002 | Medium | Reject a summary body without a string summary (a body without `executive_summary` clears the stored summary; the app's own client always sends it) | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T14 ⬜ | Open |
 | SRCH-ARIA-002 | Medium | Expose active option with aria-activedescendant | [001-customer-search](../specs/001-customer-search/requirements.md) | SRCH-T06 ⬜ | Open |
 | EVF-ADD-004 | Medium | Validate whole numbers | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T07 ⬜ | Open |
 | GRID-ROW-006 | Medium | Keyboard row expansion | [009-data-grid](../specs/009-data-grid/requirements.md) | GRID-T06 ⬜ | Open |
@@ -25,7 +24,7 @@ Rules:
 | A11Y-KEY-001 | Medium | Keyboard row expansion | [018-accessibility](../specs/018-accessibility/requirements.md) | GRID-T06 ⬜, A11Y-T03 ⬜ | Open |
 | A11Y-FORM-002 | Medium | Announce validation errors | [018-accessibility](../specs/018-accessibility/requirements.md) | A11Y-T05 ⬜ | Open |
 | SEC-SUPPLY-004 | Medium | Remove unused dependencies (30 unused) | [019-security](../specs/019-security/requirements.md) | SEC-T03 ⬜ | Open |
-| LAY-PANEL-004 | Low | Persist all split sizes (Only the horizontal split is saved) | [002-workspace-layout](../specs/002-workspace-layout/requirements.md) | LAY-T08 ⬜ (ship with LAY-T09, which removes the saved horizontal split) | Open |
+| LAY-PANEL-004 | Low | Persist all split sizes (Only the horizontal split is saved) | [002-workspace-layout](../specs/002-workspace-layout/requirements.md) | LAY-T08 🔄 (ships with LAY-T09, which removes the saved horizontal split; unchanged by CR-20261120-2, G5 split-restore check still open) | Open |
 | LAY-TOP-004 | Low | Refresh reloads all data (Only the customer list reloads) | [002-workspace-layout](../specs/002-workspace-layout/requirements.md) | LAY-T07 ⬜ | Open |
 | UCF-EDIT-005 | Low | Value saved as plain text on edit (Implemented; no test names it yet) | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T11 ⬜ | Open |
 | UCF-EDIT-006 | Low | Launch date saved as a calendar date on edit (Implemented; no test names it yet) | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T11 ⬜ | Open |
@@ -57,6 +56,7 @@ Known limits agreed as acceptable at the current data size. Revisit using the tr
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
+| ~~API-SUMM-002~~ | Medium | ~~Reject a summary body without a string summary~~ | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T14 ✅ | Closed 2026-11-20 |
 | ~~UCF-EDIT-002~~ | High | ~~Save use case edits~~ | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T07 ✅ | Closed 2026-11-18 |
 | ~~EVF-EDIT-002~~ | High | ~~Save event edits~~ | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T06 ✅ | Closed 2026-11-18 |
 | ~~SUM-EDIT-001~~ | High | ~~Persist summary edits~~ | [003-executive-summary](../specs/003-executive-summary/requirements.md) | API-T09 ✅, SUM-T07..T11 ✅ | Closed 2026-11-18 |

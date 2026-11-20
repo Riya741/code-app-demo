@@ -23,8 +23,8 @@ Customer search · workspace layout & theme · executive summary (view/edit/expo
 bulk add, clone, paste, delete, export) · events (list, filter, sort, add, delete, export) · local workbook API ·
 workbook build scripts · **planned:** AI Account Brief, an optional, cited AI draft of the executive summary that a
 person reviews and saves ([022-ai-account-brief](../specs/022-ai-account-brief/requirements.md), Constitution Article XII);
-drafted automatically for a customer with no saved summary, or on *Regenerate with AI*, and shown in a full-width,
-collapsible summary band above the grids (CR-20261120-1).
+drafted automatically for a customer with no saved summary, or on *Regenerate with AI*, and shown in the Executive
+Summary dialog that opens when a customer is selected, over full-width grids (CR-20261120-1, revised by CR-20261120-2).
 
 ## Out of scope
 Authentication and multi-user concurrency · hosted deployment · editing lookup data or customers in the app ·

@@ -132,9 +132,9 @@ JSON API at `/api/workbook` served by the Vite dev/preview server. Contract deta
 - **Source:** `server/workbook.ts`
 
 #### API-SUMM-002: Reject a summary body without a string summary
-- **Status:** ❌ Gap — a body without `executive_summary` clears the stored summary today (owner decision D3, CR-20261120-1)
-- **Criterion:** IF the body of `POST /customers/:id/summary` has no `executive_summary` field, or its value is not a string (including `null`), THEN THE API SHALL return 400 ("Missing: executive_summary" when absent, "executive_summary must be a string." otherwise) and SHALL leave the stored summary, its timestamp and the file unchanged; an explicit empty string SHALL still clear the summary (API-SUMM-001).
-- **Source:** `server/workbook.ts`
+- **Status:** ✅ Implemented (API-T14, owner decision D3, CR-20261120-1)
+- **Criterion:** IF the body of `POST /customers/:id/summary` is not a JSON object, has no `executive_summary` field, or its value is not a string (including `null`), THEN THE API SHALL return 400 ("Missing: executive_summary" when absent, "executive_summary must be a string." otherwise) and SHALL leave the stored summary, its timestamp and the file unchanged; an explicit empty string SHALL still clear the summary (API-SUMM-001).
+- **Source:** `server/workbook.ts`, `tests/integration/summary.test.ts`
 
 ## Scenarios
 - POST use case without `status_id` → 400 `Missing: status_id`; file unchanged.

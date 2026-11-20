@@ -2,7 +2,7 @@
 
 | Spec | Prefix | Status | Constitution |
 |---|---|---|---|
-| event-form | EVF | ⚠️ Add works · Edit not saved | II, IV, V, IX |
+| event-form | EVF | ⚠️ Add and edit saved (2026-11-18) · number validation and Stage list open | II, IV, V, IX |
 
 ## Introduction
 A dialog to log an event with one of the customer's subsidiaries, or to edit an existing event.
@@ -65,6 +65,18 @@ A dialog to log an event with one of the customer's subsidiaries, or to edit an 
 - **Criterion:** WHEN "Save changes" is submitted THE system SHALL post the full `EventInput` with `Id`, toast "Event updated", close and refresh.
 - **Source:** `src/components/customers/EventForm.tsx`
 
+### EVF-R4 — Values an edit normalises (accepted by the owner, D4, CR-20261120-1)
+
+#### EVF-EDIT-003: Attendee names saved as plain text on edit
+- **Status:** ⚠️ Partial — implemented (`plain()` on load, trimmed text on save); no test names it yet (EVF-T10)
+- **Criterion:** WHEN an event whose `attendee_names` holds HTML is edited THE form SHALL show the names as plain text and "Save changes" SHALL write that plain text, so HTML formatting in the field is not kept after the first edit.
+- **Source:** `src/components/customers/EventForm.tsx`
+
+#### EVF-EDIT-004: Event date saved as a calendar date on edit
+- **Status:** ✅ Implemented — the form and the server both keep the first 10 characters; evidence: `tests/component/EventForm.test.tsx` "EVF-EDIT-002 Save changes posts the full event with its Id, …" (row `2026-03-05T00:00:00`, posted `2026-03-05`); EVF-T10 adds a test named after this ID
+- **Criterion:** WHEN an event whose `event_date` is stored with a time part is edited and saved THE system SHALL write the date as `YYYY-MM-DD`.
+- **Source:** `src/components/customers/EventForm.tsx`, `server/workbook.ts`
+
 ## Open questions
 1. Fixed Stage list (Scheduled / Completed / Cancelled …)?
 2. Are Onsite and Virtual mutually exclusive, or can an event be hybrid?
@@ -74,3 +86,5 @@ A dialog to log an event with one of the customer's subsidiaries, or to edit an 
 - Event type and date but no subsidiary → "Required" under Subsidiary.
 - Valid input with two solutions → "Event added", row shows both solution names.
 - Existing stages Completed, Scheduled → both offered as suggestions.
+- Edit an event whose attendee names are `<p>Ann Fox</p>` → the textarea shows `Ann Fox`; Save changes stores `Ann Fox` (EVF-EDIT-003).
+- Edit an event dated `2026-03-05T00:00:00` → stored as `2026-03-05` (EVF-EDIT-004).

@@ -30,9 +30,14 @@ EventForm({ parentId: number, customerKeys: number[], existing: EventRow[], row?
 
 ## Implemented — EVF-EDIT-002 (EVF-T06, 2026-11-18)
 When `row` is set, add `Id: row.id` to the payload; toast "Event updated"; remove `NOT_WIRED`. Every field the
-full-replace API writes is shown in the form, so an edit blanks nothing. It does normalise some values (owner
-questions): HTML attendee names are saved as plain text (EVF-EDIT-001), a stored time on `event_date` is cut to the
-date, and Stage is trimmed.
+full-replace API writes is shown in the form, so an edit blanks nothing. It does normalise some values, accepted by
+the owner on 2026-11-20 (D4, CR-20261120-1; [EVF-T06 hand-off](../../handoffs/EVF-T06.md) open questions): HTML attendee
+names are saved as plain text (EVF-EDIT-003) and a stored time on `event_date` is cut to the date (EVF-EDIT-004).
+Stage is also trimmed (not raised as a decision; whitespace only).
+
+## Link rows on edit (Article II.4, constitution v1.1.1)
+An edit posts the full solution and contributor id lists; the server replaces this event's own link rows
+(API-WRITE-004). Article II.4 as amended by CR-20261120-1 allows exactly this, so the earlier exception is closed.
 
 ## Planned design — EVF-ADD-004
 Validate `attendees`/`duration` with `/^\d+$/` when non-blank; show the message under the field; include in `missing`-style map.
@@ -40,7 +45,10 @@ Validate `attendees`/`duration` with `/^\d+$/` when non-blank; show the message 
 ## Constitution check
 | Article | Compliance |
 |---|---|
-| II | Edits persist through the API (EVF-T06). An edit replaces the event's link rows (API-WRITE-004), which conflicts with II.4. ⚠️ Exception: API-T13 |
+| II | Edits persist through the API (EVF-T06). An edit updates the event in place and replaces its own link rows (API-WRITE-004), as Article II.4 (v1.1.1) allows. ✅ |
 | IV | Required fields; number validation missing. ⚠️ |
 | V | Pending/success/error. ✅ |
 | IX | Hooks + lib. ✅ |
+| X | Edit normalisation written as EVF-EDIT-003, EVF-EDIT-004; tests named after them in EVF-T10. ⚠️ until EVF-T10 |
+
+**Exceptions:** none. (Article II.4 was an exception until the owner's decision of 2026-11-20; closed by CR-20261120-1, API-T13.)

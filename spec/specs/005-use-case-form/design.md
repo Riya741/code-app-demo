@@ -47,8 +47,14 @@ One `string[]` per pick-list (`subsidiary`, `department`, `stakeholder`, `soluti
 3. Remove `NOT_WIRED`. Server already updates by `id` and appends status history when the status changes.
 4. `premium_credit`: from the selected solution; when that is unknown (lookup loading or failed, solution not listed,
    blank cell) an edit keeps the row's stored flag, so a full-replace write never erases it (review finding, UCF-T07).
-5. Values an edit still normalises (owner questions): `value_snippet` HTML is saved as plain text (UCF-EDIT-001),
-   `expected_launch_date` is saved as YYYY-MM-DD, and a row whose flag differs from its known solution's takes the solution's.
+5. Values an edit normalises, accepted by the owner on 2026-11-20 (D4, CR-20261120-1) and now requirements:
+   `value_snippet` HTML is saved as plain text (UCF-EDIT-005), `expected_launch_date` is saved as YYYY-MM-DD
+   (UCF-EDIT-006), and `premium_credit` comes from the known solution, else the stored flag (UCF-EDIT-007).
+   Hand-off questions: [UCF-T07](../../handoffs/UCF-T07.md) (premium credit), [EVF-T06](../../handoffs/EVF-T06.md) (same pattern for events).
+
+## Link rows on edit (Article II.4, constitution v1.1.1)
+An edit posts the full contributor and content-type id lists; the server replaces this use case's own link rows
+(API-WRITE-004). Article II.4 as amended by CR-20261120-1 allows exactly this, so the earlier exception is closed.
 
 ## Planned design — duplicate warning (UCF-ADD-008)
 Extract the bulk form's duplicate check into `src/lib/useCaseChecks.ts` (`findDuplicate(existing, candidate, excludeId?)`)
@@ -60,9 +66,10 @@ Lookup errors under each field; save error banner; dialog close blocked while pe
 ## Constitution check
 | Article | Compliance |
 |---|---|
-| II | Edits persist through the API (UCF-T07/T08). An edit replaces the record's link rows (API-WRITE-004), which conflicts with II.4. ⚠️ |
+| II | Edits persist through the API (UCF-T07/T08). An edit updates the use case in place and replaces its own link rows (API-WRITE-004), as Article II.4 (v1.1.1) allows. ✅ |
 | IV | Cascades and required checks. ✅ |
 | V | Pending/success/error feedback. ✅ |
 | IX | Hooks + lib. ✅ |
+| X | Edit normalisation written as UCF-EDIT-005..007; tests named after them in UCF-T11. ⚠️ until UCF-T11 |
 
-**Exceptions:** Article II.4: link rows are replaced on edit. Exit: API-T13 (owner decision).
+**Exceptions:** none. (Article II.4 was an exception until the owner's decision of 2026-11-20; closed by CR-20261120-1, API-T13.)

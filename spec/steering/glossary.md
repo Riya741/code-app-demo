@@ -19,8 +19,9 @@
 | **Event type** | Category of event. | `event_type` sheet |
 | **Stage** | Free-text state of an event (e.g. "Completed"). | `event.stage` |
 | **Executive summary** | Rich-text narrative about the customer. | `customer.executive_summary` |
+| **Summary band** | The full-width, collapsible strip above the Use Cases and Events grids that shows, edits and exports the executive summary (replaces the right-hand panel, CR-20261120-1). | LAY-R6 |
 | **Value snippet** | Short statement of the business value of a use case. | `use_case.value_snippet` |
-| **Premium credit** | Flag copied from the chosen solution onto the use case when it is saved. | `solution.premium_credit`, `use_case.premium_credit` |
+| **Premium credit** | Flag copied from the chosen solution onto the use case when it is saved; on an edit, the stored flag is kept while the solution's flag is unknown (UCF-EDIT-007). | `solution.premium_credit`, `use_case.premium_credit` |
 | **Soft delete** | Deleting sets `deleted = true` on the row; it stays in the workbook but is hidden from every read. | `deleted` column |
 | **Workbook** | The Excel file `code-app-data.xlsx` that is the app's database. Each sheet is one table. | file |
 | **Lookup** | Reference data used to fill dropdowns (subsidiaries, departments, …). | several sheets |
@@ -40,5 +41,7 @@
 | **Fact sheet / fact ID** | The allow-listed, redacted data for one customer; each record has a fact ID (`CU-`, `UC-`, `EV-` + workbook id) that the draft cites. | fact-sheet.v1 |
 | **Run** | One execution of the brief pipeline, with a run ID, checkpoints and a trace. | `../data/ai-runs/` |
 | **Unverified draft** | A draft the critic still rejected after two revisions; shown with its issues, never hidden. | AOPS-FAIL-003 |
+| **AI draft** | A brief shown in the summary band, labelled "AI draft — not saved", until a person saves, edits or discards it; never written by an agent. | AIB-HUMAN-004 |
+| **Automatic draft** | The one brief run started when a customer with no saved summary is selected and AI is available. | AIB-GEN-007 |
 | **Judge** | An LLM that scores outputs against a rubric during evaluation; trusted only while calibrated against human scores. | AGENT-JUDGE |
 | **Gate G7** | The eval gate: quality thresholds a prompt or model change must meet. | EVAL-GATE-001 |

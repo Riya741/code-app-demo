@@ -1,7 +1,7 @@
 # Tasks — Workbook HTTP API
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 13 tasks — ✅ 9 · 🔄 0 · ⬜ 4 · ⛔ 0
+**Summary:** 14 tasks — ✅ 10 · 🔄 0 · ⬜ 4 · ⛔ 0
 
 - [x] **API-T01** Vite plugin wiring for dev and preview; JSON responses and error mapping.
   - Status: ✅ Done · Covers: API-GEN-001..004 · Files: `server/workbook.ts`, `vite.config.ts`
@@ -31,5 +31,10 @@
   - Status: ⬜ Not started · Covers: API-GEN-001..005, API-READ-001..006, API-WRITE-001..008, API-DEL-001, API-DEL-002, API-SUMM-001 · Depends on: QA-T03, DATA-T09
 - [ ] **API-T12** Refuse updates to soft-deleted use cases and events (409, like `softDelete`), so an edit saved in one tab cannot bring back a row deleted in another.
   - Status: ⬜ Not started · Covers: API-WRITE-001, API-WRITE-006 · Files: `server/workbook.ts` · Found 2026-11-18 in the EVF-T06 review. Needs a new requirement through /spec-change first.
-- [ ] **API-T13** Resolve Article II.4 ("link rows are never destroyed") vs API-WRITE-004 ("replace link rows"): since UCF-T07/EVF-T06 connected edits, an edit physically removes the old personnel / content-type / solution link rows. Owner decides: soft-delete link rows (data-model change) or amend Article II.4 to allow replacing a record's own links on edit (constitution PATCH/MINOR via CR).
-  - Status: ⬜ Not started · Covers: API-WRITE-004 · Files: `spec/constitution.md` or `server/workbook.ts` · Recorded as a Constitution exception in steering/constitution-mapping.md §3.
+- [x] **API-T13** Resolve Article II.4 vs API-WRITE-004 (link rows replaced on edit). Owner decision 2026-11-20 (D1): amend Article II.4 so that an edit updates the record in place and replaces that record's own link rows; soft delete unchanged. Spec-only: constitution v1.1.1, exception rows removed from steering/constitution-mapping.md §3 and the 005/008 designs; no code change (the server already does this).
+  - Status: ✅ Done · Covers: API-WRITE-004 · Files: `spec/constitution.md`, `spec/steering/constitution-mapping.md`, `spec/specs/005-use-case-form/design.md`, `spec/specs/008-event-form/design.md` · Edited on branch `cr-owner-decisions-summary-band` by CR-20261120-1; Closed 2026-11-20 when the owner approved that CR. Verification: G1 only (no code).
+- [ ] **API-T14** Reject a summary POST without a string `executive_summary` (400, summary and file unchanged); an explicit empty string still clears it.
+  - Status: ⬜ Not started · Covers: API-SUMM-002 · Files: `server/workbook.ts`, `tests/integration/summary.test.ts` · Owner decision D3, CR-20261120-1
+  - Step: Add the presence and type checks in `saveSummary` (design: "Planned design — API-SUMM-002"); do not reuse `required()`
+  - Step: Integration tests titled `API-SUMM-002 …`: body `{}` → 400 `Missing: executive_summary`; `{ executive_summary: 5 }` and `{ executive_summary: null }` → 400 `executive_summary must be a string.`; in each case the re-read file still holds the old summary and timestamp; `{ executive_summary: "" }` → 200, summary null
+  - Step: Messages catalog: mark the new 400 text as implemented

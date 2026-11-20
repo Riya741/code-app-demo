@@ -1,7 +1,7 @@
 # Tasks — Add / Edit Event
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 9 tasks — ✅ 6 · 🔄 0 · ⬜ 2 · ⛔ 1
+**Summary:** 10 tasks — ✅ 6 · 🔄 0 · ⬜ 3 · ⛔ 1
 
 - [x] **EVF-T01** Dialog, fields, stage suggestions.
   - Status: ✅ Done · Covers: EVF-FIELD-001, EVF-FIELD-002 · Files: `EventForm.tsx`
@@ -25,3 +25,8 @@
   - Status: ⛔ Blocked — waiting for product decision (open question 1) · Covers: EVF-ADD-005
 - [ ] **EVF-T09** Component tests: required, add, edit save.
   - Status: ⬜ Not started · Covers: EVF-ADD-001, EVF-ADD-003, EVF-EDIT-002 · Depends on: QA-T02
+- [ ] **EVF-T10** Tests for the edit normalisation the owner accepted (D4, CR-20261120-1); no code change expected.
+  - Status: ⬜ Not started · Covers: EVF-EDIT-003, EVF-EDIT-004 · Files: `tests/component/EventForm.test.tsx`, `tests/integration/event-edit.test.ts`
+  - Step: `EVF-EDIT-003 …`: a row with HTML `attendee_names` shows plain text in the textarea and posts that plain text
+  - Step: `EVF-EDIT-004 …`: a row with `event_date` `2026-03-05T00:00:00` posts `2026-03-05` (today proven only inside an EVF-EDIT-002 test), and the server stores `2026-03-05` when sent a value with a time part
+  - Step: Set EVF-EDIT-003 to ✅ and close its gap-register row

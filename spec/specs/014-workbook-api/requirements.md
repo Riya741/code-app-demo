@@ -2,7 +2,7 @@
 
 | Spec | Prefix | Status | Constitution |
 |---|---|---|---|
-| workbook-api | API | ⚠️ Implemented · summary endpoint and FK validation missing | II, III, IV, IX |
+| workbook-api | API | ⚠️ Implemented · FK validation and summary body check missing | II, III, IV, IX |
 
 ## Introduction
 JSON API at `/api/workbook` served by the Vite dev/preview server. Contract details (bodies, fields) are in
@@ -89,6 +89,7 @@ JSON API at `/api/workbook` served by the Vite dev/preview server. Contract deta
 #### API-WRITE-004: Replace link rows
 - **Status:** ✅ Implemented
 - **Criterion:** Writes SHALL replace the record's link rows from the comma id lists (de-duplicated, positive only).
+- **Note:** Replaces only the saved record's own link rows (`relink` filters by that record's id); allowed by Constitution Article II.4 as amended in v1.1.1 (CR-20261120-1). Wording unchanged.
 - **Source:** `server/workbook.ts`
 
 #### API-WRITE-005: Append status history
@@ -123,11 +124,16 @@ JSON API at `/api/workbook` served by the Vite dev/preview server. Contract deta
 - **Criterion:** IF not found THEN 404 "This use case/event could not be found."; IF already deleted THEN 409 "This use case/event was already deleted.".
 - **Source:** `server/workbook.ts`
 
-### API-R5 — Customer summary (planned)
+### API-R5 — Customer summary
 
 #### API-SUMM-001: Save customer summary
 - **Status:** ✅ Implemented
 - **Criterion:** `POST /customers/:id/summary` with `{ executive_summary }` SHALL store the text (blank → null) and `summary_last_modified = now`, returning `{ id, summary_last_modified }`; 404 if the customer does not exist.
+- **Source:** `server/workbook.ts`
+
+#### API-SUMM-002: Reject a summary body without a string summary
+- **Status:** ❌ Gap — a body without `executive_summary` clears the stored summary today (owner decision D3, CR-20261120-1)
+- **Criterion:** IF the body of `POST /customers/:id/summary` has no `executive_summary` field, or its value is not a string (including `null`), THEN THE API SHALL return 400 ("Missing: executive_summary" when absent, "executive_summary must be a string." otherwise) and SHALL leave the stored summary, its timestamp and the file unchanged; an explicit empty string SHALL still clear the summary (API-SUMM-001).
 - **Source:** `server/workbook.ts`
 
 ## Scenarios
@@ -135,3 +141,5 @@ JSON API at `/api/workbook` served by the Vite dev/preview server. Contract deta
 - New use case with `personnel_ids: "3,3,5"` → 2 link rows; 1 history row with `previous_status_id = null`.
 - Event on subsidiary S with `S.parent_id = 10` → listed for parentId 10 only.
 - Delete a use case → hidden from reads, row kept with `deleted = TRUE`; second delete → 409.
+- Edit a use case from contributors 3, 5 to 5, 8 → same `id`; its `use_case_personnel` rows are now 5 and 8; other use cases' link rows unchanged (Article II.4).
+- `POST /customers/7/summary` with `{}` → 400 `Missing: executive_summary`; with `{ "executive_summary": 5 }` → 400; with `{ "executive_summary": "" }` → 200, summary null (API-SUMM-002).

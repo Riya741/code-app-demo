@@ -1,7 +1,7 @@
 # Tasks — Executive Summary
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 12 tasks — ✅ 11 · 🔄 0 · ⬜ 1 · ⛔ 0
+**Summary:** 13 tasks — ✅ 11 · 🔄 0 · ⬜ 2 · ⛔ 0
 
 - [x] **SUM-T01** Panel with stone theme; sanitised rich or plain text; empty state.
   - Status: ✅ Done · Covers: SUM-VIEW-001..003 · Files: `CustomerDetails.tsx`
@@ -34,3 +34,10 @@
   - Verified 2026-11-18 via the agent workflow (implementer subagent, then the project reviewer subagent; hand-off `spec/handoffs/SUM-T11.md`, verdict pass): 7 `fmtUtc` unit tests and 12 component tests (`tests/component/CustomerDetails.test.tsx`); endpoint tests reused from API-T09.
 - [ ] **SUM-T12** Harden the summary save: update the cached customer from the save response (so a failed refetch cannot show the old text), move the selected-row re-pick into a tested helper, move `fmtUtc` to `src/lib/dates.ts`, and narrow the over-claiming component test title.
   - Status: ⬜ Not started · Covers: SUM-EDIT-001, SUM-VIEW-004 · Files: `src/hooks/useCustomers.ts`, `src/pages/Customers.tsx`, `src/lib/dates.ts` · Found 2026-11-18 in the SUM-T08/T09/T11 reviews (minor findings).
+
+### Summary band (CR-20261120-1, owner decision D2)
+- [ ] **SUM-T13** Move the summary into the workspace band: `CustomerDetails` takes the band's collapse props, disables collapsing while editing or saving, and keeps every existing summary behaviour.
+  - Status: ⬜ Not started · Covers: SUM-VIEW-001, SUM-VIEW-005, LAY-BAND-007 · Files: `src/components/customers/CustomerDetails.tsx`, `tests/component/CustomerDetails.test.tsx` · Depends on: LAY-T09 (same change)
+  - Step: Pass `collapse` to the `Panel`; `disabled` while the editor is open or `mutation.isPending`
+  - Step: Keep the existing `CustomerDetails` tests green unchanged (they render the component on its own, so they do not depend on the panel position); add `SUM-VIEW-005 …` and `LAY-BAND-007 …` tests
+  - Step: G5 with LAY-T09: view, empty state, Last modified, click/Enter to edit, lazy editor, Cancel/Save, save error, Word export, both themes, ≥ 1024px and < 1024px

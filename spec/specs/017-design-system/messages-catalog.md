@@ -50,7 +50,7 @@ Every string a user can see as feedback. Change wording here first, then in code
 | Client, non-JSON | The workbook service is not available here. It only runs with `npm run dev` / `npm run preview`. |
 | Client, generic | The workbook request failed (<status>). |
 | Client, no id | This use case has no id. / This event has no id. |
-| Server 400 | Missing: <fields> · The request body is not valid JSON. · parentId is required. |
+| Server 400 | Missing: <fields> · The request body is not valid JSON. · parentId is required. · executive_summary must be a string. *(planned, API-SUMM-002; an absent field uses "Missing: executive_summary")* |
 | Server 404 | The workbook has no "<name>" sheet. · Use case <id> was not found. · Event <id> was not found. · Customer <id> was not found. · This use case could not be found. · This event could not be found. · Unknown workbook request: <METHOD> <path> |
 | Server 409 | This use case was already deleted. / This event was already deleted. |
 | Server 423 | Could not save: <file> is open in Excel. Close it and try again. |
@@ -72,18 +72,33 @@ Every string a user can see as feedback. Change wording here first, then in code
 
 ## 5. AI Account Brief (planned, spec 022)
 
-Specified by CR-20261117-1; not in the app yet. `<id>` is the first 6 characters of the run ID (AOPS-OBS-005).
+Specified by CR-20261117-1 and changed by CR-20261120-1 (automatic draft and *Regenerate with AI* in the summary
+band); not in the app yet. `<id>` is the first 6 characters of the run ID (AOPS-OBS-005).
 
 | Trigger | Where | Text | Requirement |
 |---|---|---|---|
-| AI available | Summary header button | Draft with AI | AIB-GEN-002 |
-| Run progress | Summary header, `aria-live` | Reading records… · Analysing… · Writing… · Checking (revision n)… | AIB-GEN-001 |
-| Unsaved edits | Confirm dialog | Replace your unsaved changes with an AI draft? [Replace] [Keep editing] | AIB-GEN-005 |
-| Run failed | Inline, with [Try again] | Could not draft the summary: <reason> (run <id>) | AIB-GEN-004 |
-| Breaker open | Button tooltip | AI is temporarily unavailable. Try again in a few minutes. | AIB-GEN-006 |
-| Draft ready | Editor banner | AI draft, not saved. Check it, then Save or Cancel. | AIB-HUMAN-001 |
-| Unverified draft | Editor banner + list | Unverified draft: check the points below before saving | AIB-HUMAN-002 |
+| ~~AI available~~ | ~~Summary header button~~ | ~~Draft with AI~~ | Retired 2026-11-20 (CR-20261120-1; AIB-GEN-002 Deprecated), replaced by "Regenerate with AI" |
+| AI enabled | Summary band header button | Regenerate with AI | AIB-GEN-009 |
+| Automatic draft running | Summary band body, above the progress | No executive summary yet. Drafting one with AI… | AIB-GEN-007 |
+| Run progress | Summary band (header when collapsed), `aria-live`, with [Cancel] | Reading records… · Analysing… · Writing… · Checking (revision n)… | AIB-GEN-010, AIB-HUMAN-008 |
+| Unsaved edits | Confirm dialog | Replace your unsaved changes with an AI draft? [Replace] [Keep editing] | AIB-GEN-011 |
+| Run failed | Summary band, inline, with [Try again] | Could not draft the summary: <reason> (run <id>) | AIB-GEN-004 |
+| Breaker open | *Regenerate with AI* tooltip | AI is temporarily unavailable. Try again in a few minutes. | AIB-GEN-012 |
+| ~~Draft ready~~ | ~~Editor banner~~ | ~~AI draft, not saved. Check it, then Save or Cancel.~~ | Retired 2026-11-20 (CR-20261120-1; AIB-HUMAN-001 Deprecated) |
+| Draft ready | Summary band label, with [Save] [Edit] [Discard] | AI draft — not saved. Check it, then Save, Edit or Discard. | AIB-HUMAN-004 |
+| Draft being edited | Editor label | AI draft — not saved. Check it, then Save or Cancel. | AIB-HUMAN-006 |
+| Draft waiting, band collapsed | Band header badge | AI draft — not saved | AIB-HUMAN-008 |
+| Unverified draft | Band and editor banner + list | Unverified draft: check the points below before saving | AIB-HUMAN-002 |
 | Server: AI off | API 503 | AI is not enabled | AIB-API-001 |
 | Server: refusal | Run error reason | The model declined this request | AOPS-FAIL-004 |
 | Server: budget | Run error reason | Budget exceeded | AOPS-BUDG-001 |
 | Server: final check | Run error reason | Draft did not pass the final check | AIB-SAFE-002 |
+
+Saving an AI draft uses the summary messages above: toast "Executive summary updated", inline "Could not save: <message>".
+
+## 6. Summary band (planned, CR-20261120-1)
+
+| Control | Where | Text | Requirement |
+|---|---|---|---|
+| Collapse control, band expanded | Band header button, accessible name | Collapse executive summary | LAY-BAND-006 |
+| Collapse control, band collapsed | Band header button, accessible name | Expand executive summary | LAY-BAND-006 |

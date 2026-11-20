@@ -56,7 +56,13 @@ Check `stop_reason` before reading content. Stable system prompts and tool defin
 
 ## Error handling
 Each AOPS-FAIL criterion is one branch in `resilience.ts` or the orchestrator, and each produces a span with its
-`outcome`. User-visible messages (AIB-GEN-004, AIB-GEN-006) always carry the short run ID (AOPS-OBS-005).
+`outcome`. User-visible messages (AIB-GEN-004, AIB-GEN-012) always carry the short run ID (AOPS-OBS-005).
+
+**Run volume (CR-20261120-1).** Runs now also start automatically when a customer without a saved summary is
+selected (AIB-GEN-007), and the client cancels them when the user changes customer (AIB-GEN-008). The pipeline is
+unchanged; cancel (AOPS-REC-002), idempotent start (AOPS-REC-003), the per-run budget (AOPS-BUDG-001) and the
+breaker (AOPS-FAIL-006, which also stops automatic runs, AIB-GEN-012) bound the cost. `npm run ai:metrics`
+(AOPS-OBS-003) should show the share of cancelled runs; a high share is the signal to revisit the trigger.
 
 ## Testing approach
 A **replay model** (`AI_MODEL_MODE=replay`) returns recorded responses from `tests/fixtures/ai/`, so all tests run

@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://code-app-demo.local/spec/contracts/brief-draft.v1.schema.json",
   "title": "Brief draft v1",
-  "description": "Guard -> UI (via GET /api/ai/runs/:id). Sanitised HTML built by code, with citation markers, status and the critic's open issues (AIB-API-003, AIB-HUMAN-001, AIB-HUMAN-002).",
+  "description": "Guard -> UI (via GET /api/ai/runs/:id). Sanitised HTML built by code, with citation markers, status and the critic's open issues (AIB-API-003, AIB-HUMAN-002, AIB-HUMAN-004).",
   "x-contract": {
     "name": "brief-draft",
     "version": 1,
     "from": "AGENT-GUARD",
     "to": "AGENT-ORCHESTRATOR",
-    "requirements": ["AIB-API-003", "AIB-SAFE-002", "AIB-CITE-004", "AIB-FMT-002", "AIB-HUMAN-001", "AIB-HUMAN-002"]
+    "requirements": ["AIB-API-003", "AIB-SAFE-002", "AIB-CITE-004", "AIB-FMT-002", "AIB-HUMAN-002", "AIB-HUMAN-004"]
   },
   "type": "object",
   "additionalProperties": false,

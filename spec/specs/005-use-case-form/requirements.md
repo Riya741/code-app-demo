@@ -2,7 +2,7 @@
 
 | Spec | Prefix | Status | Constitution |
 |---|---|---|---|
-| use-case-form | UCF | ⚠️ Add works · Edit not saved | II, IV, V, IX |
+| use-case-form | UCF | ⚠️ Add and edit saved (2026-11-18) · edit normalisation tests and duplicate warning open | II, IV, V, IX |
 
 ## Introduction
 A dialog to add one use case to the selected customer, or to edit an existing one. Pick-lists cascade so only valid
@@ -119,8 +119,30 @@ combinations can be chosen.
 - **Criterion:** WHEN saving an edit THE system SHALL send the row's current `target_users`, `target_credits_consumed`, `target_api_calls` so the full-replace API does not erase them.
 - **Source:** `src/components/customers/UseCaseForm.tsx`
 
+### UCF-R4 — Values an edit normalises (accepted by the owner, D4, CR-20261120-1)
+**User story:** As the owner, I want the small changes an edit makes to stored values written down, so that they are
+deliberate behaviour rather than surprises.
+
+#### UCF-EDIT-005: Value saved as plain text on edit
+- **Status:** ⚠️ Partial — implemented (`plain()` on load, trimmed text on save); no test names it yet (UCF-T11)
+- **Criterion:** WHEN a use case whose `value_snippet` holds HTML is edited THE form SHALL show the value as plain text and "Save changes" SHALL write that plain text, so HTML formatting in the value is not kept after the first edit.
+- **Source:** `src/components/customers/UseCaseForm.tsx`
+
+#### UCF-EDIT-006: Launch date saved as a calendar date on edit
+- **Status:** ⚠️ Partial — implemented (the form keeps the first 10 characters of `expected_launch_date`); no test names it yet (UCF-T11)
+- **Criterion:** WHEN a use case whose `expected_launch_date` is stored with a time part is edited and saved THE system SHALL write the date as `YYYY-MM-DD`.
+- **Source:** `src/components/customers/UseCaseForm.tsx`
+
+#### UCF-EDIT-007: Premium credit from the solution, else the stored flag
+- **Status:** ✅ Implemented — evidence: the three `premium_credit` tests in `tests/component/UseCaseForm.test.tsx` (titled UCF-EDIT-002; UCF-T11 retitles them)
+- **Criterion:** WHEN an edit is saved THE system SHALL send `premium_credit` from the selected solution's flag, and IF that flag is unknown (lookup loading or failed, solution not listed, blank cell) THEN the row's stored flag.
+- **Source:** `src/components/customers/UseCaseForm.tsx`
+
 ## Scenarios
 - Pick Solution A and a Status, change to Solution B → type and status cleared; status list shows B's statuses in order.
 - Only Subsidiary set → Solution and Status show "Required"; no request.
 - Valid input with two contributors → "Use case added", new row on top with both contributors.
 - **Target:** edit a status and save → new status shown, `last_modified` updated, one status-history row added.
+- Edit a use case whose value is `<p><b>Faster</b> checkout</p>` → the Value box shows `Faster checkout`; Save changes stores `Faster checkout` (UCF-EDIT-005).
+- Edit a use case with launch date `2026-12-01T00:00:00` → stored as `2026-12-01` (UCF-EDIT-006).
+- Edit while the solutions list is still loading → the stored `premium_credit` is kept (UCF-EDIT-007).

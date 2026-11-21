@@ -60,7 +60,7 @@ authentication. This spec covers content safety, exposure and data handling.
 
 #### SEC-SUPPLY-002: No secrets
 - **Status:** ✅ Implemented
-- **Criterion:** No secrets SHALL be committed (none are needed).
+- **Criterion:** No secrets SHALL be committed. The only secret, the optional Anthropic API key, lives in the environment (Article XII, ai-data-policy §1); `.env` and `.env.*` are git-ignored.
 - **Source:** `package.json`
 
 #### SEC-SUPPLY-003: No high npm audit issues

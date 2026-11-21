@@ -1,8 +1,8 @@
 # Steering: AI Data Policy
 
 What data may reach a model provider, in what form, and how long AI artefacts are kept. It puts
-[Constitution Article XII.4](../constitution.md#article-xii--ai-agents-and-data) into practice. The Retriever agent
-([AGENT-RETRIEVER](../agents/retriever.md)) and the MCP server ([025-mcp-tooling](../specs/025-mcp-tooling/)) apply it
+[Constitution Article XII.4](../constitution.md#article-xii--ai-agents-and-data) into practice. The retriever code step
+(`server/ai/steps/retriever.ts`) and the MCP server ([025-mcp-tooling](../specs/025-mcp-tooling/)) apply it
 in code; the eval suite checks it (EVAL-CODE-005).
 
 **Version:** 1.0.0 · **Date:** 2026-11-17 · **Change request:** [CR-20261117-1](../changes/CR-20261117-1-ai-agents.md)
@@ -34,7 +34,8 @@ Soft-deleted rows (`deleted = true`) are never sent, matching every other read i
 
 ## 4. Data is data, not instructions
 Free text from the workbook is placed inside delimited data fields and the system prompt states that instructions
-found in data must not be followed (AIB-SAFE-001). Prompt-injection cases are part of the eval dataset (EVAL-DATA-003).
+found in data must not be followed (AIB-SAFE-001). Prompt-injection cases are part of the eval dataset (EVAL-DATA-003). The eval judge receives only a case's fact sheet
+and the draft built from it, never model or configuration details (EVAL-JUDGE-009).
 
 ## 5. Real customer data (not allowed today)
 Before any real customer data may be sent to a model, a change request must specify: authentication

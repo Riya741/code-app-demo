@@ -8,6 +8,8 @@
 How the brief pipeline runs: a deterministic orchestrator ([ADR-0008](../../adr/0008-orchestration-pattern.md)) that
 validates every hand-off, survives provider failures, stays within budgets, can be resumed after a crash or cancelled,
 and leaves a trace of every step (Article XII.7). Each failure row here has a fault-injection test.
+CR-20261121-1 removes the Critic and its revision loop: the steps are retrieve → analyse → write → guard, and only
+analyse and write call a model (AOPS-ORCH-006).
 
 Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour missing or broken) · 📝 Planned (not built yet) · Deprecated.
 
@@ -17,24 +19,34 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 **User story:** As the developer, I want the pipeline's steps fixed in code, so that every run is predictable, testable and observable.
 
 #### AOPS-ORCH-001: Fixed step sequence
-- **Status:** 📝 Planned
+- **Status:** Deprecated — retired by CR-20261121-1: the Critic and its loop are removed; replaced by AOPS-ORCH-006
+- **Source:** `server/ai/orchestrator.ts` (`runBrief`, `nextStep`)
 - **Criterion:** THE orchestrator SHALL run the steps retrieve → analyse → write → critique → guard as an explicit state machine, with the critique → write loop as the only branch.
 
 #### AOPS-ORCH-002: Every hand-off is validated
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/orchestrator.ts`, `server/ai/contracts.ts` (`validateContract`)
 - **Criterion:** WHEN a step produces output THE orchestrator SHALL validate it against the step's output contract before passing it on, and SHALL never pass on or silently repair an invalid hand-off (Article XII.2).
 
 #### AOPS-ORCH-003: Step settings come from agent specs
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/config.ts` (`STEP_AGENTS`, `loadAiConfig`), `server/ai/orchestrator.ts` (`callModel`), `server/ai/trace.ts`
 - **Criterion:** THE model, effort, max tokens and timeout of each LLM step SHALL be configuration values whose defaults are those in the step's agent spec, and every trace SHALL record the values used.
 
 #### AOPS-ORCH-004: Only listed tools
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/tools.ts` (`callTool`), `server/ai/orchestrator.ts` (`ctx.tools.call`)
 - **Criterion:** IF an agent requests a tool that its agent spec does not list THEN THE orchestrator SHALL refuse the call, record a `tool_denied` span and fail the step (Article XII.1).
 
 #### AOPS-ORCH-005: Read-only tools
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/tools.ts`, `server/workbook.ts` (read queries)
 - **Criterion:** THE tools available to runtime agents SHALL be read-only functions in `server/ai/tools.ts` with strict input schemas and capped result sizes.
+
+#### AOPS-ORCH-006: Straight step sequence
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/orchestrator.ts` (`runBrief`, `nextStep`), `server/ai/config.ts` (`STEP_NAMES`, `STEP_AGENTS`)
+- **Criterion:** THE orchestrator SHALL run the steps retrieve → analyse → write → guard as an explicit state machine with no branch; only analyse (AGENT-ANALYST) and write (AGENT-WRITER) SHALL call a model, and retrieve and guard SHALL be deterministic code.
 
 ### AOPS-R2 — Failure handling
 **User story:** As a CSS, I want a provider hiccup to cost a few seconds, not my draft, so that the feature is dependable.
@@ -48,7 +60,7 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 - **Criterion:** IF a step's output fails its contract THEN THE orchestrator SHALL retry the step once with the validator's error message, and IF it fails again THEN THE step SHALL fail.
 
 #### AOPS-FAIL-003: Bounded critic loop
-- **Status:** 📝 Planned
+- **Status:** Deprecated — retired by CR-20261121-1: no Critic, so no revision loop; an unverified run now comes from the Guard's checks (AOPS-FAIL-008)
 - **Criterion:** IF the critic rejects a draft THEN THE orchestrator SHALL send the issues back to the writer at most twice; IF the third draft is still rejected THEN THE orchestrator SHALL return it with status `unverified` and the critic's issues.
 
 #### AOPS-FAIL-004: Refusals
@@ -64,8 +76,15 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 - **Criterion:** WHEN 5 model calls fail within 60 seconds THE breaker SHALL open for 120 seconds, during which new runs are refused with 503 and `/api/ai/status` reports `breaker_open`; after the cool-down one probe run SHALL decide whether it closes.
 
 #### AOPS-FAIL-007: Degrade gracefully
-- **Status:** 📝 Planned
-- **Criterion:** IF `AI_ENABLED` is not `true` or no API credentials are configured THEN THE server SHALL NOT create the model client, `/api/ai/status` SHALL report `enabled: false`, and every other API SHALL behave unchanged (Article XII.8).
+- **Status:** ⚠️ Partial — no client is created and status reports `enabled: false` (`aiStatus`); the `/api/ai/status` route and a meaningful "other APIs unchanged" test come with AIB-T05
+- **Source:** `server/ai/config.ts`, `server/ai/client.ts` (`createModelClient`, `aiStatus`)
+- **Criterion:** IF `AI_ENABLED` is not `true`, or in live mode no API credentials are configured, THEN THE server SHALL NOT create the model client, `/api/ai/status` SHALL report `enabled: false`, and every other API SHALL behave unchanged (Article XII.8). Replay mode (`AI_MODEL_MODE=replay`, recorded responses, no key) is allowed only when `NODE_ENV` is `development` or `test`.
+- **Note:** wording clarified 2026-11-20 by the AOPS-T01 review: replay mode needs no key, so "no credentials" applies to live mode; replay is barred in production like `AI_FAULTS`.
+
+#### AOPS-FAIL-008: Unverified when the Guard's checks fail
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/orchestrator.ts` (`runBrief`)
+- **Criterion:** WHEN the guard step returns a draft with status `unverified` (failed citation checks, AIB-CITE-003) THE orchestrator SHALL end the run with status `unverified`, keeping the draft and its issues; WHEN it returns `verified` THE run SHALL end `succeeded`.
 
 ### AOPS-R3 — Budgets
 **User story:** As the owner, I want every run bounded, so that one bad run cannot burn time or money.
@@ -101,19 +120,21 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 **User story:** As the developer, I want to see what every run did, step by step, so that I can explain and fix it.
 
 #### AOPS-OBS-001: Trace spans
-- **Status:** 📝 Planned
+- **Status:** Deprecated — retired by CR-20261121-1: code steps no longer have agent specs; replaced by AOPS-OBS-007
+- **Source:** `server/ai/trace.ts` (`Tracer`, `fileSink`, `costUsd`), `server/ai/orchestrator.ts`
 - **Criterion:** EVERY run, step, model call and tool call SHALL emit a trace span with run_id, parent span, step, agent spec ID and version, prompt version, model, effort, input/output/cache tokens, cost, latency, retries, stop_reason and outcome, written as JSONL under `../data/ai-runs/traces/`.
 
 #### AOPS-OBS-002: No free text in traces or logs
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/trace.ts` (`toTraceRecord`, `maskContractErrors`), `server/ai/client.ts` (SDK `logLevel: "off"`)
 - **Criterion:** Traces and logs SHALL NOT contain workbook free text, prompts or model output; they reference the checkpoint by run ID instead (ai-data-policy §6).
 
 #### AOPS-OBS-003: Metrics
-- **Status:** 📝 Planned
+- **Status:** Deprecated — retired by CR-20261121-1: no Critic, so no critic first-pass rate; replaced by AOPS-OBS-008
 - **Criterion:** `npm run ai:metrics` SHALL aggregate traces into runs, success %, unverified %, critic first-pass rate, p50/p95 latency per step, cost per brief, cache-hit ratio, retries and breaker openings.
 
 #### AOPS-OBS-004: Run Inspector
-- **Status:** 📝 Planned
+- **Status:** Deprecated — retired by CR-20261121-1: no Critic issues; replaced by AOPS-OBS-009
 - **Criterion:** WHERE AI is enabled in development THE `/ai-runs` page SHALL list runs and show, for a selected run, the step timeline, each step's redacted inputs and outputs, tokens, cost, critic issues and retries, with *Resume* and *Re-run* actions.
 
 #### AOPS-OBS-005: Run ID in user messages
@@ -123,6 +144,19 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 #### AOPS-OBS-006: Runbook
 - **Status:** 📝 Planned
 - **Criterion:** THE project SHALL keep `docs/ai-runbook.md` describing each run status, breaker state and cost alert, and what to do about it.
+
+#### AOPS-OBS-007: Trace spans (agent IDs on model steps only)
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/trace.ts` (`Tracer`, `fileSink`, `costUsd`), `server/ai/orchestrator.ts`, `server/ai/config.ts` (`STEP_AGENTS`)
+- **Criterion:** EVERY run, step, model call and tool call SHALL emit a trace span with run_id, parent span, step, prompt version, model, effort, input/output/cache tokens, cost, latency, retries, stop_reason and outcome, written as JSONL under `../data/ai-runs/traces/`; spans of the analyse and write steps SHALL also carry the agent spec ID and version, and the run span and the spans of code steps SHALL carry none.
+
+#### AOPS-OBS-008: Metrics
+- **Status:** 📝 Planned
+- **Criterion:** `npm run ai:metrics` SHALL aggregate traces into runs, success %, unverified %, p50/p95 latency per step, cost per brief, cache-hit ratio, retries and breaker openings.
+
+#### AOPS-OBS-009: Run Inspector
+- **Status:** 📝 Planned
+- **Criterion:** WHERE AI is enabled in development THE `/ai-runs` page SHALL list runs and show, for a selected run, the step timeline, each step's redacted inputs and outputs, tokens, cost, verification issues and retries, with *Resume* and *Re-run* actions.
 
 ### AOPS-R6 — Proving resilience
 **User story:** As the assessor, I want failure handling proven by injected faults, not just described.

@@ -166,6 +166,16 @@ class StopAndContextTest(FixtureProject):
         self.assertEqual(gates_on_stop.parse_porcelain(text),
                          ["spec/specs/026-dev-agents/tasks.md", ".claude/hooks/x.py", "src/new.ts"])
 
+    def test_DEVA_GATE_002_runs_only_tests_related_to_changed_files(self):
+        sys.path.insert(0, HOOKS)
+        import gates_on_stop
+        os.makedirs(os.path.join(self.project, "src"), exist_ok=True)
+        with open(os.path.join(self.project, "src", "a.ts"), "w", encoding="utf-8") as fh:
+            fh.write("export {};\n")
+        args = gates_on_stop.related_test_args(self.project, ["src/a.ts", "src/deleted.ts", "spec/x.md"])
+        self.assertEqual(args, ["related", "src/a.ts", "--run", "--reporter=dot", "--passWithNoTests"])
+        self.assertIsNone(gates_on_stop.related_test_args(self.project, ["src/deleted.ts", "spec/x.md"]))
+
     def test_DEVA_GATE_002_runs_tools_from_an_upper_case_drive(self):
         sys.path.insert(0, HOOKS)
         import _common

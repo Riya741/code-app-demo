@@ -39,6 +39,9 @@ Rules:
 | A11Y-FORM-001 | Low | Labels associated with controls (`Field` label has no `htmlFor`; comboboxes have no accessible name) | [018-accessibility](../specs/018-accessibility/requirements.md) | A11Y-T04 ⬜ | Open |
 | A11Y-SEE-001 | Low | AA contrast (Not verified (small 10.5–11px text)) | [018-accessibility](../specs/018-accessibility/requirements.md) | A11Y-T06 ⬜ | Open |
 | SEC-SUPPLY-003 | Low | No high npm audit issues (Not verified) | [019-security](../specs/019-security/requirements.md) | SEC-T04 ⬜ | Open |
+| AOPS-FAIL-007 | Low | Degrade gracefully (No client and `enabled: false` done; the status route comes with AIB-T05) | [024-agent-ops](../specs/024-agent-ops/requirements.md) | AIB-T05 ⬜, AOPS-T09 ⬜ | Open |
+| AIB-SAFE-001 | Low | Data is not instructions (Escaped data block done; draft behaviour needs prompts and the eval) | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T03 ⬜, EVAL-T01 ⬜ | Open |
+| AIB-FAITH-003 | Low | Sparse or empty customers (Fact sheet exact; draft behaviour needs prompts and the eval) | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T03 ⬜, EVAL-T01 ⬜ | Open |
 
 ## Accepted limitations
 Known limits agreed as acceptable at the current data size. Revisit using the triggers in the requirement.
@@ -55,6 +58,10 @@ Known limits agreed as acceptable at the current data size. Revisit using the tr
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
+| ~~DEVA-GATE-002~~ | Low | ~~Gates before stopping (the hook ran the whole test suite, not the affected tests)~~ | [026-dev-agents](../specs/026-dev-agents/requirements.md) | DEVA-T17 ✅ | Closed 2026-11-21 |
+| ~~AIB-CITE-001~~ | Low | ~~Stable fact IDs~~ | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T01 ✅, AIB-T02 ✅ | Closed 2026-11-21 |
+| ~~AOPS-ORCH-002~~ | Low | ~~Every hand-off is validated~~ | [024-agent-ops](../specs/024-agent-ops/requirements.md) | AIB-T01 ✅, AOPS-T01 ✅ | Closed 2026-11-21 |
+| ~~AOPS-ORCH-004~~ | Low | ~~Only listed tools~~ | [024-agent-ops](../specs/024-agent-ops/requirements.md) | AOPS-T02 ✅, AOPS-T01 ✅ | Closed 2026-11-21 |
 | ~~LAY-PANEL-004~~ | Low | ~~Persist all split sizes~~ | [002-workspace-layout](../specs/002-workspace-layout/requirements.md) | LAY-T08 ✅ | Closed 2026-11-20 |
 | ~~API-SUMM-002~~ | Medium | ~~Reject a summary body without a string summary~~ | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T14 ✅ | Closed 2026-11-20 |
 | ~~UCF-EDIT-002~~ | High | ~~Save use case edits~~ | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T07 ✅ | Closed 2026-11-18 |

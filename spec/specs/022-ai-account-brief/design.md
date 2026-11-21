@@ -1,9 +1,9 @@
 # Design — AI Account Brief
 
 ## Overview
-The browser asks the local server to start a brief run; the server runs a **code-controlled pipeline** of five steps
-([ADR-0008](../../adr/0008-orchestration-pattern.md)) and returns a sanitised, cited draft. Since CR-20261120-1 the
-run starts **automatically** when a customer without a saved summary is selected (AIB-GEN-016), or on *Regenerate
+The browser asks the local server to start a brief run; the server runs a **code-controlled pipeline** of four steps
+([ADR-0008](../../adr/0008-orchestration-pattern.md); the Critic was removed by CR-20261121-1) and returns a sanitised, cited draft. Since CR-20261120-1 the
+run starts **automatically** when a customer without a saved summary is selected (AIB-GEN-021), or on *Regenerate
 with AI* (AIB-GEN-017); since CR-20261120-2 progress and the unsaved draft are shown in the Executive Summary
 **dialog** that opens on selection (002 LAY-R7), and the user saves it as is, edits it in the existing `RichTextEditor`
 first, or discards it. The run belongs to the customer, not to the dialog: closing the dialog keeps the run going and
@@ -15,9 +15,8 @@ uses the summary endpoint from the executive-summary spec (SUM-T07..T10, done). 
 Customers.tsx (useAutoBrief) ─► useBriefRun (hook) ─► lib/aiBrief.ts ─► POST /api/ai/brief ─► orchestrator (server/ai)
                                                           ◄─ SSE /api/ai/runs/:id/events (progress)
                                                           ◄─ GET /api/ai/runs/:id  (brief-draft.v1)
-Retriever ─fact-sheet.v1─► Analyst ─analyst-to-writer.v1─► Writer ─writer-to-critic.v1─► Critic ─critic-verdict.v1─►
-   (code)                  (LLM + read-only tools)          (LLM)    ◄── issues, ≤ 2 revisions ──┘ (code + LLM)
-                                                                                     Guard (code) ─brief-draft.v1─► UI
+Retriever ─fact-sheet.v1─► Analyst ─analyst-to-writer.v1─► Writer ─writer-draft.v1─► Guard ─brief-draft.v1─► UI
+   (code)                  (LLM + read-only tools)          (LLM)                   (code: citation checks, HTML)
 ```
 
 ## Components and files
@@ -25,8 +24,8 @@ Retriever ─fact-sheet.v1─► Analyst ─analyst-to-writer.v1─► Writer �
 |---|---|
 | `server/ai/routes.ts` | `/api/ai/status`, `/api/ai/brief`, `/api/ai/runs/:id`, `/api/ai/runs/:id/events` (registered by the Vite plugin next to `/api/workbook`) |
 | `server/ai/steps/retriever.ts` | Fact sheet from the `Store` read model; fact IDs; allow-list and redaction ([ai-data-policy](../../steering/ai-data-policy.md)) |
-| `server/ai/steps/analyst.ts`, `writer.ts`, `critic.ts` | LLM steps, one per agent spec |
-| `server/ai/steps/guard.ts` | Builds HTML from sentences, appends `[UC-…]` markers, sanitises, counts words, final schema check |
+| `server/ai/steps/analyst.ts`, `writer.ts` | LLM steps, one per agent spec |
+| `server/ai/steps/guard.ts` | Citation checks (AIB-CITE-003; failures make the draft `unverified` with issues), builds HTML from sentences, appends `[UC-…]` markers, sanitises, counts words, final schema check |
 | `server/ai/prompts/*.v1.md` | Prompts; each starts with a header citing its agent spec and requirement IDs (lint check 11) |
 | `server/ai/contracts.ts` | zod schemas matching `spec/contracts/*.schema.json` |
 | `src/lib/aiBrief.ts` | Fetchers: `getAiStatus`, `startBrief`, `getRun`, `subscribeRun` (EventSource) |
@@ -34,9 +33,8 @@ Retriever ─fact-sheet.v1─► Analyst ─analyst-to-writer.v1─► Writer �
 | `src/components/customers/CustomerDetails.tsx` | The dialog content: *Regenerate with AI*, progress line, cancel, error, draft view with *Save* / *Edit* / *Discard*, unverified banner, confirm replace; receives the run state as props |
 | `src/components/customers/AiDraftBanner.tsx` | "AI draft — not saved" and "Unverified draft" banners and the reopen-button indicator (spinner, "AI draft ready — not saved" badge) |
 
-Agents: [orchestrator](../../agents/orchestrator.md) · [retriever](../../agents/retriever.md) ·
-[analyst](../../agents/analyst.md) · [writer](../../agents/writer.md) · [critic](../../agents/critic.md) ·
-[guard](../../agents/guard.md).
+Agents: [analyst](../../agents/analyst.md) · [writer](../../agents/writer.md). Retriever, Guard and the orchestrator
+are code steps without agent specs (CR-20261121-1).
 
 ## Interfaces
 ```ts
@@ -47,12 +45,11 @@ Agents: [orchestrator](../../agents/orchestrator.md) · [retriever](../../agents
 // GET /api/ai/runs/:id/events → text/event-stream; data: { step, revision, status } … final { status }
 // POST /api/ai/runs/:id/cancel → 204
 
-type StepName = "retrieve" | "analyse" | "write" | "critique" | "guard";
+type StepName = "retrieve" | "analyse" | "write" | "guard";
 ```
 Contracts: [fact-sheet.v1](../../contracts/fact-sheet.v1.schema.json) ·
 [analyst-to-writer.v1](../../contracts/analyst-to-writer.v1.schema.json) ·
-[writer-to-critic.v1](../../contracts/writer-to-critic.v1.schema.json) ·
-[critic-verdict.v1](../../contracts/critic-verdict.v1.schema.json) ·
+[writer-draft.v1](../../contracts/writer-draft.v1.schema.json) ·
 [brief-draft.v1](../../contracts/brief-draft.v1.schema.json).
 
 ## Data and state
@@ -67,11 +64,11 @@ customer selected ─► summary dialog opens (LAY-DLG-001, any AI setting); the
   ├─ AI not enabled ─────────────────────────► plain summary (spec 003), no AI UI, no button indicator (AIB-GEN-019)
   ├─ breaker open ───────────────────────────► summary or empty state; Regenerate disabled+tooltip   (AIB-GEN-012)
   ├─ saved summary ──────────────────────────► view(stored) + [Regenerate with AI]                   (AIB-GEN-017)
-  └─ no saved summary, AI available ─auto────► running                                               (AIB-GEN-016)
+  └─ no saved summary, AI available ─auto────► running                                               (AIB-GEN-021)
 
 view ──Regenerate (confirm if editor dirty, AIB-GEN-011)──► running(step, revision)                  (AIB-GEN-018)
 running ──succeeded──► draft(view, "AI draft — not saved", [Save] [Edit] [Discard])                   (AIB-HUMAN-009)
-        ──unverified─► draft(view, + Unverified banner and issues)                                    (AIB-HUMAN-002)
+        ──unverified─► draft(view, + Unverified banner and failed checks)                             (AIB-HUMAN-012)
         ──failed─────► view(stored or empty) + "Could not draft the summary: … (run abc123)" [Try again] (AIB-GEN-004)
         ──Cancel / user opens the editor (AIB-GEN-015)──► view(stored or empty) / editing(stored)
 draft ──Save──► SUM-EDIT-001 path with the draft HTML (pending, toast, error keeps the draft; success closes the dialog, LAY-DLG-009)  (AIB-HUMAN-005)
@@ -90,7 +87,7 @@ error, start, cancel, discard }` to the dialog content and `{ running, draftRead
 key resets it. Nothing about AI is in `SummaryDialog`'s own logic, which is why the dialog is complete with AI off
 (AIB-GEN-019, Article XII.8).
 
-**Automatic start, once per selection (AIB-GEN-016, `useAutoBrief`).** A selection is the user action that also opens
+**Automatic start, once per selection (AIB-GEN-021, `useAutoBrief`).** A selection is the user action that also opens
 the dialog (002 design: the selection handler, never an effect on the row). The hook waits for `useAiStatus` to
 resolve, then starts one run if `enabled && available` and the stored summary is empty (the same emptiness test as
 SUM-VIEW-003). It starts at most once per customer key per selection: a refetch of the customer row, closing and
@@ -129,15 +126,15 @@ indicator (out of scope): the message appears in the dialog when it is reopened.
 Guard builds the HTML. Citation checks then work per sentence (AIB-CITE-002, -003), and no model text is ever inserted
 as markup (AIB-SAFE-002).
 
-**Injection defence (AIB-SAFE-001).** The Retriever puts every free-text field inside the fact sheet's `text` fields,
-the prompts state that fact-sheet text is data, and the Critic flags any sentence that follows an instruction from data
-(`injection_followed`). Eval category "prompt injection in notes" measures it.
+**Injection defence (AIB-SAFE-001).** The Retriever redacts and caps every free-text field (notes in `text`, plus `value_snippet`, event `stage` and lookup names) and sends the whole fact sheet as one escaped `<fact_sheet>` data block that a note cannot close,
+and the prompts state that fact-sheet text is data. There is no Critic (CR-20261121-1), so a followed injection is caught
+by the eval grader (EVAL-CODE-005, `injection_followed`), not at run time. Eval category "prompt injection in notes" measures it.
 
 ## Error handling
 | Failure | User sees | Message catalog |
 |---|---|---|
 | Run failed (any step, after retries) | Inline error in the dialog with *Try again*; grids unaffected; if the dialog was closed, the message shows when it is reopened | "Could not draft the summary: <reason> (run <id>)" |
-| Unverified after 2 revisions | Draft in the dialog + banner listing issues | "Unverified draft: check the points below before saving" |
+| Unverified (Guard's citation checks failed) | Draft in the dialog + banner listing the failed checks | "Unverified draft: check the points below before saving" |
 | AI disabled | The dialog opens as the plain summary; no automatic run, no AI action, no button indicator | — |
 | Breaker open | The dialog opens; no automatic run; *Regenerate with AI* disabled + tooltip | "AI is temporarily unavailable. Try again in a few minutes." |
 | Unsaved edits on Regenerate | Confirm dialog | "Replace your unsaved changes with an AI draft?" |
@@ -155,14 +152,15 @@ the prompts state that fact-sheet text is data, and the Critic flags any sentenc
   cancel on customer change and on opening the editor but **not** on closing the dialog, *Regenerate with AI*
   visibility, busy, cancel, error, breaker, AI off (dialog still opens, no indicator), draft *Save* / *Edit* /
   *Discard*, unverified banner, confirm replace, waiting draft shown on reopen, reopen-button indicator and live
-  announcement (AIB-GEN-004, AIB-GEN-008, AIB-GEN-011, AIB-GEN-012, AIB-GEN-015..020, AIB-HUMAN-002..003,
+  announcement (AIB-GEN-004, AIB-GEN-008, AIB-GEN-011, AIB-GEN-012, AIB-GEN-015, AIB-GEN-017..021, AIB-HUMAN-003, AIB-HUMAN-012,
   AIB-HUMAN-005..007, AIB-HUMAN-009..011), with the AI fetchers stubbed at `fetch` and EventSource.
-- **Evaluation:** faithfulness, coverage, citation validity, injection (023-ai-evaluation) for AIB-CITE-002, AIB-FAITH-001..003, AIB-SAFE-001.
+- **Evaluation:** deterministic graders: citation validity and coverage, hallucinated entities, numbers, injection (023-ai-evaluation) for AIB-CITE-002, AIB-FAITH-001..003, AIB-SAFE-001.
 
 ## Alternatives considered
 - **Browser calls the model directly:** rejected; exposes the key and breaks Article IX.
-- **One prompt, no pipeline:** simplest, but no place to verify citations or retry a bad section; kept as the
-  *critic off* baseline in the eval (EVAL-EXP-001).
+- **One prompt, no pipeline:** simplest, but no place to verify citations or retry a bad section.
+- **A Critic step with up to two revisions (CR-20261117-1):** removed by CR-20261121-1 to cut tokens per run; the
+  Guard's deterministic citation checks keep Article XII.5, and the eval measures quality per model (EVAL-EXP-006).
 - **Autonomous agent loop:** rejected in [ADR-0008](../../adr/0008-orchestration-pattern.md).
 - **A *Draft with AI* button (CR-20261117-1):** replaced by the owner on 2026-11-20 (CR-20261120-1) with an automatic
   draft for customers without a summary and *Regenerate with AI* for the rest. Cost: one run per such selection

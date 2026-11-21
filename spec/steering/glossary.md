@@ -35,14 +35,13 @@
 | Term | Definition | Where |
 |---|---|---|
 | **AI Account Brief** | An AI-drafted executive summary built from a customer's use cases and events, reviewed and saved by a person. | spec 022 |
-| **Agent** | A component that does one job in an AI workflow: an LLM step, a deterministic code step, or a Claude Code subagent. | `spec/agents/` |
+| **Agent** | A component that does one job in an AI workflow by calling a model: an LLM step (Analyst, Writer) or a Claude Code subagent (Spec author). Deterministic code steps (Retriever, Guard, the orchestrator) are not agents. | `spec/agents/` |
 | **Agent spec** | The governing document of an agent: purpose, inputs, outputs, tools, model, guardrails, done criteria, failure. | `spec/agents/*.md` |
 | **Contract** | A versioned JSON Schema for a hand-off between agents; invalid hand-offs are rejected. | `spec/contracts/` |
 | **Hand-off** | What one agent passes to the next: a contract-shaped JSON object at runtime, or a hand-off file for a development task. | `spec/handoffs/` |
 | **Fact sheet / fact ID** | The allow-listed, redacted data for one customer; each record has a fact ID (`CU-`, `UC-`, `EV-` + workbook id) that the draft cites. | fact-sheet.v1 |
 | **Run** | One execution of the brief pipeline, with a run ID, checkpoints and a trace. | `../data/ai-runs/` |
-| **Unverified draft** | A draft the critic still rejected after two revisions; shown with its issues, never hidden. | AOPS-FAIL-003 |
+| **Unverified draft** | A draft that failed the Guard's citation checks; shown with the failed checks, never hidden. | AOPS-FAIL-008 |
 | **AI draft** | A brief shown in the summary dialog, labelled "AI draft — not saved", until a person saves, edits or discards it; it waits when the dialog is closed; never written by an agent. | AIB-HUMAN-009 |
-| **Automatic draft** | The one brief run started when a customer with no saved summary is selected and AI is available; it belongs to the customer, not to the dialog. | AIB-GEN-016 |
-| **Judge** | An LLM that scores outputs against a rubric during evaluation; trusted only while calibrated against human scores. | AGENT-JUDGE |
-| **Gate G7** | The eval gate: quality thresholds a prompt or model change must meet. | EVAL-GATE-001 |
+| **Automatic draft** | The one brief run started when a customer with no saved summary is selected and AI is available; it belongs to the customer, not to the dialog. | AIB-GEN-021 |
+| **Gate G7** | The eval gate: deterministic quality thresholds a prompt or model change must meet. | EVAL-GATE-005 |

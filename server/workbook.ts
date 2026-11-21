@@ -30,7 +30,8 @@ const ILLEGAL_XML = /[\x00-\x08\x0b\x0c\x0e-\x1f]/g;
 
 /* ------------------------------------------------------------------------------------------- store */
 
-class Store {
+/** Exported read-only for `server/ai/tools.ts` (AOPS-ORCH-005); only the HTTP handler below calls `save()`. */
+export class Store {
   sheets = new Map<string, Sheet>();
   readme: string[] = [];
   loaded = false;
@@ -185,7 +186,7 @@ function required(body: Record<string, unknown>, ...keys: string[]) {
 
 /* ------------------------------------------------------------------------------------------- queries */
 
-function useCasesByParent(s: Store, parentId: number) {
+export function useCasesByParent(s: Pick<Store, "table">, parentId: number) {
   const t = (n: string) => s.table(n).rows;
   const solution = byId(t("solution"));
   const department = byId(t("department"));
@@ -229,7 +230,7 @@ function useCasesByParent(s: Store, parentId: number) {
     .sort((a, b) => String(b.last_modified ?? "").localeCompare(String(a.last_modified ?? "")) || Number(b.id) - Number(a.id));
 }
 
-function eventsByParent(s: Store, parentId: number) {
+export function eventsByParent(s: Pick<Store, "table">, parentId: number) {
   const t = (n: string) => s.table(n).rows;
   const subsidiary = byId(t("subsidiary"));
   const type = byId(t("event_type"));

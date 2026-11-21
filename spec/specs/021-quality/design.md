@@ -44,4 +44,4 @@ Enable `strictNullChecks` first, fix per folder (`lib` → `hooks` → `componen
 |---|---|
 | I | Process in place. ✅ |
 | X | Unit tests (Vitest) named by requirement ID ✅; component, integration and E2E tests pending. ⚠️ Exit plan: QA-T02..T04 |
-| XII | AI quality is a gate: G7 (EVAL-GATE-001) joins G1–G6 for prompt and model changes; spec lint checks 10–13 cover agent specs, prompt headers, hand-offs and contracts. ✅ |
+| XII | AI quality is a gate: G7 (EVAL-GATE-005) joins G1–G6 for prompt and model changes; spec lint checks 10–13 cover agent specs, prompt headers, hand-offs and contracts. ✅ |

@@ -18,10 +18,10 @@ spec/
 │  ├─ constitution-mapping.md      article ↔ spec ↔ requirement matrix, exceptions
 │  └─ ai-data-policy.md            what data may reach a model, redaction, retention (Article XII.4)
 ├─ adr/                            0001 … 0008 architecture decision records
-├─ changes/                        change requests (CR-20261117-1: AI agents, Article XII; CR-20261120-1: owner decisions; CR-20261120-2: summary dialog, replaces the band)
-├─ agents/                         12 agent specs: 6 runtime, 1 evaluation, 5 development (Article XII.1)
-├─ contracts/                      6 versioned JSON Schemas for agent hand-offs (Article XII.2)
-├─ handoffs/                       one hand-off file per task delivered by a development agent
+├─ changes/                        change requests (CR-20261117-1: AI agents, Article XII; CR-20261120-1: owner decisions; CR-20261120-2: summary dialog, replaces the band; CR-20261121-1: slim agent roster; CR-20261121-2: eval-only judge)
+├─ agents/                         4 agent specs: Analyst and Writer (runtime), Eval judge (evaluation), Spec author (development); 9 retired (Article XII.1)
+├─ contracts/                      6 versioned JSON Schemas for hand-offs (Article XII.2)
+├─ handoffs/                       one hand-off file per delivered task (written by the main session since CR-20261121-1)
 ├─ specs/NNN-<name>/
 │  ├─ requirements.md              user stories + one block per EARS criterion (ID, Status, Criterion, Source)
 │  ├─ design.md                    architecture, interfaces, planned changes, constitution check
@@ -66,12 +66,12 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [020-performance-reliability](specs/020-performance-reliability/) | PERF/REL/COMP/DT | 23 | 16 | 4 | 1 | 2 | 7 | 2 | 0 | 5 | 0 |
 | [021-quality](specs/021-quality/) | QA | 15 | 12 | 0 | 0 | 3 | 11 | 6 | 0 | 5 | 0 |
 | **AI & agents** (CR-20261117-1) | | | | | | | | | | | |
-| [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 34 | 0 | 0 | 0 | 34 | 10 | 0 | 0 | 10 | 0 |
-| [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 10 | 0 | 0 | 9 | 1 |
-| [024-agent-ops](specs/024-agent-ops/) | AOPS | 27 | 0 | 0 | 0 | 27 | 10 | 0 | 0 | 10 | 0 |
+| [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 34 | 2 | 2 | 0 | 30 | 10 | 2 | 0 | 8 | 0 |
+| [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 12 | 1 | 0 | 10 | 1 |
+| [024-agent-ops](specs/024-agent-ops/) | AOPS | 27 | 8 | 1 | 0 | 18 | 11 | 3 | 0 | 8 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
-| [026-dev-agents](specs/026-dev-agents/) | DEVA | 18 | 16 | 0 | 0 | 2 | 15 | 12 | 0 | 2 | 1 |
-| **Total** | | **519** | **366** | **20** | **10** | **123** | **239** | **141** | **0** | **92** | **6** |
+| [026-dev-agents](specs/026-dev-agents/) | DEVA | 17 | 16 | 0 | 0 | 1 | 15 | 14 | 0 | 1 | 0 |
+| **Total** | | **518** | **376** | **23** | **10** | **109** | **242** | **149** | **0** | **88** | **5** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,
@@ -81,6 +81,9 @@ ADR-0007 (Proposed) and ADR-0008, spec lint checks 10–13.
 Done in Phase 2 (2026-11-18): DEVA-T05..T11, T13 (subagents, hooks, skills); QA-T02, QA-T03, API-T09/SUM-T07,
 UCF-T08, SUM-T08, SUM-T11, and (after the owner's G5 check) UCF-T07, EVF-T06, SUM-T09, SUM-T10, all through the agent
 workflow.
+Done 2026-11-21 ([CR-20261121-1](changes/CR-20261121-1-slim-agent-roster.md)): DEVA-T16 roster cut to Analyst, Writer and
+Spec author (implementing, testing, review and evals run in the main session); DEVA-T17 Stop hook runs only related
+tests; AOPS-T11 Critic step removed (retrieve → analyse → write → guard).
 
 1. **API-T13** decided by the owner on 2026-11-20: Article II.4 amended (constitution v1.1.1, [CR-20261120-1](changes/CR-20261120-1-owner-decisions-summary-band.md)); closed when the owner approved that CR. Next **API-T08** validate references and **API-T14** reject a summary POST without `executive_summary`
 2. **CR-20261120-2** (approved): summary dialog over full-width grids delivered 2026-11-20 (LAY-T08, LAY-T09, LAY-T11, LAY-T12, SUM-T13 ✅; LAY-T10 closed spec-only). Next: the automatic AI draft in the dialog (**AIB-T10**, AIB-T07); CR-20261120-1 still gives the edit-normalisation tests (**UCF-T11**, **EVF-T10**)
@@ -90,7 +93,7 @@ workflow.
 6. **API-T08** validate references · **PERF-T03** date display fix
 7. **LAY-T07** refresh everything
 8. **SEC-T03 → SEC-T04** remove unused dependencies, then `npm audit` (8 findings after the first install)
-9. **QA-T07** CI on GitHub Actions (the remote exists since 2026-11-17); unblocks EVAL-T09 and DEVA-T12
+9. **QA-T07** CI on GitHub Actions (the remote exists since 2026-11-17); unblocks EVAL-T09
 
 ## Workflow
 See [workflow.md](workflow.md): **propose → specify → design → plan → build → verify → close**, with the

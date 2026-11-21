@@ -1,20 +1,20 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://code-app-demo.local/spec/contracts/writer-to-critic.v1.schema.json",
-  "title": "Writer to Critic v1",
-  "description": "Writer -> Critic (and, once accepted, -> Guard). Plain-text sentences per section, each with its citations; no HTML from the model (AIB-SAFE-002).",
+  "$id": "https://code-app-demo.local/spec/contracts/writer-draft.v1.schema.json",
+  "title": "Writer draft v1",
+  "description": "Writer -> guard code step (CR-20261121-1; was writer-to-critic.v1). Plain-text sentences per section, each with its citations; no HTML from the model (AIB-SAFE-002).",
   "x-contract": {
-    "name": "writer-to-critic",
+    "name": "writer-draft",
     "version": 1,
     "from": "AGENT-WRITER",
-    "to": "AGENT-CRITIC",
+    "to": "code:guard",
     "requirements": ["AIB-CITE-002", "AIB-FMT-001", "AIB-FMT-002", "AIB-SAFE-002"]
   },
   "type": "object",
   "additionalProperties": false,
   "required": ["contract", "run_id", "revision", "sections"],
   "properties": {
-    "contract": { "const": "writer-to-critic.v1" },
+    "contract": { "const": "writer-draft.v1" },
     "run_id": { "type": "string", "pattern": "^run_[0-9a-z]{8,32}$" },
     "revision": { "type": "integer", "minimum": 0, "maximum": 2 },
     "sections": {

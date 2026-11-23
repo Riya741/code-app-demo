@@ -67,11 +67,11 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [021-quality](specs/021-quality/) | QA | 15 | 12 | 0 | 0 | 3 | 11 | 6 | 0 | 5 | 0 |
 | **AI & agents** (CR-20261117-1) | | | | | | | | | | | |
 | [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 35 | 13 | 22 | 0 | 0 | 10 | 8 | 1 | 1 | 0 |
-| [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 12 | 1 | 0 | 10 | 1 |
+| [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 14 | 1 | 0 | 17 | 12 | 5 | 0 | 6 | 1 |
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 35 | 15 | 2 | 0 | 18 | 12 | 4 | 0 | 8 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
 | [026-dev-agents](specs/026-dev-agents/) | DEVA | 17 | 16 | 0 | 0 | 1 | 15 | 14 | 0 | 1 | 0 |
-| **Total** | | **528** | **395** | **44** | **10** | **79** | **243** | **156** | **1** | **81** | **5** |
+| **Total** | | **528** | **409** | **45** | **10** | **64** | **243** | **160** | **1** | **77** | **5** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,

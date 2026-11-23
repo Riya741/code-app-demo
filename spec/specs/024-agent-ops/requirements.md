@@ -219,8 +219,8 @@ live checks I need without the gateway becoming the normal path.
 - **Criterion:** `npm test` SHALL make no call to the gateway or to the Anthropic API: tests SHALL exercise the gateway route only through an injected fake SDK, and a live check that may reach the gateway SHALL be skipped unless `AI_LIVE_CHECK=1` and the selected route's key are set, and SHALL make at most the model calls of one run.
 
 #### AOPS-ROUTE-008: Separate opt-in for bulk runs through the gateway
-- **Status:** ⚠️ Partial — `gatewayBulkRefusal` is built and tested; wiring it into the eval harness (EVAL-T04) and the chaos run (AOPS-T10) is pending
-- **Source:** `server/ai/config.ts`
+- **Status:** ⚠️ Partial — `gatewayBulkRefusal` is wired into the eval harness (EVAL-T04, checked before any model call); the chaos run (AOPS-T10) is pending
+- **Source:** `server/ai/config.ts`, `evals/run.ts`
 - **Criterion:** WHILE the gateway route is selected THE eval harness (every command that calls a model live) and the chaos run (AOPS-TEST-003) SHALL refuse to start, before any model call, unless `AI_GATEWAY_ALLOW_BULK` is exactly `1`, and the refusal SHALL name that variable; replay runs and `npm run ai:metrics`, which make no model call, SHALL need no opt-in.
 
 ## Out of scope

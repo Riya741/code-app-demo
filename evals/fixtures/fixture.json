@@ -1,0 +1,6 @@
+{
+  "generator": "scripts/generate_demo_workbook.py",
+  "customers": 8,
+  "seed": 42,
+  "as_of": "2026-11-16"
+}

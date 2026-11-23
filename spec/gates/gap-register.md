@@ -40,8 +40,8 @@ Rules:
 | A11Y-SEE-001 | Low | AA contrast (Not verified (small 10.5–11px text)) | [018-accessibility](../specs/018-accessibility/requirements.md) | A11Y-T06 ⬜ | Open |
 | SEC-SUPPLY-003 | Low | No high npm audit issues (Not verified) | [019-security](../specs/019-security/requirements.md) | SEC-T04 ⬜ | Open |
 | AOPS-FAIL-007 | Low | Degrade gracefully (No client and `enabled: false` done; the status route comes with AIB-T05) | [024-agent-ops](../specs/024-agent-ops/requirements.md) | AIB-T05 ✅, AOPS-T09 ⬜ | Open |
-| AIB-SAFE-001 | Low | Data is not instructions (Escaped data block done; draft behaviour needs prompts and the eval) | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T03 ✅, EVAL-T01 ⬜ | Open |
-| AIB-FAITH-003 | Low | Sparse or empty customers (Fact sheet exact; draft behaviour needs prompts and the eval) | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T03 ✅, EVAL-T01 ⬜ | Open |
+| AIB-SAFE-001 | Low | Data is not instructions (Escaped data block done; draft behaviour needs prompts and the eval) | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T03 ✅, EVAL-T01 ✅ (dataset; the live eval run measures it) | Open |
+| AIB-FAITH-003 | Low | Sparse or empty customers (Fact sheet exact; draft behaviour needs prompts and the eval) | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T03 ✅, EVAL-T01 ✅ (dataset; the live eval run measures it) | Open |
 
 ## Accepted limitations
 Known limits agreed as acceptable at the current data size. Revisit using the triggers in the requirement.

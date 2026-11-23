@@ -11,7 +11,7 @@ it passes. Gates marked *planned* become mandatory when their task is done.
 | G4 | Tests cite requirements | `npm test` · tests named `PREFIX-AREA-NNN …` | Before commit | ✅ Active: unit tests (component, integration, E2E planned QA-T02..T04) |
 | G5 | Manual verification | Criterion checked in light + dark, ≥ 1024px + < 1024px, note in the task | Before ✅ Done | ✅ Active (manual) |
 | G6 | CI | G1, G3, G4 on every push | On push | 📝 Planned (QA-T07) |
-| G7 | AI evaluation | Code graders on recorded outputs on every PR touching `server/ai/**` or `evals/**`; `npm run eval:smoke` before merging a prompt or model change | On PR · before AI merges | 📝 Planned (EVAL-T08, EVAL-T09) |
+| G7 | AI evaluation | `npm run eval:smoke` before merging a prompt or model change (exit 1 on a breached threshold); `npm run eval:grade -- <dir>` re-grades recorded outputs without a model; CI on PRs touching `server/ai/**` or `evals/**` | Before AI merges · on PR (planned) | ✅ Active (manual run, EVAL-T08); CI part 📝 Planned (EVAL-T09) |
 
 ## G1 — Spec lint
 `spec/scripts/spec_lint.py` fails when:
@@ -54,7 +54,9 @@ Until G4 covers a criterion, the task records who checked it, when, and how (the
 Runs G1, G3 and G4 on every push once QA-T07 adds the pipeline (the repository is under git since SEC-T02).
 
 ## G7 — AI evaluation
-Planned with [023-ai-evaluation](../specs/023-ai-evaluation/requirements.md) (Constitution Article XII.6). Thresholds live in
+Active since EVAL-T08 (2026-11-23) as a manual run: `npm run eval:smoke` runs one case per category through the live pipeline, grades it with
+the code graders (`evals/graders/code/`) and fails on any breached threshold; `npm run eval:grade -- <results dir>` re-grades recorded
+results without a model. On the gateway route a live run needs `AI_GATEWAY_ALLOW_BULK=1` (AOPS-ROUTE-008). Specified with [023-ai-evaluation](../specs/023-ai-evaluation/requirements.md) (Constitution Article XII.6). Thresholds live in
 `evals/thresholds.json`: citation validity ≥ 98%, no hallucinated entity, zero cases following an injected instruction,
 and the other deterministic grader thresholds (EVAL-GATE-005; no LLM judge since CR-20261121-1). On every PR that changes `server/ai/**` or `evals/**`, CI runs the code graders on recorded outputs
 without calling the model (EVAL-GATE-002); the live `npm run eval:smoke` run is required before merging a prompt or

@@ -27,7 +27,7 @@
 | quality | QA | `eslint.config.js`, `tsconfig*.json`, `package.json` (scripts) |
 | ai-account-brief | AIB | `server/ai/contracts.ts`, `server/ai/steps/retriever.ts`, `server/ai/tools.ts` (redaction, field builders) · planned: `server/ai/steps/{analyst,writer,guard}.ts`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`, called from `Customers.tsx`), `CustomerDetails.tsx` (summary dialog content), `AiDraftBanner.tsx` · agents: `spec/agents/{analyst,writer}.md` · contracts: `spec/contracts/*.v1.schema.json` |
 | ai-evaluation | EVAL | planned: `evals/**` (deterministic graders; eval-only judge AGENT-EVAL-JUDGE since CR-20261121-2) |
-| agent-ops | AOPS | `server/ai/{config,client,orchestrator,trace,tools}.ts`, `server/ai/contracts.ts` (hand-off validation) · planned: `server/ai/resilience.ts`, `src/pages/AiRuns.tsx`, `docs/ai-runbook.md` · code steps, no agent spec (CR-20261121-1) |
+| agent-ops | AOPS | `server/ai/{config,client,orchestrator,trace,tools}.ts`, `server/ai/contracts.ts` (hand-off validation) · planned: `server/ai/resilience.ts`, `src/pages/AiRuns.tsx`, `docs/ai-runbook.md`; gateway route in `server/ai/{config,client,trace}.ts` (AOPS-T12, CR-20261123-1) · code steps, no agent spec (CR-20261121-1) |
 | mcp-tooling | MCP | planned: `mcp/workbook-mcp/**`, `.mcp.json` |
 | dev-agents | DEVA | `spec/scripts/spec_lint.py` (checks 10–13, retired agents and tasks), `spec/templates/{agent,handoff}.md`, `spec/agents/` (Analyst, Writer, Spec author; retired roster), `spec/contracts/`, `spec/handoffs/`, `.claude/agents/spec-author.md`, `.claude/hooks/*.py`, `.claude/skills/*/SKILL.md` |
 
@@ -64,6 +64,7 @@
 | `server/ai/config.ts`, `server/ai/client.ts`, `server/ai/orchestrator.ts`, `server/ai/trace.ts` | agent-ops (AOPS-ORCH-006 four-step pipeline, AOPS-FAIL-008, AOPS-OBS-007) |
 | `tests/integration/orchestrator.test.ts`, `tests/unit/ai-config.test.ts`, `tests/unit/ai-trace.test.ts`, `tests/unit/ai-client.test.ts`, `tests/integration/tools.test.ts` | agent-ops (AOPS-ORCH-002..004, AOPS-ORCH-006, AOPS-FAIL-007, AOPS-FAIL-008, AOPS-OBS-002, AOPS-OBS-007) |
 | `tests/unit/contracts.test.ts` | ai-account-brief (contracts), agent-ops (AOPS-ORCH-002), dev-agents (DEVA-HAND-004) |
+| `server/ai/config.ts`, `server/ai/client.ts`, `server/ai/trace.ts` (gateway route, planned) and `tests/integration/gateway.live.test.ts` (planned) | agent-ops (AOPS-ROUTE-001..008), security (SEC-SUPPLY-005); AOPS-T12, CR-20261123-1 |
 | `.claude/hooks/gates_on_stop.py` | dev-agents (DEVA-GATE-002: related tests only, CR-20261121-1) |
 | `server/ai/steps/retriever.ts` | ai-account-brief (retriever code step, `code:retriever`) |
 
@@ -98,6 +99,7 @@ A11Y-T04 ──► A11Y-T05
 SUM-T09 (✅) ──► AIB-T07 (an AI draft must be savable)
 LAY-T09 + LAY-T11 + LAY-T12 + SUM-T13 (summary dialog) ──► AIB-T10, AIB-T07 ──► AIB-T09
 AOPS-T01 ──► AIB-T03 ──► AOPS-T04 ;  AOPS-T01 ──► AIB-T05 ──► AIB-T06 ──► AIB-T10 ──► AIB-T07
+AOPS-T01 ──► AOPS-T12 (gateway mode) ──► AIB-T03 live check ;  AOPS-T12 ──► EVAL-T04, AOPS-T10 (gateway route, bulk opt-in)
 AIB-T03 ──► EVAL-T04 ──► EVAL-T06 ──► EVAL-T07 (ADR-0007)
                  └──► EVAL-T11 (judge) ──► EVAL-T12 (κ calibration) ──► EVAL-T06 report
 AOPS-T02 ──► MCP-T02

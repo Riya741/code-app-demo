@@ -1,6 +1,6 @@
 # Code App Demo — Constitution
 
-**Version:** 1.1.1 · **Ratified:** 2026-11-11 · **Last amended:** 2026-11-20 ([CR-20261120-1](changes/CR-20261120-1-owner-decisions-summary-band.md), proposed)
+**Version:** 1.1.2 · **Ratified:** 2026-11-11 · **Last amended:** 2026-11-23 ([CR-20261123-1](changes/CR-20261123-1-ai-gateway-mode.md))
 
 The constitution holds the non-negotiable principles for this project. Every spec, design and task must comply with
 them. Where a spec conflicts with the constitution, the constitution wins and the spec must be changed.
@@ -78,8 +78,8 @@ The mapping from each article to the specs that put it into practice is in
    fails validation is rejected; it is never repaired silently.
 3. AI output is a **draft** until a human accepts it. No agent writes business data to the workbook; only the
    existing, specified write endpoints do, on a user's action.
-4. Workbook data is sent to a model provider only when `AI_ENABLED=true` and the
-   [AI data policy](steering/ai-data-policy.md) allows the field. This qualifies Article III.3: the project holds only
+4. Workbook data is sent to a model provider, directly or through an AI gateway that the
+   [AI data policy](steering/ai-data-policy.md) names, only when `AI_ENABLED=true` and that policy allows the field. This qualifies Article III.3: the project holds only
    fictional data (ADR-0006), which the policy allows; real customer data may not be sent until authentication and
    data handling are specified first. Development and evaluation use generated fictional data only.
 5. Every factual claim in AI output that is shown to a user cites the source record it comes from; an uncited or
@@ -88,7 +88,8 @@ The mapping from each article to the specs that put it into practice is in
    (G7) passes, and model choices are recorded in an ADR that cites the eval report.
 7. Every AI run is **traceable**: run ID, step, agent spec and version, model, tokens, cost, latency and outcome.
 8. AI features are **optional**. With `AI_ENABLED` unset, the app runs exactly as Article VIII.3 requires; the model
-   provider is the only extra external service, and only while AI is enabled.
+   provider, reached directly or, only when configured, through the AI gateway the AI data policy names, is the only
+   extra external service, and only while AI is enabled.
 
 ---
 
@@ -106,3 +107,4 @@ The mapping from each article to the specs that put it into practice is in
 | 1.0.0 | 2026-11-11 | Ratified: Articles I–XI | — |
 | 1.1.0 | 2026-11-17 | Article XII (AI Agents and Data) added; qualifies III.3 and VIII.3 for AI features | [CR-20261117-1](changes/CR-20261117-1-ai-agents.md) |
 | 1.1.1 | 2026-11-20 | PATCH: Article II.4 worded to match the specified write rule (API-WRITE-004): an edit replaces the record's own link rows; soft delete and history unchanged | [CR-20261120-1](changes/CR-20261120-1-owner-decisions-summary-band.md) |
+| 1.1.2 | 2026-11-23 | PATCH: Articles XII.4 and XII.8 name an AI gateway, listed in the AI data policy and used only when configured, as a way to reach the same model provider; AI stays optional and the model route stays the only extra external service | [CR-20261123-1](changes/CR-20261123-1-ai-gateway-mode.md) |

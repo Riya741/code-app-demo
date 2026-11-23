@@ -45,3 +45,5 @@
 | **AI draft** | A brief shown in the summary dialog, labelled "AI draft — not saved", until a person saves, edits or discards it; it waits when the dialog is closed; never written by an agent. | AIB-HUMAN-009 |
 | **Automatic draft** | The one brief run started when a customer with no saved summary is selected and AI is available; it belongs to the customer, not to the dialog. | AIB-GEN-021 |
 | **Gate G7** | The eval gate: deterministic quality thresholds a prompt or model change must meet. | EVAL-GATE-005 |
+| **Model route** | How the server reaches the model: *direct* (the Anthropic API, default) or *gateway*; recorded on every trace. | AOPS-ROUTE-001, AOPS-ROUTE-006 |
+| **Gateway mode** | The opt-in model route (`AI_GATEWAY=portkey`) that reaches the same Claude model through the Perficient Portkey AI gateway (AWS Bedrock, us-east-2) with `PORTKEY_API_KEY`; for live checks and owner-approved runs only. | ADR-0009, AOPS-R7 |

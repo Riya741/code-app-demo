@@ -120,6 +120,11 @@ spend my time correcting and adding judgement instead of retyping facts.
 - **Criterion:** WHEN a customer is selected AND it has no saved executive summary AND AI is available THE system SHALL start one brief run for that customer without any user action, at the moment the summary dialog opens (LAY-DLG-001), and show its progress by step ("Reading records", "Analysing", "Writing", "Checking") in the dialog and through the reopen button (AIB-HUMAN-011); closing and reopening the dialog, a refetch of the customer data and discarding the draft SHALL NOT start another run for that selection.
 - **Note:** Replaces AIB-GEN-016 (CR-20261121-1); "Checking" is the Guard step. One automatic run per selection, as in CR-20261120-1.
 
+#### AIB-GEN-022: No automatic draft on the gateway route
+- **Status:** 📝 Planned
+- **Criterion:** WHILE the server uses the gateway route (AOPS-ROUTE-001) THE system SHALL NOT start an automatic draft (AIB-GEN-021), and `GET /api/ai/status` SHALL report `auto_draft: false` (`true` on the direct route); *Regenerate with AI* (AIB-GEN-017) SHALL still start a run on the user's action.
+- **Note:** Added by [CR-20261123-1](../../changes/CR-20261123-1-ai-gateway-mode.md) (owner answer Q4, 2026-11-23: use the gateway for minimal things only).
+
 ### AIB-R2 — Cite every fact
 **User story:** As a team lead, I want each statement in the summary linked to the record it came from, so that I can
 trust it and check it quickly.
@@ -261,6 +266,7 @@ browser keeps the component → hook → lib → API layering (Article IX).
 - **Status:** 📝 Planned
 - **Criterion:** WHEN the client sends `GET /api/ai/status` THE server SHALL return `{ enabled, available }` without calling the model, so the UI can decide whether to show the button.
 - **Note:** "the button" is now *Regenerate with AI* and the automatic draft (AIB-GEN-016, -017, -012, -019); the API is unchanged by CR-20261120-1 and CR-20261120-2.
+- **Note:** 2026-11-23, [CR-20261123-1](../../changes/CR-20261123-1-ai-gateway-mode.md): the response also carries `auto_draft` (AIB-GEN-022); `enabled` and `available` are unchanged.
 
 ## Out of scope
 - Drafting use case notes or event notes (only the executive summary).

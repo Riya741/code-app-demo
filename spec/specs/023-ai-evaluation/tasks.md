@@ -10,7 +10,8 @@
 - [ ] **EVAL-T02** Deterministic graders.
   - Status: ⬜ Not started · Covers: EVAL-CODE-001..006 · Files: `evals/graders/code/`
 - [ ] **EVAL-T04** Harness CLI with replay mode, configs and Message Batches support.
-  - Status: ⬜ Not started · Covers: EVAL-GATE-004, EVAL-EXP-003 · Files: `evals/run.ts`, `evals/configs/`, `package.json` · Depends on: AIB-T03
+  - Status: ⬜ Not started · Covers: EVAL-GATE-004, EVAL-EXP-003, AOPS-ROUTE-008 · Files: `evals/run.ts`, `evals/configs/`, `package.json` · Depends on: AIB-T03; AOPS-T12 for the gateway route · Covers extended by CR-20261123-1
+  - Step: on the gateway route, call `gatewayBulkRefusal` (AOPS-T12) before the first model call of any live command, so a live eval needs `AI_GATEWAY_ALLOW_BULK=1`; replay needs nothing. Send single requests on the gateway route: Message Batches are not assumed to pass through the gateway (CR-20261123-1).
 - [ ] **EVAL-T06** Pilot, then the four-configuration experiment and report (deterministic graders).
   - Status: ⬜ Not started · Covers: EVAL-EXP-002, EVAL-EXP-003, EVAL-EXP-006, EVAL-EXP-007, EVAL-WHY-001, EVAL-WHY-002 · Depends on: EVAL-T04 · Re-scoped by CR-20261121-1 (no judge, no critic configurations)
 - [ ] **EVAL-T07** Write ADR-0007 from the report.

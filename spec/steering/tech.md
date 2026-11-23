@@ -25,8 +25,10 @@
 Browser SPA → `/api/workbook/*` → Vite plugin `local-workbook` (`server/workbook.ts`) → `../data/code-app-data.xlsx`.
 The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 
-**Planned (AI, spec 024):** the same plugin serves `/api/ai/*`; `server/ai/` calls the Anthropic API only when
-`AI_ENABLED=true`. The browser never calls the model. Run checkpoints and traces go to `../data/ai-runs/` (outside the repo).
+**Planned (AI, spec 024):** the same plugin serves `/api/ai/*`; `server/ai/` calls the model only when
+`AI_ENABLED=true`: the Anthropic API directly by default, or, only when `AI_GATEWAY=portkey` is set, the same model
+through the Perficient Portkey AI gateway (AWS Bedrock us-east-2; [ADR-0009](../adr/0009-ai-gateway-route.md),
+CR-20261123-1, planned in AOPS-T12). The browser never calls the model. Run checkpoints and traces go to `../data/ai-runs/` (outside the repo).
 
 ## Commands
 | Command | Purpose |
@@ -50,7 +52,7 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 | Theme | default light, no system theme |
 | Panel memory | `autoSaveId="terra-split-v-v1"` for the Use Cases / Events split (LAY-T08; CR-20261120-1, kept by CR-20261120-2); the old `terra-split-h-v3` went with the right-hand panel (LAY-T09) and is no longer read. The summary dialog's open state and size are not stored (CR-20261120-2 dropped the band's `terra-summary-band-v1`, LAY-BAND-003) |
 | TS | app `strict: false`; `vite.config.ts` + `server/` `strict: true` |
-| AI (planned) | `AI_ENABLED` (default off) · `ANTHROPIC_API_KEY` from the environment only, never committed (SEC-SUPPLY-002) · `AI_MODEL_<STEP>`, `AI_EFFORT_<STEP>` (defaults in the agent specs, ADR-0007) · `AI_RUN_MAX_TOKENS`, `AI_RUN_MAX_COST_USD`, `AI_RUN_MAX_SECONDS` · `AI_FAULTS` (development and test only) · `AI_RUNS_DIR` (default `../data/ai-runs`) |
+| AI (planned) | `AI_ENABLED` (default off) · `ANTHROPIC_API_KEY` from the environment only, never committed (SEC-SUPPLY-002) · gateway route, off by default (AOPS-R7, AOPS-T12): `AI_GATEWAY` (`none` default · `portkey`), `AI_GATEWAY_URL` (gateway root, `https`, no `/v1`), `AI_GATEWAY_MODEL_PREFIX` (e.g. `@aws-bedrock-use2/us.anthropic.`), `PORTKEY_API_KEY` from the environment only (SEC-SUPPLY-005), `AI_GATEWAY_ALLOW_BULK=1` for one eval or chaos command only · `AI_LIVE_CHECK=1` runs a task's one live check · `AI_MODEL_<STEP>`, `AI_EFFORT_<STEP>` (defaults in the agent specs, ADR-0007) · `AI_RUN_MAX_TOKENS`, `AI_RUN_MAX_COST_USD`, `AI_RUN_MAX_SECONDS` · `AI_FAULTS` (development and test only) · `AI_RUNS_DIR` (default `../data/ai-runs`) |
 | MCP (planned) | `MCP_ALLOW_WRITE` (default off) · `WORKBOOK_PATH` |
 
 ## Technical constraints
@@ -59,6 +61,7 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 - Browser targets: current Chrome, Edge, Firefox, Safari (ES2020).
 - Node version must satisfy Vite 7 (20.19+ / 22.12+).
 - AI features are optional and off by default; with AI off the app needs no service apart from the font CDN (Article XII.8).
+  The gateway route is off by default too, and `npm test` never calls the gateway or the Anthropic API (AOPS-ROUTE-007).
 
 ## Approved decisions
 [ADR-0001](../adr/0001-excel-workbook-as-data-store.md) ·
@@ -68,4 +71,5 @@ The API exists only under `npm run dev` / `npm run preview` (ADR-0002).
 [ADR-0005](../adr/0005-tanstack-query.md) ·
 [ADR-0006](../adr/0006-fictional-demo-dataset.md) ·
 [ADR-0007](../adr/0007-model-and-prompt-choice.md) (Proposed) ·
-[ADR-0008](../adr/0008-orchestration-pattern.md)
+[ADR-0008](../adr/0008-orchestration-pattern.md) ·
+[ADR-0009](../adr/0009-ai-gateway-route.md)

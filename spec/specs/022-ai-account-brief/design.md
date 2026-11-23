@@ -38,7 +38,8 @@ are code steps without agent specs (CR-20261121-1).
 
 ## Interfaces
 ```ts
-// GET /api/ai/status → { enabled: boolean; available: boolean; reason?: "disabled" | "breaker_open" | "no_credentials" }
+// GET /api/ai/status → { enabled: boolean; available: boolean; reason?: "disabled" | "breaker_open" | "no_credentials";
+//                       auto_draft: boolean }  // false on the gateway route (AIB-GEN-022, CR-20261123-1)
 // POST /api/ai/brief { customerId: number } → 202 { runId: string } | 404 | 503
 // GET /api/ai/runs/:id → { runId, status: "running" | "succeeded" | "unverified" | "failed" | "cancelled",
 //                          step?: StepName, revision?: number, draft?: BriefDraftV1, error?: string }
@@ -89,7 +90,8 @@ key resets it. Nothing about AI is in `SummaryDialog`'s own logic, which is why 
 
 **Automatic start, once per selection (AIB-GEN-021, `useAutoBrief`).** A selection is the user action that also opens
 the dialog (002 design: the selection handler, never an effect on the row). The hook waits for `useAiStatus` to
-resolve, then starts one run if `enabled && available` and the stored summary is empty (the same emptiness test as
+resolve, then starts one run if `enabled && available && auto_draft` (`auto_draft` is false on the gateway route,
+AIB-GEN-022) and the stored summary is empty (the same emptiness test as
 SUM-VIEW-003). It starts at most once per customer key per selection: a refetch of the customer row, closing and
 reopening the dialog, a Discard, a Cancel or a failure does not start another (*Regenerate with AI* or *Try again* does).
 Selecting the same customer again later is a new selection and, if it still has no saved summary and no run or draft is
@@ -136,6 +138,7 @@ by the eval grader (EVAL-CODE-005, `injection_followed`), not at run time. Eval 
 | Run failed (any step, after retries) | Inline error in the dialog with *Try again*; grids unaffected; if the dialog was closed, the message shows when it is reopened | "Could not draft the summary: <reason> (run <id>)" |
 | Unverified (Guard's citation checks failed) | Draft in the dialog + banner listing the failed checks | "Unverified draft: check the points below before saving" |
 | AI disabled | The dialog opens as the plain summary; no automatic run, no AI action, no button indicator | — |
+| Gateway route (AIB-GEN-022) | The dialog opens; no automatic run; *Regenerate with AI* works as usual | — |
 | Breaker open | The dialog opens; no automatic run; *Regenerate with AI* disabled + tooltip | "AI is temporarily unavailable. Try again in a few minutes." |
 | Unsaved edits on Regenerate | Confirm dialog | "Replace your unsaved changes with an AI draft?" |
 | Closing the dialog with unsaved edits | Confirm dialog (002, LAY-DLG-007) | "Discard your unsaved summary changes?" |

@@ -18,6 +18,7 @@ authentication. This spec covers content safety, exposure and data handling.
 | Network access to an unauthenticated read/write API | none (`host: "::"`) | ❌ |
 | Full-table reads via `/table/:name` | none | ⚠️ accepted while local |
 | Unused dependencies (supply chain) | none | ⚠️ |
+| A model key sent to the wrong host or written somewhere (two optional keys since CR-20261123-1) | Environment only; each key only to its own route's host (SEC-SUPPLY-005, AOPS-ROUTE-005) | 📝 |
 | Font CDN request | none | ⚠️ accepted |
 
 ---
@@ -60,8 +61,9 @@ authentication. This spec covers content safety, exposure and data handling.
 
 #### SEC-SUPPLY-002: No secrets
 - **Status:** ✅ Implemented
-- **Criterion:** No secrets SHALL be committed. The only secret, the optional Anthropic API key, lives in the environment (Article XII, ai-data-policy §1); `.env` and `.env.*` are git-ignored.
+- **Criterion:** No secrets SHALL be committed. The optional model keys (`ANTHROPIC_API_KEY`, and `PORTKEY_API_KEY` for the gateway route) live in the environment (Article XII, ai-data-policy §1, SEC-SUPPLY-005); `.env` and `.env.*` are git-ignored.
 - **Source:** `package.json`
+- **Note:** wording changed 2026-11-23 by CR-20261123-1. It said "The only secret, the optional Anthropic API key, lives in the environment"; the optional gateway route (AOPS-R7) adds a second optional key. No behaviour change: both keys are environment variables and `.env*` stays git-ignored, so the status stays ✅.
 
 #### SEC-SUPPLY-003: No high npm audit issues
 - **Status:** ⚠️ Partial — Not verified
@@ -72,3 +74,7 @@ authentication. This spec covers content safety, exposure and data handling.
 - **Status:** ❌ Gap — 30 unused
 - **Criterion:** Unused dependencies SHALL be removed.
 - **Source:** `package.json`
+
+#### SEC-SUPPLY-005: Model keys stay in the environment and go only to their own host
+- **Status:** 📝 Planned
+- **Criterion:** THE optional model keys `ANTHROPIC_API_KEY` (direct route) and `PORTKEY_API_KEY` (gateway route, CR-20261123-1) SHALL be read only from the server's environment, never from a file, SHALL NOT be committed, logged, traced, written to a checkpoint or sent to the browser, and each SHALL be sent only to its own route's host (AOPS-ROUTE-005).

@@ -2,7 +2,7 @@
 
 | Spec | Prefix | Status | Constitution |
 |---|---|---|---|
-| 024-agent-ops | AOPS | 📝 Planned (CR-20261117-1) | II, III, V, VIII, X, XII |
+| 024-agent-ops | AOPS | 📝 Planned (CR-20261117-1; model route CR-20261123-1) | II, III, V, VIII, X, XII |
 
 ## Introduction
 How the brief pipeline runs: a deterministic orchestrator ([ADR-0008](../../adr/0008-orchestration-pattern.md)) that
@@ -10,6 +10,9 @@ validates every hand-off, survives provider failures, stays within budgets, can 
 and leaves a trace of every step (Article XII.7). Each failure row here has a fault-injection test.
 CR-20261121-1 removes the Critic and its revision loop: the steps are retrieve → analyse → write → guard, and only
 analyse and write call a model (AOPS-ORCH-006).
+CR-20261123-1 adds an optional, off-by-default **gateway route** (AOPS-R7): the same model, reached through an AI
+gateway instead of the Anthropic API directly, used only for the few live runs the owner opts into
+([ADR-0009](../../adr/0009-ai-gateway-route.md)).
 
 Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour missing or broken) · 📝 Planned (not built yet) · Deprecated.
 
@@ -80,6 +83,7 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 - **Source:** `server/ai/config.ts`, `server/ai/client.ts` (`createModelClient`, `aiStatus`)
 - **Criterion:** IF `AI_ENABLED` is not `true`, or in live mode no API credentials are configured, THEN THE server SHALL NOT create the model client, `/api/ai/status` SHALL report `enabled: false`, and every other API SHALL behave unchanged (Article XII.8). Replay mode (`AI_MODEL_MODE=replay`, recorded responses, no key) is allowed only when `NODE_ENV` is `development` or `test`.
 - **Note:** wording clarified 2026-11-20 by the AOPS-T01 review: replay mode needs no key, so "no credentials" applies to live mode; replay is barred in production like `AI_FAULTS`.
+- **Note:** 2026-11-23, CR-20261123-1: "API credentials" means the key of the selected model route: `ANTHROPIC_API_KEY` on the direct route, `PORTKEY_API_KEY` on the gateway route (AOPS-ROUTE-004). Criterion text unchanged.
 
 #### AOPS-FAIL-008: Unverified when the Guard's checks fail
 - **Status:** ✅ Implemented
@@ -173,12 +177,55 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 - **Status:** 📝 Planned
 - **Criterion:** THE project SHALL keep a chaos-run report of 20 briefs with faults on, showing success rate, retries per run and added latency.
 
+### AOPS-R7 — Model route (gateway mode, CR-20261123-1)
+**User story:** As the owner, who has no personal Anthropic API key but an AI gateway key from my employer, I want
+the pipeline to reach the same model through that gateway when I explicitly turn it on, so that I can run the few
+live checks I need without the gateway becoming the normal path.
+
+#### AOPS-ROUTE-001: Direct route by default
+- **Status:** 📝 Planned
+- **Criterion:** THE server SHALL call the model at `https://api.anthropic.com` (the direct route) unless `AI_GATEWAY` is exactly `portkey`; WHEN `AI_GATEWAY` is unset, blank or `none` THE direct route SHALL be used, and IF it has any other value THEN `loadAiConfig` SHALL return an error naming the variable and the rule, and AI SHALL stay disabled.
+
+#### AOPS-ROUTE-002: Gateway settings validated
+- **Status:** 📝 Planned
+- **Criterion:** WHERE `AI_GATEWAY=portkey` THE config SHALL require `AI_GATEWAY_URL`, an `https` URL with no user info, query or fragment, a path that does not end in `/v1`, and a host that is not `anthropic.com` or one of its subdomains, and `AI_GATEWAY_MODEL_PREFIX` matching `^@[a-z0-9][a-z0-9-]{0,62}/([a-z0-9-]{1,32}\.){0,4}$`; IF either is missing or invalid THEN `loadAiConfig` SHALL return an error naming the variable and the rule, never the value, and AI SHALL stay disabled; on the direct route these variables SHALL NOT be read.
+
+#### AOPS-ROUTE-003: Same model through the gateway
+- **Status:** 📝 Planned
+- **Criterion:** WHILE the gateway route is selected THE client SHALL send every model call with the model `AI_GATEWAY_MODEL_PREFIX` followed by the step's configured model ID, while the config, budgets, cost and traces keep the plain model ID from the agent spec or `AI_MODEL_<AGENT>`; IF a response's `model` does not end with the plain model ID THEN THE call SHALL fail as a model error and its content SHALL NOT be used.
+
+#### AOPS-ROUTE-004: Credentials of the selected route
+- **Status:** 📝 Planned
+- **Criterion:** THE gateway key SHALL be read only from the environment variable `PORTKEY_API_KEY` and the direct key only from `ANTHROPIC_API_KEY`; `hasCredentials` SHALL reflect only the selected route's key, and WHILE the model mode is live and that key is missing, `aiStatus` SHALL report `no_credentials` and no model client SHALL be created (AOPS-FAIL-007).
+
+#### AOPS-ROUTE-005: Each key only to its own host
+- **Status:** 📝 Planned
+- **Criterion:** WHILE the gateway route is selected THE SDK SHALL be constructed with `baseURL` set to `AI_GATEWAY_URL`, the Portkey key only in an explicit gateway request header, and `apiKey` and `authToken` set to `null`, so that no Anthropic credential is read or sent; WHILE the direct route is selected `PORTKEY_API_KEY` SHALL NOT be read or sent; on both routes `ANTHROPIC_BASE_URL` SHALL be ignored and `maxRetries: 0`, `logLevel: "off"` and `openTelemetry: false` SHALL stay set.
+
+#### AOPS-ROUTE-006: Route recorded in the trace
+- **Status:** 📝 Planned
+- **Criterion:** THE run span and every `llm_call` span SHALL record the route (`direct` or `gateway`) and, on the gateway route, the gateway host from `AI_GATEWAY_URL` and the provider slug from `AI_GATEWAY_MODEL_PREFIX` (e.g. `@aws-bedrock-use2`); no span, log or error SHALL contain a key or a request header value (Article XII.7, AOPS-OBS-002).
+
+#### AOPS-ROUTE-007: Tests never call the gateway
+- **Status:** 📝 Planned
+- **Criterion:** `npm test` SHALL make no call to the gateway or to the Anthropic API: tests SHALL exercise the gateway route only through an injected fake SDK, and a live check that may reach the gateway SHALL be skipped unless `AI_LIVE_CHECK=1` and the selected route's key are set, and SHALL make at most the model calls of one run.
+
+#### AOPS-ROUTE-008: Separate opt-in for bulk runs through the gateway
+- **Status:** 📝 Planned
+- **Criterion:** WHILE the gateway route is selected THE eval harness (every command that calls a model live) and the chaos run (AOPS-TEST-003) SHALL refuse to start, before any model call, unless `AI_GATEWAY_ALLOW_BULK` is exactly `1`, and the refusal SHALL name that variable; replay runs and `npm run ai:metrics`, which make no model call, SHALL need no opt-in.
+
 ## Out of scope
 - Distributed execution, queues or multiple server processes (single local user, ADR-0002).
 - Exporting traces to an external observability backend (possible later through OpenTelemetry).
+- A gateway's OpenAI-compatible API, other gateway products, and choosing a route per step: one route serves the whole
+  server ([ADR-0009](../../adr/0009-ai-gateway-route.md)).
 
 ## Open questions
 - Whether the Run Inspector should also ship in `npm run preview` builds (today: development only).
+- Gateway route: how long the gateway keeps request and response bodies (it stores them; the period was not stated)
+  and whether the key's gateway configuration has retries, fallbacks or a response cache (owner not sure). Settled by
+  the owner on 2026-11-23: the bulk opt-in is `AI_GATEWAY_ALLOW_BULK=1`, and automatic drafts are off on the gateway
+  route (AIB-GEN-022) ([CR-20261123-1](../../changes/CR-20261123-1-ai-gateway-mode.md) §6).
 
 ## Scenarios
 - 30% injected 429s → runs succeed with ~1.4 retries each; traces show each retry and its delay.
@@ -186,3 +233,7 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 - Two quick clicks on *Regenerate with AI* → one run.
 - Five failures in a minute → *Regenerate with AI* disabled with the unavailable tooltip and no automatic runs → after two minutes a probe succeeds → enabled again (AIB-GEN-012).
 - Automatic run for customer A, user switches to customer B after one step → A's run is `cancelled`, no further steps start, B gets its own run if it has no summary (AIB-GEN-008, AOPS-REC-002).
+- `AI_ENABLED=true`, `AI_GATEWAY` unset, only `PORTKEY_API_KEY` set → direct route, `/api/ai/status` reports `no_credentials`; the Portkey key is not read (AOPS-ROUTE-001, AOPS-ROUTE-005).
+- `AI_GATEWAY=portkey` without `AI_GATEWAY_MODEL_PREFIX` → the server log says "AI_GATEWAY_MODEL_PREFIX is required when AI_GATEWAY is portkey", AI is disabled, every other API works (AOPS-ROUTE-002).
+- Gateway route, `PORTKEY_API_KEY` set, `ANTHROPIC_API_KEY` also set → requests go to the gateway host with the Portkey header only and model `@aws-bedrock-use2/us.anthropic.claude-sonnet-5-5`; the trace shows `model: claude-sonnet-5-5`, `route: gateway`, the gateway host and `@aws-bedrock-use2` (AOPS-ROUTE-003, AOPS-ROUTE-006).
+- Gateway route, `npm run eval:full` without `AI_GATEWAY_ALLOW_BULK=1` → refused before any model call, naming the variable (AOPS-ROUTE-008).

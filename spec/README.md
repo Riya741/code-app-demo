@@ -8,7 +8,7 @@ and everything still to do is a task with a status.
 
 ```
 spec/
-├─ constitution.md                 non-negotiable principles (Articles I–XII), v1.1.1
+├─ constitution.md                 non-negotiable principles (Articles I–XII), v1.1.2 (CR-20261123-1)
 ├─ workflow.md                     how a change moves: propose → specify → design → plan → build → verify → close
 ├─ steering/                       shared context every spec relies on
 │  ├─ product.md                   purpose, users, scope, principles
@@ -17,8 +17,8 @@ spec/
 │  ├─ glossary.md                  domain terms
 │  ├─ constitution-mapping.md      article ↔ spec ↔ requirement matrix, exceptions
 │  └─ ai-data-policy.md            what data may reach a model, redaction, retention (Article XII.4)
-├─ adr/                            0001 … 0008 architecture decision records
-├─ changes/                        change requests (CR-20261117-1: AI agents, Article XII; CR-20261120-1: owner decisions; CR-20261120-2: summary dialog, replaces the band; CR-20261121-1: slim agent roster; CR-20261121-2: eval-only judge)
+├─ adr/                            0001 … 0009 architecture decision records
+├─ changes/                        change requests (CR-20261117-1: AI agents, Article XII; CR-20261120-1: owner decisions; CR-20261120-2: summary dialog, replaces the band; CR-20261121-1: slim agent roster; CR-20261121-2: eval-only judge; CR-20261123-1: AI gateway mode)
 ├─ agents/                         4 agent specs: Analyst and Writer (runtime), Eval judge (evaluation), Spec author (development); 9 retired (Article XII.1)
 ├─ contracts/                      6 versioned JSON Schemas for hand-offs (Article XII.2)
 ├─ handoffs/                       one hand-off file per delivered task (written by the main session since CR-20261121-1)
@@ -35,7 +35,7 @@ spec/
 └─ id-migration.md                 old IDs (SRCH-012) → new IDs (SRCH-RANK-003)
 ```
 
-## Status dashboard (2026-11-20)
+## Status dashboard (2026-11-23)
 
 Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Tasks: ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked.
 
@@ -62,16 +62,16 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | **Cross-cutting** | | | | | | | | | | | |
 | [017-design-system](specs/017-design-system/) | DS | 16 | 14 | 1 | 0 | 1 | 8 | 5 | 0 | 3 | 0 |
 | [018-accessibility](specs/018-accessibility/) | A11Y | 15 | 10 | 2 | 3 | 0 | 6 | 1 | 0 | 5 | 0 |
-| [019-security](specs/019-security/) | SEC | 9 | 6 | 1 | 1 | 1 | 6 | 3 | 0 | 3 | 0 |
+| [019-security](specs/019-security/) | SEC | 10 | 6 | 1 | 1 | 2 | 6 | 3 | 0 | 3 | 0 |
 | [020-performance-reliability](specs/020-performance-reliability/) | PERF/REL/COMP/DT | 23 | 16 | 4 | 1 | 2 | 7 | 2 | 0 | 5 | 0 |
 | [021-quality](specs/021-quality/) | QA | 15 | 12 | 0 | 0 | 3 | 11 | 6 | 0 | 5 | 0 |
 | **AI & agents** (CR-20261117-1) | | | | | | | | | | | |
-| [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 34 | 2 | 2 | 0 | 30 | 10 | 2 | 0 | 8 | 0 |
+| [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 35 | 2 | 2 | 0 | 31 | 10 | 2 | 1 | 7 | 0 |
 | [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 12 | 1 | 0 | 10 | 1 |
-| [024-agent-ops](specs/024-agent-ops/) | AOPS | 27 | 8 | 1 | 0 | 18 | 11 | 3 | 0 | 8 | 0 |
+| [024-agent-ops](specs/024-agent-ops/) | AOPS | 35 | 8 | 1 | 0 | 26 | 12 | 3 | 0 | 9 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
 | [026-dev-agents](specs/026-dev-agents/) | DEVA | 17 | 16 | 0 | 0 | 1 | 15 | 14 | 0 | 1 | 0 |
-| **Total** | | **518** | **376** | **23** | **10** | **109** | **242** | **149** | **0** | **88** | **5** |
+| **Total** | | **528** | **376** | **23** | **10** | **119** | **243** | **149** | **1** | **88** | **5** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,
@@ -94,6 +94,7 @@ tests; AOPS-T11 Critic step removed (retrieve → analyse → write → guard).
 7. **LAY-T07** refresh everything
 8. **SEC-T03 → SEC-T04** remove unused dependencies, then `npm audit` (8 findings after the first install)
 9. **QA-T07** CI on GitHub Actions (the remote exists since 2026-11-17); unblocks EVAL-T09
+10. **AOPS-T12** gateway mode, once [CR-20261123-1](changes/CR-20261123-1-ai-gateway-mode.md) is approved; it unblocks the AIB-T03 live check
 
 ## Workflow
 See [workflow.md](workflow.md): **propose → specify → design → plan → build → verify → close**, with the

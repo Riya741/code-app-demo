@@ -51,7 +51,7 @@ How the acceptance criteria in every spec are verified, and what "done" means.
 #### QA-GATE-001: Lint passes
 - **Status:** ✅ Implemented
 - **Criterion:** `npm run lint` SHALL pass.
-- **Source:** `eslint.config.js`, `tsconfig.app.json`, `package.json`
+- **Source:** `.github/workflows/ci.yml`, `eslint.config.js`, `tsconfig.app.json`, `package.json`
 
 #### QA-GATE-002: TypeScript strict
 - **Status:** 📝 Planned — (`strict: false`)
@@ -59,7 +59,7 @@ How the acceptance criteria in every spec are verified, and what "done" means.
 - **Source:** `eslint.config.js`, `tsconfig.app.json`, `package.json`
 
 #### QA-GATE-003: Checks on every commit
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** Lint, typecheck and tests SHALL run on every commit/PR once the repo is in git.
 - **Source:** `eslint.config.js`, `tsconfig.app.json`, `package.json`
 

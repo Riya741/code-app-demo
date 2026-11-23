@@ -1,6 +1,8 @@
 // @vitest-environment node
 // Gateway mode (spec 024-agent-ops AOPS-ROUTE-001..008, 019-security SEC-SUPPLY-005; CR-20261123-1, ADR-0009). Task
 // AOPS-T12. Everything runs against a fake SDK class: no test reaches the gateway or the Anthropic API.
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { aiStatus, createModelClient, fakeMessage, type ModelRequest, type SdkLike, type SdkOptions } from "../../server/ai/client";
 import { gatewayBulkRefusal, loadAiConfig, type AiConfig, type Env } from "../../server/ai/config";
@@ -15,8 +17,10 @@ const GW: Env = {
   AI_GATEWAY_MODEL_PREFIX: "@aws-bedrock-use2/us.anthropic.",
   PORTKEY_API_KEY: PORTKEY,
 };
-const OPTS = { projectDir: "C:/work/project" };
-const RUNS = { AI_RUNS_DIR: "C:/work/runs" };
+// Platform-neutral absolute paths (CI runs on Linux, QA-T07): the runs folder is outside the project folder.
+const BASE = path.join(os.tmpdir(), "code-app-gateway-test");
+const OPTS = { projectDir: path.join(BASE, "project") };
+const RUNS = { AI_RUNS_DIR: path.join(BASE, "runs") };
 
 /** An environment that records every variable name read from it. */
 function recording(values: Env): { env: Env; read: Set<string> } {

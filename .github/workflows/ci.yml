@@ -1,0 +1,51 @@
+# CI (spec 021-quality QA-GATE-003, task QA-T07; gate G6): G1 spec lint, G3 lint and types, G4 tests on every push
+# and pull request. No secrets are used: AI stays off, tests use fake models and a generated fictional workbook (ADR-0006),
+# and the opt-in live checks are skipped without AI_LIVE_CHECK.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # The test harness and the eval dataset generate the fixture workbook with this interpreter.
+      PYTHON: python
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          npm ci
+          python -m pip install --disable-pip-version-check openpyxl==3.1.5
+
+      - name: G1 spec lint
+        run: python -I spec/scripts/spec_lint.py
+
+      - name: G3 lint
+        run: npm run lint
+
+      - name: G3 typecheck
+        run: npm run typecheck
+
+      - name: G4 tests
+        run: npm test

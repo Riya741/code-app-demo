@@ -10,7 +10,7 @@ it passes. Gates marked *planned* become mandatory when their task is done.
 | G3 | Lint and types | `npm run lint` · `npm run typecheck` | Before commit | ✅ Active |
 | G4 | Tests cite requirements | `npm test` · tests named `PREFIX-AREA-NNN …` | Before commit | ✅ Active: unit tests (component, integration, E2E planned QA-T02..T04) |
 | G5 | Manual verification | Criterion checked in light + dark, ≥ 1024px + < 1024px, note in the task | Before ✅ Done | ✅ Active (manual) |
-| G6 | CI | G1, G3, G4 on every push | On push | 📝 Planned (QA-T07) |
+| G6 | CI | G1, G3, G4 on every push | On push | ✅ Active (`.github/workflows/ci.yml`, QA-T07) |
 | G7 | AI evaluation | `npm run eval:smoke` before merging a prompt or model change (exit 1 on a breached threshold); `npm run eval:grade -- <dir>` re-grades recorded outputs without a model; CI on PRs touching `server/ai/**` or `evals/**` | Before AI merges · on PR (planned) | ✅ Active (manual run, EVAL-T08); CI part 📝 Planned (EVAL-T09) |
 
 ## G1 — Spec lint

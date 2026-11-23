@@ -121,7 +121,8 @@ spend my time correcting and adding judgement instead of retyping facts.
 - **Note:** Replaces AIB-GEN-016 (CR-20261121-1); "Checking" is the Guard step. One automatic run per selection, as in CR-20261120-1.
 
 #### AIB-GEN-022: No automatic draft on the gateway route
-- **Status:** 📝 Planned
+- **Status:** ⚠️ Partial — `/api/ai/status` reports `auto_draft` (AIB-T05); the client starting automatic drafts only when it is true is AIB-T10
+- **Source:** `server/ai/routes.ts`
 - **Criterion:** WHILE the server uses the gateway route (AOPS-ROUTE-001) THE system SHALL NOT start an automatic draft (AIB-GEN-021), and `GET /api/ai/status` SHALL report `auto_draft: false` (`true` on the direct route); *Regenerate with AI* (AIB-GEN-017) SHALL still start a run on the user's action.
 - **Note:** Added by [CR-20261123-1](../../changes/CR-20261123-1-ai-gateway-mode.md) (owner answer Q4, 2026-11-23: use the gateway for minimal things only).
 
@@ -135,16 +136,18 @@ trust it and check it quickly.
 - **Criterion:** THE fact sheet SHALL give every record a stable fact ID (`CU-<id>` customer, `UC-<id>` use case, `EV-<id>` event) built from the workbook `id`.
 
 #### AIB-CITE-002: Every factual sentence cites its records
-- **Status:** ⚠️ Partial — every Analyst point cites fact IDs from the fact sheet (checked in code) and every Writer sentence carries `fact_ids`; the citation markers in the shown draft and the uncited-sentence check come with the Guard (AIB-T04)
-- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v1.md`
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/guard.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v1.md`
 - **Criterion:** THE draft SHALL mark every factual sentence with the fact IDs of the use cases or events it is based on.
 
 #### AIB-CITE-003: Invalid or missing citations fail verification
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/steps/guard.ts`
 - **Criterion:** IF a sentence cites a fact ID that is not in the run's fact sheet, or a factual sentence has no citation, THEN verification SHALL fail with an issue naming the sentence (Article XII.5).
 
 #### AIB-CITE-004: Citations visible and removable in the editor
-- **Status:** 📝 Planned
+- **Status:** ⚠️ Partial — the draft HTML carries a `[UC-123]` marker after each cited sentence as plain text (AIB-T04); showing it in the editor is AIB-T07
+- **Source:** `server/ai/steps/guard.ts`
 - **Criterion:** WHEN the draft opens in the editor THE citations SHALL appear as bracketed markers (`[UC-123]`) after their sentences, which the user may keep or delete before saving.
 
 ### AIB-R3 — Be faithful to the records
@@ -175,7 +178,8 @@ markup or obey text hidden in a note.
 - **Criterion:** THE system SHALL pass workbook text to the model inside delimited data fields, and THE draft SHALL NOT follow instructions contained in that text (ai-data-policy §4).
 
 #### AIB-SAFE-002: Draft HTML built and sanitised by code
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/steps/guard.ts`
 - **Criterion:** THE draft HTML SHALL be built by code from the model's plain-text sentences and sanitised with the rich-text allow-list (RTX-SAN-001) before it is returned; model output SHALL never be inserted as HTML.
 
 #### AIB-SAFE-003: Only allowed fields reach the model
@@ -193,7 +197,8 @@ markup or obey text hidden in a note.
 - **Criterion:** THE draft SHALL have the sections *Overview*, *Wins*, *Risks* and *Next steps*, in that order; a section with nothing to say SHALL contain one sentence saying so.
 
 #### AIB-FMT-002: Length budget
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/steps/guard.ts`
 - **Criterion:** THE draft SHALL be at most 350 words, citation markers excluded.
 
 ### AIB-R6 — The human decides
@@ -255,19 +260,23 @@ markup or obey text hidden in a note.
 browser keeps the component → hook → lib → API layering (Article IX).
 
 #### AIB-API-001: Start a run
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/routes.ts`, `server/workbook.ts`
 - **Criterion:** WHEN the client sends `POST /api/ai/brief` with `{ customerId }` THE server SHALL return `202 { runId }`; IF the customer does not exist THEN 404; IF AI is disabled THEN 503 with the message "AI is not enabled".
 
 #### AIB-API-002: Stream progress
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/routes.ts`, `server/workbook.ts`
 - **Criterion:** WHEN the client opens `GET /api/ai/runs/:id/events` THE server SHALL stream one Server-Sent Event per step change and one final event with the run outcome.
 
 #### AIB-API-003: Read the result
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/routes.ts`, `server/workbook.ts`
 - **Criterion:** WHEN the client sends `GET /api/ai/runs/:id` THE server SHALL return the run status and, once finished, the draft as [brief-draft.v1](../../contracts/brief-draft.v1.schema.json).
 
 #### AIB-API-004: AI status endpoint
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/routes.ts`, `server/workbook.ts`
 - **Criterion:** WHEN the client sends `GET /api/ai/status` THE server SHALL return `{ enabled, available }` without calling the model, so the UI can decide whether to show the button.
 - **Note:** "the button" is now *Regenerate with AI* and the automatic draft (AIB-GEN-016, -017, -012, -019); the API is unchanged by CR-20261120-1 and CR-20261120-2.
 - **Note:** 2026-11-23, [CR-20261123-1](../../changes/CR-20261123-1-ai-gateway-mode.md): the response also carries `auto_draft` (AIB-GEN-022); `enabled` and `available` are unchanged.

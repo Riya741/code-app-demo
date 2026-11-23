@@ -681,7 +681,13 @@ describe("degrade gracefully", () => {
     try {
       for (const env of [{}, { AI_ENABLED: "true", AI_EFFORT_WRITER: "extreme", AI_RUNS_DIR: ROOT }]) {
         Object.assign(process.env, env);
-        const health = await api.request<{ tables: string[] }>("GET", "/api/workbook/health");
+        // A fresh plugin reads the AI settings on its first AI request: the AI routes are mounted beside the workbook API
+        // and answer too, with AI disabled when a setting is broken (AIB-T05).
+        const request = api.reopen();
+        const status = await request<{ enabled: boolean }>("GET", "/api/ai/status");
+        expect(status.status).toBe(200);
+        if ("AI_EFFORT_WRITER" in env) expect(status.body.enabled).toBe(false);
+        const health = await request<{ tables: string[] }>("GET", "/api/workbook/health");
         expect(health.status).toBe(200);
         expect(health.body.tables).toContain("customer");
         const customers = await api.request<Row[]>("GET", "/api/workbook/table/customer");

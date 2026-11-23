@@ -13,11 +13,12 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { validateContract, type AnalystToWriterV1, type FactSheetV1, type WriterDraftV1 } from "../../server/ai/contracts";
+import { validateContract, type AnalystToWriterV1, type BriefDraftV1, type FactSheetV1, type WriterDraftV1 } from "../../server/ai/contracts";
 import { createModelClient } from "../../server/ai/client";
 import { loadAiConfig } from "../../server/ai/config";
 import { openReadOnlyStore, runBrief, type StepRegistry } from "../../server/ai/orchestrator";
 import { analystStep } from "../../server/ai/steps/analyst";
+import { guardStep } from "../../server/ai/steps/guard";
 import { retrieve } from "../../server/ai/steps/retriever";
 import { writerStep } from "../../server/ai/steps/writer";
 import { eventsByParent, useCasesByParent as liveUseCases } from "../../server/workbook";
@@ -30,7 +31,7 @@ const live = process.env.AI_LIVE_CHECK === "1" && (routeKey ?? "").trim() !== ""
 describe.skipIf(!live)("live check (AI_LIVE_CHECK=1)", () => {
   const api = workbookApi();
 
-  it("AIB-FMT-001 a live run of retrieve → analyse → write returns a cited four-section draft from the fixture", async () => {
+  it("AIB-FMT-001 a live run of retrieve → analyse → write → guard returns a cited four-section draft from the fixture", async () => {
     const runsDir = fs.mkdtempSync(path.join(os.tmpdir(), "code-app-ai-live-"));
     try {
       const result = loadAiConfig({ ...process.env, NODE_ENV: "test", AI_ENABLED: "true", AI_MODEL_MODE: "live", AI_RUNS_DIR: runsDir }, { projectDir: ROOT });
@@ -47,18 +48,19 @@ describe.skipIf(!live)("live check (AI_LIVE_CHECK=1)", () => {
         retrieve: { run: (input, ctx) => retrieve({ customerId: input.customerId }, { store: ctx.store, runId: input.runId }) },
         analyse: analystStep,
         write: writerStep,
-        // The guard is AIB-T04: stop after the Writer by failing the run on purpose at the guard.
-        guard: { run: async () => ({}) as never },
+        guard: guardStep,
       };
       const lines: string[] = [];
       const record = await runBrief({ config: result.config, steps, store, client, log: (l) => lines.push(l) }, { customerId });
 
-      // The guard stub's empty output fails at the hand-off; everything before it must have succeeded.
-      expect(record).toMatchObject({ status: "failed", error: "invalid_output", failedStep: "guard" });
+      // The whole pipeline (AIB-T04 added the real guard): a cited draft, verified or unverified by the citation checks.
+      expect(["succeeded", "unverified"]).toContain(record.status);
       const out = (step: string) => record.completed.find((c) => c.step === step)?.output;
       const sheet = out("retrieve") as FactSheetV1;
       const analysis = out("analyse") as AnalystToWriterV1;
       const draft = out("write") as WriterDraftV1;
+      const brief = out("guard") as BriefDraftV1;
+      expect(validateContract("brief-draft.v1", brief)).toMatchObject({ ok: true });
       expect(validateContract("analyst-to-writer.v1", analysis)).toMatchObject({ ok: true });
       expect(validateContract("writer-draft.v1", draft)).toMatchObject({ ok: true });
       expect(draft.sections.map((s) => s.heading)).toEqual(["Overview", "Wins", "Risks", "Next steps"]);
@@ -71,7 +73,7 @@ describe.skipIf(!live)("live check (AI_LIVE_CHECK=1)", () => {
       const words = sentences.map((s) => s.text.split(/\s+/).filter(Boolean).length).reduce((a, b) => a + b, 0);
       // Numbers only: no model text in the test output.
       console.info(
-        `[live] sentences=${sentences.length} uncited_factual=${uncited} unknown_ids=${unknown} words=${words} ` +
+        `[live] status=${record.status} issues=${brief.issues.length} sentences=${sentences.length} uncited_factual=${uncited} unknown_ids=${unknown} words=${words} ` +
           `tokens_in=${record.usage.inputTokens} tokens_out=${record.usage.outputTokens} cost_usd=${record.usage.costUsd.toFixed(4)}`,
       );
     } finally {

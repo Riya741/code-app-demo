@@ -22,7 +22,7 @@ Retriever ─fact-sheet.v1─► Analyst ─analyst-to-writer.v1─► Writer �
 ## Components and files
 | File | Role |
 |---|---|
-| `server/ai/routes.ts` | `/api/ai/status`, `/api/ai/brief`, `/api/ai/runs/:id`, `/api/ai/runs/:id/events` (registered by the Vite plugin next to `/api/workbook`) |
+| `server/ai/routes.ts` | `/api/ai/status`, `/api/ai/brief`, `/api/ai/runs/:id`, `/api/ai/runs/:id/events`, `/api/ai/runs/:id/cancel` (registered by the Vite plugin next to `/api/workbook`; runs kept in memory, newest 50, until AOPS-T05) |
 | `server/ai/steps/retriever.ts` | Fact sheet from the `Store` read model; fact IDs; allow-list and redaction ([ai-data-policy](../../steering/ai-data-policy.md)) |
 | `server/ai/steps/analyst.ts`, `writer.ts` | LLM steps, one per agent spec |
 | `server/ai/steps/guard.ts` | Citation checks (AIB-CITE-003; failures make the draft `unverified` with issues), builds HTML from sentences, appends `[UC-…]` markers, sanitises, counts words, final schema check |
@@ -40,7 +40,7 @@ are code steps without agent specs (CR-20261121-1).
 ```ts
 // GET /api/ai/status → { enabled: boolean; available: boolean; reason?: "disabled" | "breaker_open" | "no_credentials";
 //                       auto_draft: boolean }  // false on the gateway route (AIB-GEN-022, CR-20261123-1)
-// POST /api/ai/brief { customerId: number } → 202 { runId: string } | 404 | 503
+// POST /api/ai/brief { customerId: number } → 202 { runId: string } | 400 | 404 | 503   (errors: { error: <catalog text> })
 // GET /api/ai/runs/:id → { runId, status: "running" | "succeeded" | "unverified" | "failed" | "cancelled",
 //                          step?: StepName, revision?: number, draft?: BriefDraftV1, error?: string }
 // GET /api/ai/runs/:id/events → text/event-stream; data: { step, revision, status } … final { status }

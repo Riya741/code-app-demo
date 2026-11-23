@@ -96,6 +96,16 @@ the first 6 characters of the run ID (AOPS-OBS-005).
 | Server: refusal | Run error reason | The model declined this request | AOPS-FAIL-004 |
 | Server: budget | Run error reason | Budget exceeded | AOPS-BUDG-001 |
 | Server: final check | Run error reason | Draft did not pass the final check | AIB-SAFE-002 |
+| Server: model or workbook unavailable | Run error reason | AI is unavailable right now | AIB-API-003 |
+| Server: any other run failure | Run error reason | Something went wrong while drafting | AIB-API-003 |
+| Server: breaker open | API 503 | AI is temporarily unavailable. Try again in a few minutes. | AIB-API-001 |
+| Server: unknown customer | API 404 | Customer not found | AIB-API-001 |
+| Server: invalid request | API 400 | customerId must be a whole number | AIB-API-001 |
+| Server: unknown run | API 404 | Run not found | AIB-API-003 |
+| Server: unknown AI route | API 404 | Unknown AI request | AIB-API-003 |
+| Uncited factual sentence | Unverified-draft list | <Section>, sentence <n>: a factual statement has no citation. | AIB-CITE-003 |
+| Unknown citation | Unverified-draft list | <Section>, sentence <n>: cites <fact ID>, which is not in this customer's records. | AIB-CITE-003 |
+| Draft over the length budget | Unverified-draft list | The draft had <n> words; sentences after the 350-word limit were removed. | AIB-FMT-002 |
 
 Saving an AI draft uses the summary messages above: toast "Executive summary updated", inline "Could not save: <message>".
 

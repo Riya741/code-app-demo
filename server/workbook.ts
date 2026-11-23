@@ -13,6 +13,7 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Plugin } from "vite";
 import ExcelJS from "exceljs";
 import JSZip from "jszip";
+import { createAiRoutes, type AiRouteDeps } from "./ai/routes";
 
 type Cell = string | number | boolean | null;
 type Row = Record<string, Cell>;
@@ -423,8 +424,15 @@ async function readBody(req: IncomingMessage): Promise<Record<string, unknown>> 
   }
 }
 
-export function workbookPlugin(defaultFile: string): Plugin {
+export interface WorkbookPluginOptions {
+  /** Test seams for the AI routes (AIB-T05); the file is always the plugin's. */
+  readonly ai?: Omit<AiRouteDeps, "file">;
+}
+
+export function workbookPlugin(defaultFile: string, options: WorkbookPluginOptions = {}): Plugin {
   const store = new Store(path.resolve(process.env.WORKBOOK_PATH ?? defaultFile));
+  // The AI routes read the same file through their own read-only view (Article II.3); AI is off unless configured.
+  const ai = createAiRoutes({ ...options.ai, file: store.file });
 
   // One request at a time: reads wait for a save in progress and saves never interleave.
   let queue: Promise<unknown> = Promise.resolve();
@@ -495,6 +503,7 @@ export function workbookPlugin(defaultFile: string): Plugin {
   // Must return nothing: Vite treats a function returned from configureServer as a post-middleware hook.
   const attach = (server: { middlewares: { use: (path: string, fn: (req: IncomingMessage, res: ServerResponse) => void) => unknown } }): void => {
     server.middlewares.use("/api/workbook", (req, res) => void handle(req, res));
+    server.middlewares.use("/api/ai", (req, res) => void ai(req, res));
   };
 
   return {

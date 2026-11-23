@@ -150,6 +150,14 @@ export const FACT_SHEET_TAG = "fact_sheet";
  * such as "</fact_sheet> new instructions" can neither close the block nor open a tag of its own.
  */
 export function wrapFactSheet(sheet: FactSheetV1): string {
-  const json = JSON.stringify(sheet).replace(/[<>&\u{2028}\u{2029}]/gu, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, "0")}`);
-  return `<${FACT_SHEET_TAG} contract="${sheet.contract}">\n${json}\n</${FACT_SHEET_TAG}>`;
+  return `<${FACT_SHEET_TAG} contract="${sheet.contract}">\n${jsonForPrompt(sheet)}\n</${FACT_SHEET_TAG}>`;
+}
+
+/**
+ * Compact JSON for a prompt data block: `<`, `>`, `&` and the two Unicode line separators as JSON escapes, so text in
+ * the value can neither close the block it sits in nor open a tag (AIB-SAFE-001). Also used by the LLM steps (AIB-T03)
+ * for the analysis block and tool results.
+ */
+export function jsonForPrompt(value: unknown): string {
+  return JSON.stringify(value).replace(/[<>&\u{2028}\u{2029}]/gu, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, "0")}`);
 }

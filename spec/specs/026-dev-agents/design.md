@@ -7,15 +7,20 @@ Three layers keep development agents inside the spec:
    [spec/contracts/](../../contracts/README.md).
 2. **Checked:** spec lint (G1) checks 10–13 tie agent specs, prompt headers, hand-off files and contracts together.
 3. **Enforced while working:** Claude Code hooks block out-of-workflow edits and feed gate results back to the agent;
-   skills encode the workflow steps; subagents get only the tools their specs list.
+   skills encode the workflow steps; the one subagent (spec author) gets only the tools its spec lists.
+
+**Slim roster (CR-20261121-1).** Every subagent starts cold and re-reads context the main session already holds, so
+only the spec author stays a subagent. Implementing, testing, reviewing and evals run in the main session
+(DEVA-SUB-003); the Stop hook runs only the tests related to the changed files, and the full suite runs at task close
+(DEVA-GATE-002).
 
 Layers 1 and 2 are built in this change (DEVA-T01..T04). Layer 3 is Phase 2.
 
 ```
 /task-implement UCF-T07
-  └─ set task 🔄 ─► plan ─► implementer (AGENT-IMPLEMENTER) ─► test-writer ─► gates ─► reviewer (AGENT-REVIEWER)
-                                   │ writes spec/handoffs/UCF-T07.md (task-handoff.v1)        │ verdict into hand-off
-                                   └──────────── hooks: spec_guard · data_guard · post_edit_check · gates_on_stop
+  └─ set task 🔄 ─► plan ─► build + related tests (main session) ─► gates ─► review against criteria (main session)
+                            │ writes spec/handoffs/UCF-T07.md (task-handoff.v1, agent: session)  │ verdict into hand-off
+                            └──────────── hooks: spec_guard · data_guard · post_edit_check · gates_on_stop
 /task-close UCF-T07 ─► statuses, gap register, dashboard, traceability, spec tree ─► G1
 ```
 
@@ -26,7 +31,7 @@ Layers 1 and 2 are built in this change (DEVA-T01..T04). Layer 3 is Phase 2.
 | `spec/contracts/*.schema.json`, `spec/contracts/README.md` | Hand-off contracts | 1 ✅ |
 | `spec/templates/handoff.md`, `spec/handoffs/README.md` | Hand-off template and folder | 1 ✅ |
 | `spec/scripts/spec_lint.py` | Checks 10–13 | 1 ✅ |
-| `.claude/agents/*.md` | Subagents generated from / linked to agent specs | 2 |
+| `.claude/agents/spec-author.md` | The one subagent, linked to its agent spec (CR-20261121-1) | 2 |
 | `.claude/hooks/*.py`, `.claude/settings.json` | Hooks and permission deny-list | 2 |
 | `.claude/skills/*/SKILL.md` | Workflow skills | 2 |
 | `tests/hooks/test_*.py` | Hook tests | 2 |
@@ -54,23 +59,24 @@ Layers 1 and 2 are built in this change (DEVA-T01..T04). Layer 3 is Phase 2.
 ---
 contract: task-handoff.v1
 task: UCF-T07
-agent: AGENT-IMPLEMENTER
+agent: session
 covers: [UCF-EDIT-002]
 files_changed: [src/components/customers/UseCaseForm.tsx, src/hooks/useUseCases.ts]
 tests: [tests/unit/useCaseForm.test.ts]
 gates: {G1: pass, G3: pass, G4: pass}
 verdict: pending
-reviewer: AGENT-REVIEWER
+reviewer: session        # or human
 ---
 ```
 
-**Contract metadata** (check 13): `"x-contract": { "name": "writer-to-critic", "version": 1, "from": "AGENT-WRITER", "to": "AGENT-CRITIC" }`.
+**Contract metadata** (check 13): `"x-contract": { "name": "writer-draft", "version": 1, "from": "AGENT-WRITER", "to": "code:guard" }`.
+An endpoint is an agent ID, `code:<step>`, `session`, `human` or `ui` (DEVA-SPEC-004). Retired agents are listed in
+`spec/agents/README.md`; hand-offs may name them, contracts and headers may not (DEVA-SPEC-005).
 
 **Tool limits.** A Claude Code subagent's `tools` field restricts tool *names* only. Finer limits in the agent specs
 are enforced as follows: code edits need a 🔄 task (spec-guard hook, all agents); secrets and workbooks are
-protected (data-guard hook, all agents); the reviewer and eval analyst have no Edit/Write tool; path limits such as
-"spec-author edits only `spec/**`" and command limits on Bash are instructions in the subagent file, checked by the
-reviewer and visible in the hand-off's `files_changed`. Hooks apply to subagents as well as the main session.
+protected (data-guard hook, all agents); path limits such as "spec-author edits only `spec/**`" and command limits
+on Bash are instructions in the subagent file, visible in the CR's file list and checked when the owner reviews. Hooks apply to subagents as well as the main session.
 
 **Loading.** Claude Code reads `.claude/settings.json` hooks and `.claude/agents/` at session start; after changing
 them, restart the session (or review them in `/hooks`) before relying on them.

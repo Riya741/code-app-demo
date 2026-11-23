@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://code-app-demo.local/spec/contracts/writer-draft.v1.schema.json",
+  "title": "Writer draft v1",
+  "description": "Writer -> guard code step (CR-20261121-1; was writer-to-critic.v1). Plain-text sentences per section, each with its citations; no HTML from the model (AIB-SAFE-002).",
+  "x-contract": {
+    "name": "writer-draft",
+    "version": 1,
+    "from": "AGENT-WRITER",
+    "to": "code:guard",
+    "requirements": ["AIB-CITE-002", "AIB-FMT-001", "AIB-FMT-002", "AIB-SAFE-002"]
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract", "run_id", "revision", "sections"],
+  "properties": {
+    "contract": { "const": "writer-draft.v1" },
+    "run_id": { "type": "string", "pattern": "^run_[0-9a-z]{8,32}$" },
+    "revision": { "type": "integer", "minimum": 0, "maximum": 2 },
+    "sections": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["heading", "sentences"],
+        "properties": {
+          "heading": { "enum": ["Overview", "Wins", "Risks", "Next steps"] },
+          "sentences": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text", "factual", "fact_ids"],
+              "properties": {
+                "text": { "type": "string", "maxLength": 400, "description": "Plain text; no markup." },
+                "factual": { "type": "boolean", "description": "False only for sentences that state no fact (e.g. 'No risks are recorded.')." },
+                "fact_ids": { "type": "array", "items": { "type": "string", "pattern": "^(CU|UC|EV)-[0-9]+$" } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

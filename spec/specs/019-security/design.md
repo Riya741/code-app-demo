@@ -32,6 +32,6 @@ Verify with `npm run build` and a smoke test afterwards.
 |---|---|
 | III | Content safety ✅; dev/preview bound to localhost (III.3) ✅ |
 | VIII | Unused dependencies ⚠️ |
-| XII | The model API key is read from the environment only and covered by SEC-SUPPLY-002 (`.env*` ignored); data sent to a model follows the [AI data policy](../../steering/ai-data-policy.md). No AI code yet. ✅ |
+| XII | The model keys (`ANTHROPIC_API_KEY`; `PORTKEY_API_KEY` for the opt-in gateway route, CR-20261123-1) are read from the environment only and covered by SEC-SUPPLY-002 (`.env*` ignored); SEC-SUPPLY-005 (planned, AOPS-T12) adds: never from a file, never logged, traced, checkpointed or sent to the browser, each key only to its own route's host. Data sent to a model follows the [AI data policy](../../steering/ai-data-policy.md) on both routes. ✅ |
 
 **Exceptions:** none. (III.3 was an exception until SEC-T01 closed it on 2026-11-16.)

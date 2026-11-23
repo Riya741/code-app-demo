@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://code-app-demo.local/spec/contracts/task-handoff.v1.schema.json",
   "title": "Task hand-off v1",
-  "description": "Implementer -> Reviewer -> human. The YAML front matter of spec/handoffs/<TASK-ID>.md (template: spec/templates/handoff.md). Checked by spec lint check 12 (DEVA-HAND-002).",
+  "description": "Main session -> human (CR-20261121-1; was Implementer -> Reviewer). agent and reviewer also accept session; every earlier hand-off still validates. The YAML front matter of spec/handoffs/<TASK-ID>.md (template: spec/templates/handoff.md). Checked by spec lint check 12 (DEVA-HAND-002).",
   "x-contract": {
     "name": "task-handoff",
     "version": 1,
-    "from": "AGENT-IMPLEMENTER",
-    "to": "AGENT-REVIEWER",
-    "requirements": ["DEVA-HAND-001", "DEVA-HAND-002", "DEVA-HAND-003"]
+    "from": "session",
+    "to": "human",
+    "requirements": ["DEVA-HAND-002", "DEVA-HAND-003", "DEVA-HAND-004"]
   },
   "type": "object",
   "additionalProperties": false,
@@ -16,7 +16,7 @@
   "properties": {
     "contract": { "const": "task-handoff.v1" },
     "task": { "type": "string", "pattern": "^[A-Z][A-Z0-9]{1,4}-T[0-9]{2}$" },
-    "agent": { "type": "string", "pattern": "^AGENT-[A-Z][A-Z-]*$" },
+    "agent": { "type": "string", "pattern": "^(AGENT-[A-Z][A-Z-]*|session)$" },
     "covers": {
       "type": "array",
       "minItems": 1,
@@ -31,6 +31,6 @@
       "propertyNames": { "pattern": "^G[1-7]$" }
     },
     "verdict": { "enum": ["pending", "pass", "fail"] },
-    "reviewer": { "type": "string", "pattern": "^(AGENT-[A-Z][A-Z-]*|human)$" }
+    "reviewer": { "type": "string", "pattern": "^(AGENT-[A-Z][A-Z-]*|session|human)$" }
   }
 }

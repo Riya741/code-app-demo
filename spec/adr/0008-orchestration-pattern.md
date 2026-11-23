@@ -12,7 +12,7 @@ summary is worse than no summary. The pipeline must be observable, resumable aft
 
 ## Options considered
 1. **Single prompt** — one call writes the summary. Cheapest and simplest; no place to check citations or redo a bad
-   section. Kept as the *critic off* baseline in the eval.
+   section.
 2. **Autonomous agent loop** — one agent with tools decides what to read, write and check until it is satisfied.
    Flexible, but its path, cost and duration vary per run, it is hard to resume at a known point, and its failures are
    hard to attribute to a step.
@@ -31,7 +31,15 @@ choosing which read-only tools to call and to the bounded revision loop.
 - Adding a step means changing code and a spec, not a prompt: that is intended (Article XII.1).
 - Less flexible than an agent loop for open-ended questions; acceptable because the brief is not open-ended.
 
+## Amendment 2026-11-21 (CR-20261121-1)
+The Critic and its revision loop are removed to cut tokens per run, which the *Revisit when* list below anticipated.
+The workflow is now retrieve → analyse → write → guard, a straight line (AOPS-ORCH-006). Retriever, Guard and the
+orchestrator are code steps without agent specs; the Analyst and the Writer are the only LLM agents. The Guard's
+deterministic citation checks verify drafts (AIB-CITE-003) and mark failures `unverified` (AOPS-FAIL-008). Option 3
+still holds; only the bounded revision loop is gone.
+
 ## Revisit when
 - The feature grows into open-ended questions about a customer ("why is adoption falling?"), where an agent loop with
   read-only tools may fit better.
-- Eval data shows the critic loop adds no quality (EVAL-EXP-001 configs 5 and 6): then simplify to fewer steps.
+- ~~Eval data shows the critic loop adds no quality: then simplify to fewer steps.~~ Done by CR-20261121-1 (cost).
+- Eval data shows drafts often end `unverified` (EVAL-EXP-006): then consider a revision step again, through a CR.

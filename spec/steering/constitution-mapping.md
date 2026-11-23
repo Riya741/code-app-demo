@@ -42,7 +42,7 @@ into practice, and shows where compliance is incomplete. Update it whenever a sp
 |---|---|---|
 | **I Spec first** | QA-DOD-001..005, all `requirements.md` | — |
 | **II Workbook is truth** | STO-LOAD-001..006, STO-SAVE-001..010, STO-CONC-001, STO-CONC-002, API-WRITE-001..008 (API-WRITE-004 = II.4 link rows replaced on edit, v1.1.1), API-DEL-001, API-DEL-002, API-SUMM-001, API-SUMM-002, SUM-EDIT-001, UCF-EDIT-002, EVF-EDIT-002, DATA-TBL-001..005, DATA-FMT-001..004, DATA-LINK-001..005, LAY-THEME-001, LAY-PANEL-004 (only UI prefs in browser; the dialog's state is not stored), UCP-DEL-003, EVP-DEL-002 | STO-SAVE-010 backups (STO-T06), DATA-LINK-006 (DATA-T04) |
-| **III Safe by default** | RTX-SAN-001..005, EXP-CSV-003, EXP-WORD-002, SEC-SAFE-001..003, API-GEN-002, SEC-EXPO-001 | SEC-SUPPLY-004 deps (SEC-T03) |
+| **III Safe by default** | RTX-SAN-001..005, EXP-CSV-003, EXP-WORD-002, SEC-SAFE-001..003, API-GEN-002, SEC-EXPO-001, SEC-SUPPLY-002 | SEC-SUPPLY-004 deps (SEC-T03), SEC-SUPPLY-005 and AOPS-ROUTE-005 model keys only to their own host, planned (AOPS-T12) |
 | **IV Valid by construction** | UCF-FIELD-001..008, UCF-ADD-001, UCB-ROWS-001, UCB-SAVE-001..004, EVF-ADD-001, API-WRITE-001, API-WRITE-006, API-SUMM-002, DATA-LINK-004 | API-WRITE-008 FK validation (API-T08), EVF-ADD-004 (EVF-T07), DATA-QUAL-003 (DATA-T06) |
 | **V Clear feedback** | SRCH-LOAD-003, SRCH-LOAD-004, SRCH-RANK-006, UCP-DEL-001..003, UCP-CSV-001, UCP-STATE-001..003, EVP-DEL-001, EVP-DEL-002, EVP-CSV-001, EVP-STATE-001, UCF-ADD-003..005, UCB-SAVE-005..008, SUM-EDIT-004..006, SUM-WORD-003, CDL-HTTP-002..004, GRID-FILT-008, DS-MSG-001, LAY-DLG-007 (V.3: confirm before discarding typed text), LAY-DLG-009 | LAY-TOP-004 refresh (LAY-T07), LAY-DLG-007, LAY-DLG-009 planned (LAY-T12) |
 | **VI Theme & responsive** | LAY-PANEL-001, LAY-PANEL-003, LAY-PANEL-004, LAY-PANEL-007, LAY-PANEL-008 (LAY-PANEL-002, -005, -006 and LAY-BAND-001..005 Deprecated), LAY-DLG-011..013, LAY-THEME-001, LAY-THEME-002, DS-TOKEN-001..003, RTX-DARK-001..005, GRID-ROW-004 | LAY-PANEL-007, LAY-PANEL-008 planned (LAY-T09), LAY-DLG-011..013 planned (LAY-T11) |
@@ -51,7 +51,7 @@ into practice, and shows where compliance is incomplete. Update it whenever a sp
 | **IX Layered architecture** | CDL-HTTP-001..005, CDL-FETCH-001..004, CDL-QUERY-001..006, structure.md CONV-002/003 | — |
 | **X Testable & traceable** | QA-TRACE-001, QA-TRACE-002, PIPE-BUILD-014 (logged recovery), every tasks.md | QA-TEST-001..005 (QA-T01..T05), QA-GATE-002, QA-GATE-003, UCF-EDIT-005, UCF-EDIT-006 (UCF-T11), EVF-EDIT-003 (EVF-T10): implemented, no test names them yet |
 | **XI Performance budget** | PERF-SPEED-001..007, SRCH-RANK-004, CDL-QUERY-002, RTX-EDIT-001 | PERF-SPEED-005..007 thresholds monitored (PERF-T07) |
-| **XII AI agents & data** | DEVA-SPEC-001..003, DEVA-HAND-002 (lint checks 10–13); all other AIB, EVAL, AOPS, MCP, DEVA requirements are 📝 Planned | XII.1/XII.2 runtime enforcement (AOPS-T01, AOPS-T02, AIB-T01), XII.3 draft-only, including the automatic draft (AIB-T07, AIB-T10), XII.4 policy (AIB-T02, MCP-T02), XII.5 citations (AIB-T03), XII.6 eval + G7 (EVAL-T08), XII.7 traces (AOPS-T01), XII.8 optional (AOPS-T01, AIB-GEN-019 in AIB-T07) |
+| **XII AI agents & data** | DEVA-SPEC-001..003, DEVA-HAND-002 (lint checks 10–13); all other AIB, EVAL, AOPS, MCP, DEVA requirements are 📝 Planned | XII.1/XII.2 runtime enforcement (AOPS-T01, AOPS-T02, AIB-T01), XII.3 draft-only, including the automatic draft (AIB-T07, AIB-T10), XII.4 policy (AIB-T02, MCP-T02), XII.5 citations (AIB-T03), XII.6 eval + G7 (EVAL-T08), XII.7 traces (AOPS-T01), XII.8 optional (AOPS-T01, AIB-GEN-019 in AIB-T07), XII.4/XII.7/XII.8 gateway route as amended in v1.1.2: off by default, same model, route traced, bulk opt-in (AOPS-ROUTE-001..008, SEC-SUPPLY-005, planned in AOPS-T12) |
 
 ## 3. Recorded exceptions
 | Article | Spec | Reason | Exit task |
@@ -92,3 +92,22 @@ text, V.3; save and failure feedback unchanged), VI (tokens, both themes, centre
 `useSaveSummary`), XII (the AI draft stays unsaved until a person's Save; with AI off the dialog is the plain summary).
 Specs 002, 003, 017 (messages catalog, design surface) and 022 were updated; 024 needs no change (it names no band).
 Matrix: no column changes; the 002 row keeps ⚠️ under V (LAY-TOP-004) and ○ under XII.
+
+## 8. Amendment re-check (constitution v1.1.2, 2026-11-23)
+[CR-20261123-1](../changes/CR-20261123-1-ai-gateway-mode.md) rewords Articles XII.4 and XII.8 (PATCH). The model
+provider may also be reached through an AI gateway that the [AI data policy](ai-data-policy.md) names (v1.1.0: the
+Perficient Portkey gateway → AWS Bedrock us-east-2), and only when that route is configured. AI stays optional, and
+the model route stays the only extra external service while AI is enabled. No column changes.
+
+Specs re-read:
+- **Updated.**
+  - agent-ops (024): new AOPS-ROUTE-001..008; Constitution check rows III, VIII, X, XII.
+  - security (019): new SEC-SUPPLY-005, SEC-SUPPLY-002 reworded; XII row.
+  - ai-account-brief (022) and ai-evaluation (023): task notes only (AIB-T03 live check; EVAL-T04 bulk guard).
+- **Unchanged, because the route does not reach them.**
+  - mcp-tooling (025): it never calls a model.
+  - dev-agents (026): development agents run in the Claude Code session, not through `server/ai/`.
+  - quality (021): G7 is unchanged.
+  - The other specs do not involve AI.
+- Article III.3 stays qualified only by XII.4. The gateway sees only the fictional data the direct route would; real
+  data needs the conditions of ai-data-policy §5, which now include the gateway's.

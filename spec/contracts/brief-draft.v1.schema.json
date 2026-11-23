@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://code-app-demo.local/spec/contracts/brief-draft.v1.schema.json",
   "title": "Brief draft v1",
-  "description": "Guard -> UI (via GET /api/ai/runs/:id). Sanitised HTML built by code, with citation markers, status and the critic's open issues (AIB-API-003, AIB-HUMAN-002, AIB-HUMAN-009).",
+  "description": "Guard code step -> UI (via GET /api/ai/runs/:id). Sanitised HTML built by code, with citation markers, status and the failed citation checks (AIB-API-003, AIB-HUMAN-009, AIB-HUMAN-012). revisions is always 0 since CR-20261121-1 (no critic loop).",
   "x-contract": {
     "name": "brief-draft",
     "version": 1,
-    "from": "AGENT-GUARD",
-    "to": "AGENT-ORCHESTRATOR",
-    "requirements": ["AIB-API-003", "AIB-SAFE-002", "AIB-CITE-004", "AIB-FMT-002", "AIB-HUMAN-002", "AIB-HUMAN-009"]
+    "from": "code:guard",
+    "to": "ui",
+    "requirements": ["AIB-API-003", "AIB-SAFE-002", "AIB-CITE-004", "AIB-FMT-002", "AIB-HUMAN-009", "AIB-HUMAN-012", "AIB-CITE-003"]
   },
   "type": "object",
   "additionalProperties": false,
@@ -22,7 +22,7 @@
     "citations": { "type": "array", "items": { "type": "string", "pattern": "^(CU|UC|EV)-[0-9]+$" } },
     "issues": {
       "type": "array",
-      "description": "Open critic issues when status is unverified; empty when verified.",
+      "description": "Failed citation checks (AIB-CITE-003) when status is unverified; empty when verified.",
       "items": {
         "type": "object",
         "additionalProperties": false,

@@ -16,9 +16,11 @@ import { Readable } from "node:stream";
 import { fileURLToPath } from "node:url";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { afterAll, afterEach, beforeAll, beforeEach } from "vitest";
-import { workbookPlugin } from "../../server/workbook";
+import { workbookPlugin, type WorkbookPluginOptions } from "../../server/workbook";
 
 export const MOUNT = "/api/workbook";
+/** The AI routes (AIB-T05), mounted by the same plugin. */
+export const AI_MOUNT = "/api/ai";
 export const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const GENERATOR = path.join(ROOT, "scripts", "generate_demo_workbook.py");
 
@@ -37,7 +39,7 @@ export type WorkbookApi = {
   /** Sends one request to the plugin under test. `url` is what the browser sends, e.g. `/api/workbook/health`. */
   request: Request;
   /** A brand-new plugin (new in-memory store) on the same temp file: proves a change really reached the file. */
-  reopen: () => Request;
+  reopen: (options?: WorkbookPluginOptions) => Request;
   /** This test's temp copy (the value of WORKBOOK_PATH). */
   readonly file: string;
   /** The generated fixture the copies are made from; tests must never change it. */
@@ -60,44 +62,56 @@ function generateFixture(dir: string): string {
   return out;
 }
 
-/** Creates the plugin the way Vite does and returns the middleware it mounts on /api/workbook. */
-function mount(defaultFile: string): Middleware {
-  const plugin = workbookPlugin(defaultFile);
+type Mounts = Map<string, Middleware>;
+
+/** Creates the plugin the way Vite does and returns the middlewares it mounts (/api/workbook and /api/ai). */
+function mount(defaultFile: string, options?: WorkbookPluginOptions): Mounts {
+  const plugin = workbookPlugin(defaultFile, options);
   const hook = plugin.configureServer;
   const configure = (typeof hook === "function" ? hook : hook?.handler) as unknown as (server: unknown) => unknown;
-  let middleware: Middleware | undefined;
+  const mounts: Mounts = new Map();
   configure({
     middlewares: {
       use(at: string, fn: Middleware) {
-        if (at !== MOUNT) throw new Error(`workbook plugin mounted on ${at}, expected ${MOUNT}`);
-        middleware = fn;
+        if (at !== MOUNT && at !== AI_MOUNT) throw new Error(`workbook plugin mounted on ${at}, expected ${MOUNT} or ${AI_MOUNT}`);
+        mounts.set(at, fn);
       },
     },
   });
-  if (!middleware) throw new Error("workbook plugin did not register a middleware");
-  return middleware;
+  if (!mounts.has(MOUNT)) throw new Error("workbook plugin did not register a middleware");
+  return mounts;
 }
 
-function requester(middleware: Middleware): Request {
+function requester(mounts: Mounts): Request {
   return <T,>(method: Method, url: string, body?: unknown) =>
     new Promise<Reply<T>>((resolve, reject) => {
       // Connect strips the mount path before calling the middleware; do the same.
-      const local = url.startsWith(MOUNT) ? url.slice(MOUNT.length) || "/" : url;
+      const at = url.startsWith(AI_MOUNT) ? AI_MOUNT : MOUNT;
+      const middleware = mounts.get(at);
+      if (!middleware) throw new Error(`nothing mounted on ${at}`);
+      const local = url.startsWith(at) ? url.slice(at.length) || "/" : url;
       const raw = body === undefined ? [] : [Buffer.from(typeof body === "string" ? body : JSON.stringify(body), "utf8")];
       const req = Object.assign(Readable.from(raw), { url: local, method, headers: {} }) as unknown as IncomingMessage;
 
       const headers: Record<string, string> = {};
+      const written: string[] = [];
       const res = {
         statusCode: 200,
         setHeader(name: string, value: unknown) {
           headers[name.toLowerCase()] = String(value);
           return res;
         },
+        // Server-Sent Events (AIB-API-002) are written in parts; the reply's body is then the raw stream text.
+        write(chunk: unknown) {
+          written.push(String(chunk));
+          return true;
+        },
         // The plugin answers asynchronously (`void handle(...)`), so the reply is complete when `end` is called.
         end(chunk?: unknown) {
-          const textBody = chunk == null ? "" : String(chunk);
+          const textBody = written.join("") + (chunk == null ? "" : String(chunk));
           try {
-            resolve({ status: res.statusCode, headers, body: (textBody ? JSON.parse(textBody) : undefined) as T });
+            const stream = headers["content-type"] === "text/event-stream";
+            resolve({ status: res.statusCode, headers, body: (stream ? textBody : textBody ? JSON.parse(textBody) : undefined) as T });
           } catch (e) {
             reject(new Error(`Response is not JSON: ${textBody.slice(0, 200)} (${(e as Error).message})`));
           }
@@ -112,7 +126,7 @@ function requester(middleware: Middleware): Request {
  * Registers the Vitest hooks for one test file and returns the API under test. Call it at the top of the file or of a
  * `describe` block. Each test runs against a fresh temp copy of the fixture via WORKBOOK_PATH (restored afterwards).
  */
-export function workbookApi(): WorkbookApi {
+export function workbookApi(options?: WorkbookPluginOptions): WorkbookApi {
   let fixtureDir = "";
   let fixture = "";
   let testDir = "";
@@ -120,7 +134,7 @@ export function workbookApi(): WorkbookApi {
   let previous: string | undefined;
   let request: Request | undefined;
 
-  const plugin = () => mount(path.join(testDir, "default-path-must-not-be-used.xlsx"));
+  const plugin = (opts = options) => mount(path.join(testDir, "default-path-must-not-be-used.xlsx"), opts);
 
   beforeAll(() => {
     fixtureDir = fs.mkdtempSync(path.join(os.tmpdir(), "code-app-fixture-"));
@@ -152,7 +166,7 @@ export function workbookApi(): WorkbookApi {
       if (!request) throw new Error("workbookApi().request can only be used inside a test");
       return request<T>(method, url, body);
     },
-    reopen: () => requester(plugin()),
+    reopen: (opts?: WorkbookPluginOptions) => requester(plugin(opts)),
     get file() {
       return file;
     },

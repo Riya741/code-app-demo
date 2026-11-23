@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://code-app-demo.local/spec/contracts/judge-verdict.v1.schema.json",
+  "title": "Judge verdict v1",
+  "description": "Eval judge -> eval harness (CR-20261121-2). One scored entry per rubric criterion: quoted evidence, then reasoning, then a 1-5 score.",
+  "x-contract": {
+    "name": "judge-verdict",
+    "version": 1,
+    "from": "AGENT-EVAL-JUDGE",
+    "to": "code:eval-harness",
+    "requirements": ["EVAL-JUDGE-006", "EVAL-JUDGE-009"]
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract", "case_id", "judge_prompt_version", "criteria"],
+  "properties": {
+    "contract": { "const": "judge-verdict.v1" },
+    "case_id": { "type": "string", "pattern": "^(rich|sparse|empty|conflicting|long|injection|non_latin|html)-[0-9]{2}$" },
+    "judge_prompt_version": { "type": "string", "pattern": "^judge\\.v[0-9]+$" },
+    "criteria": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["criterion", "evidence", "reasoning", "score"],
+        "properties": {
+          "criterion": { "enum": ["faithfulness", "coverage", "actionability", "executive_tone"] },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": { "type": "string", "maxLength": 400, "description": "A span quoted from the draft." }
+          },
+          "reasoning": { "type": "string", "maxLength": 1200 },
+          "score": { "type": "integer", "minimum": 1, "maximum": 5 }
+        }
+      }
+    }
+  }
+}

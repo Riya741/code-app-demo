@@ -1,7 +1,8 @@
 """Stop hook: before an agent stops, run the gates that its changes affect; if one fails, tell it to continue.
 
 DEVA-GATE-002. Uses `git status` to find changed files. G1 (spec lint) runs on any change under spec/, src/, tests/,
-server/ or .claude/agents/; typecheck and the unit tests run when TypeScript changed. If the agent is already
+server/ or .claude/agents/; when TypeScript changed, typecheck runs and only the tests related to the changed files
+(`vitest related`), not the whole suite (CR-20261121-1); the full suite runs at task close. If the agent is already
 continuing because of this hook (`stop_hook_active`), it is allowed to stop, so the hook can never loop.
 Fails open.
 """
@@ -40,6 +41,12 @@ def changed_files(root: str):
     return parse_porcelain(p.stdout.decode("utf-8", errors="replace"))
 
 
+def related_test_args(root: str, files):
+    """`vitest related` arguments for the changed TypeScript files that still exist, or None when there are none."""
+    ts = sorted(f for f in files if f.endswith(TS_SUFFIXES) and os.path.isfile(os.path.join(root, f)))
+    return ["related", *ts, "--run", "--reporter=dot", "--passWithNoTests"] if ts else None
+
+
 def gates(root: str, files):
     failures = []
     if any(f.startswith(LINT_PREFIXES) for f in files):
@@ -53,11 +60,13 @@ def gates(root: str, files):
             code, out = run(["node", tsc, "--noEmit", "-p", cfg], root, 300)
             if code != 0:
                 failures.append(f"G3 typecheck ({cfg}):\n" + "\n".join(out.splitlines()[:15]))
-        vitest = os.path.join(root, "node_modules", "vitest", "vitest.mjs")
-        code, out = run(["node", vitest, "run", "--reporter=dot"], root, 300)
-        if code != 0:
-            tail = [l for l in out.splitlines() if l.strip()][-15:]
-            failures.append("G4 tests:\n" + "\n".join(tail))
+        args = related_test_args(root, files)
+        if args:
+            vitest = os.path.join(root, "node_modules", "vitest", "vitest.mjs")
+            code, out = run(["node", vitest, *args], root, 300)
+            if code != 0:
+                tail = [l for l in out.splitlines() if l.strip()][-15:]
+                failures.append("G4 related tests:\n" + "\n".join(tail))
     return failures
 
 

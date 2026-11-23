@@ -16,7 +16,8 @@ If code and spec disagree, one of them is a defect: fix the code, or change the 
 ## Work done by AI agents (Constitution Article XII)
 Agents follow the same seven steps; three things are added.
 - **Agent specs.** Each agent works under its spec in [agents/](agents/README.md): only its listed tools, its guardrails, its done criteria.
-- **Hand-off.** At *Verify*, the implementer writes `handoffs/<TASK-ID>.md` from [templates/handoff.md](templates/handoff.md); the reviewer records its verdict there before *Close*. Spec lint (G1 check 12) validates the file.
+- **Hand-off.** At *Verify*, the main session writes `handoffs/<TASK-ID>.md` from [templates/handoff.md](templates/handoff.md) (`agent: session`) and records its review verdict there before *Close* (`reviewer: session`, or `human`). Spec lint (G1 check 12) validates the file.
+- **Tests while building.** Run only the tests related to the changed files (`npx vitest related <files> --run`; the Stop hook does the same). The full `npm test` runs once at *Close* (gate G4).
 - **AI changes.** A change to a prompt, model or the AI pipeline also passes gate G7 (eval) before merge, and a model choice is recorded in an ADR citing the eval report.
 
 ## Status vocabularies

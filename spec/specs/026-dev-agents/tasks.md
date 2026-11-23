@@ -1,7 +1,9 @@
 # Tasks — Development Agents
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 15 tasks — ✅ 12 · 🔄 0 · ⬜ 2 · ⛔ 1
+**Summary:** 15 tasks — ✅ 14 · 🔄 0 · ⬜ 1 · ⛔ 0
+
+**Retired tasks:** DEVA-T12 (headless review), DEVA-T15 (implementer Bash limits); removed by CR-20261121-1, IDs not reused.
 
 ### Phase 1: specify and check
 - [x] **DEVA-T01** CR-20261117-1, constitution v1.1.0 (Article XII), AI data policy, specs 022–026, ADR-0007 and ADR-0008.
@@ -37,15 +39,17 @@
   - Status: ✅ Done · Covers: DEVA-HAND-001, DEVA-HAND-003 · Depends on: DEVA-T05, DEVA-T09
   - Verified 2026-11-18: 11 tasks went through the workflow with hand-off files and recorded reviews: QA-T02, QA-T03, API-T09 (= SUM-T07), UCF-T07, UCF-T08, EVF-T06, SUM-T08..T11. Wave 1 used general-purpose agents loading `.claude/agents/implementer.md`, because project subagent types load at session start. Wave 2 used the project `reviewer` subagent. The reviewers failed 2 tasks: API-T09 on scope, and UCF-T07 on a real data-loss defect.
 
-### Phase 5: headless review
-- [ ] **DEVA-T12** Headless `claude -p` spec-compliance review on pull requests.
-  - Status: ⛔ Blocked by QA-T07 · Covers: DEVA-CI-001 · Files: `.github/workflows/review.yml`
+### Phase 6: slim roster (CR-20261121-1)
+- [x] **DEVA-T16** Keep only the Analyst, Writer and Spec author agents: delete the other 9 agent specs and 4 subagents; README roster with a *Retired agents* table; spec lint accepts `code:<step>`, `session`, `human` and `ui` contract endpoints and retired agents in hand-offs only; `task-handoff.v1` endpoints and `session` values; `/task-implement` and `/eval-run` run in the main session; template, workflow, glossary.
+  - Status: ✅ Done · Covers: DEVA-SPEC-004, DEVA-SPEC-005, DEVA-SUB-003, DEVA-HAND-004 · Files: `spec/agents/`, `.claude/agents/`, `spec/scripts/spec_lint.py`, `spec/contracts/`, `spec/templates/handoff.md`, `.claude/skills/task-implement/SKILL.md`, `.claude/skills/eval-run/SKILL.md`, `.claude/README.md`
+  - Verified 2026-11-21: spec lint 0 errors with the slim roster (contract endpoints, retired agents in 20 earlier hand-offs); test "DEVA-HAND-004 accepts session…"; lint, typecheck, `npm test` pass; hand-off `spec/handoffs/DEVA-T16.md`.
+- [x] **DEVA-T17** Stop hook runs only the tests related to the changed files (`vitest related`), not the whole suite; the full suite runs at task close.
+  - Status: ✅ Done · Covers: DEVA-GATE-002 · Files: `.claude/hooks/gates_on_stop.py`, `tests/hooks/test_hooks.py`
+  - Verified 2026-11-21: hook test `test_DEVA_GATE_002_runs_only_tests_related_to_changed_files`; G1 0 errors, lint 0 errors, typecheck, `npm test` 300 passed + 1 expected fail; hand-off `spec/handoffs/DEVA-T17.md`.
 
 - [ ] **DEVA-T14** Run the skill trigger evals (`.claude/skills/trigger-evals.json`) with the skill-creator eval loop; record results; tune descriptions that misfire.
   - Status: ⬜ Not started · Covers: DEVA-SKILL-002 · Depends on: DEVA-T09
 
-- [ ] **DEVA-T15** Enforce the implementer's Bash limits (gate commands and read-only git only): its `tools` field allows any command, so it could write files through Bash and skip the spec-guard and post-edit hooks (seen once in SUM-T08, self-reported). Options: a PreToolUse Bash hook that refuses file-writing commands under protected folders, or permission rules if subagent-scoped rules become available.
-  - Status: ⬜ Not started · Covers: DEVA-SUB-001, DEVA-GUARD-001 · Files: `.claude/hooks/`, `.claude/agents/implementer.md` · Found 2026-11-18 in the SUM-T08 review.
 
 ## Test tasks
 - [x] **DEVA-T13** Hook tests (allow and block cases, fail-open and fail-closed).

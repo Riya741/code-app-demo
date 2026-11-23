@@ -9,7 +9,8 @@ Checks
   3. Every requirement has one '- **Status:**' with an allowed value and a '- **Criterion:**'.
   4. Every requirement ID mentioned anywhere in spec/ (ranges expanded) exists.
   5. Tasks: '- [ ]/[x] **PREFIX-Tnn**' + '- Status: <emoji> <word> · Covers: …'; [x] only when ✅ Done;
-     Covers IDs exist; the Summary line matches the counts; no nested checkboxes; task IDs unique.
+     Covers IDs exist; the Summary line matches the counts; no nested checkboxes; task IDs unique. A line
+     '**Retired tasks:** ID, ID' lists removed task IDs, which stay known so history can cite them.
   6. Task IDs mentioned anywhere in spec/ exist.
   7. Backticked Source paths exist in the repo.
   8. Relative Markdown links resolve.
@@ -22,9 +23,11 @@ Checks
      only IDs that agent lists (DEVA-SPEC-002).
  12. Hand-off files (spec/handoffs/<TASK>.md): task-handoff.v1 front matter, task = file name and exists, covers only
      IDs from that task's Covers line, known agent/reviewer, valid verdict and gates (DEVA-HAND-002); a task
-     marked ✅ Done needs `verdict: pass` and a reviewer in its hand-off (DEVA-HAND-003).
+     marked ✅ Done needs `verdict: pass` and a reviewer in its hand-off (DEVA-HAND-003). `agent` is an agent ID, a
+     retired agent ID or `session`; `reviewer` is one of those or `human` (DEVA-HAND-004, DEVA-SPEC-005).
  13. Contracts (spec/contracts/*.schema.json): valid JSON, $schema, $id ending in the file name, title, x-contract
-     name/version matching the file name, from/to agents and requirement IDs exist (DEVA-SPEC-003).
+     name/version matching the file name, requirement IDs exist, and from/to are each an active agent ID,
+     `code:<step>`, `session`, `human` or `ui`, never a retired agent (DEVA-SPEC-004, DEVA-SPEC-005).
 
 The sdd-spectree page generator imports this module and uses its regexes and
 collect_requirements(), so the page and this gate always count the same things.
@@ -72,6 +75,11 @@ PROMPT_HEADER_RE = re.compile(r"agent-spec:\s*(AGENT-[A-Z0-9-]+?)@(\d+\.\d+\.\d+
 PROMPT_DIRS = ("server/ai/prompts", ".claude/agents", "evals/graders/judge")
 HANDOFF_KEYS = ("contract", "task", "agent", "covers", "files_changed", "tests", "gates", "verdict")
 HANDOFF_VERDICTS = {"pending", "pass", "fail"}
+HANDOFF_SESSION = "session"                       # the main Claude Code session (DEVA-HAND-004)
+CONTRACT_PARTIES = {"session", "human", "ui"}     # non-agent contract endpoints (DEVA-SPEC-004)
+CODE_STEP_RE = re.compile(r"^code:[a-z][a-z0-9-]*$")
+RETIRED_TASKS_RE = re.compile(r"^\*\*Retired tasks:\*\*(.*)$")
+RETIRED_AGENTS_HEADING = "## Retired agents"
 GATE_RESULTS = {"pass", "fail", "n/a"}
 
 
@@ -86,6 +94,8 @@ class Findings:
         self.task_covers: Dict[str, List[str]] = {}   # task id -> requirement IDs on its Covers line
         self.task_status: Dict[str, str] = {}         # task id -> status emoji
         self.agents: Dict[str, dict] = {}             # agent id -> {"version", "reqs", "path"}
+        self.retired_agents: Dict[str, str] = {}      # agent id -> where it is listed (DEVA-SPEC-005)
+        self.retired_tasks: Dict[str, str] = {}       # task id -> spec folder ('**Retired tasks:**' line)
         self.checked_contracts = 0
         self.checked_prompts = 0
         self.checked_handoffs = 0
@@ -186,6 +196,14 @@ def check_tasks(specs_dir: str, root: str, f: Findings) -> None:
             sm = SUMMARY_RE.search(line)
             if sm:
                 summary = tuple(int(x) for x in sm.groups())
+            rt = RETIRED_TASKS_RE.match(line)
+            if rt:
+                for rtid in TASK_ID_RE.findall(rt.group(1)):
+                    if rtid in f.task_ids:
+                        f.error(f"{where}:{i + 1}", f"{rtid} already defined in {f.task_ids[rtid]}")
+                    f.task_ids[rtid] = name
+                    f.retired_tasks[rtid] = name
+                continue
             if NESTED_BOX_RE.match(line):
                 f.error(f"{where}:{i + 1}", "nested checkbox (it would count as a task); use '- Step:'")
             t = TASK_RE.match(line)
@@ -342,6 +360,19 @@ def check_agents(spec_root: str, root: str, f: Findings) -> None:
                 f.error(where, f"names contract {cfile}, which does not exist in spec/contracts/")
         if aid:
             f.agents[aid] = {"version": version, "reqs": set(reqs), "path": where}
+    readme = os.path.join(agents_dir, "README.md")
+    if os.path.isfile(readme):
+        in_retired = False
+        for i, line in enumerate(read(readme).splitlines(), 1):
+            if line.startswith("## "):
+                in_retired = line.strip() == RETIRED_AGENTS_HEADING
+                continue
+            m = re.match(r"^\|\s*`?(AGENT-[A-Z0-9-]+)`?\s*\|", line)
+            if in_retired and m:
+                rid = m.group(1)
+                if rid in f.agents:
+                    f.error(f"{rel(readme, root)}:{i}", f"{rid} is listed as retired but still has a spec")
+                f.retired_agents[rid] = rel(readme, root)
 
 
 def check_contracts(spec_root: str, root: str, f: Findings) -> None:
@@ -379,8 +410,13 @@ def check_contracts(spec_root: str, root: str, f: Findings) -> None:
         if xc.get("name") != m.group(1) or xc.get("version") != int(m.group(2)):
             f.error(where, f"x-contract name/version must be '{m.group(1)}' / {int(m.group(2))}")
         for side in ("from", "to"):
-            if xc.get(side) not in f.agents:
-                f.error(where, f"x-contract '{side}' agent {xc.get(side)!r} has no spec in spec/agents/")
+            party = xc.get(side)
+            if party in f.retired_agents:
+                f.error(where, f"x-contract '{side}' names retired agent {party} (DEVA-SPEC-005)")
+            elif not (party in f.agents or party in CONTRACT_PARTIES
+                      or (isinstance(party, str) and CODE_STEP_RE.match(party))):
+                f.error(where, f"x-contract '{side}' {party!r} must be an agent with a spec in spec/agents/, "
+                               "'code:<step>', 'session', 'human' or 'ui'")
         reqs = xc.get("requirements")
         if not isinstance(reqs, list) or not reqs:
             f.error(where, "x-contract 'requirements' must list requirement IDs")
@@ -477,10 +513,11 @@ def check_handoffs(spec_root: str, root: str, f: Findings) -> None:
             f.error(where, "contract must be 'task-handoff.v1'")
         if fm.get("task") != tid:
             f.error(where, f"task '{fm.get('task')}' must equal the file name ({tid})")
-        if "agent" in fm and fm["agent"] not in f.agents:
-            f.error(where, f"agent {fm['agent']!r} has no spec in spec/agents/")
-        if "reviewer" in fm and fm["reviewer"] != "human" and fm["reviewer"] not in f.agents:
-            f.error(where, f"reviewer {fm['reviewer']!r} must be an agent ID or 'human'")
+        actors = set(f.agents) | set(f.retired_agents) | {HANDOFF_SESSION}
+        if "agent" in fm and fm["agent"] not in actors:
+            f.error(where, f"agent {fm['agent']!r} must be an agent ID (active or retired) or 'session'")
+        if "reviewer" in fm and fm["reviewer"] not in actors | {"human"}:
+            f.error(where, f"reviewer {fm['reviewer']!r} must be an agent ID (active or retired), 'session' or 'human'")
         if "verdict" in fm and fm["verdict"] not in HANDOFF_VERDICTS:
             f.error(where, f"verdict must be one of {sorted(HANDOFF_VERDICTS)}")
         if f.task_status.get(tid) == "✅" and (fm.get("verdict") != "pass" or not fm.get("reviewer")):

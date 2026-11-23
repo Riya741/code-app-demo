@@ -6,7 +6,7 @@
   "x-contract": {
     "name": "fact-sheet",
     "version": 1,
-    "from": "AGENT-RETRIEVER",
+    "from": "code:retriever",
     "to": "AGENT-ANALYST",
     "requirements": ["AIB-CITE-001", "AIB-SAFE-001", "AIB-SAFE-003", "AIB-FAITH-003"]
   },

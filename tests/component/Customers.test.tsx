@@ -457,3 +457,81 @@ describe("Executive summary button in the top bar", () => {
     expect(follows(reopenButton(), screen.getByTestId("search-bar"))).toBe(true);
   });
 });
+
+/* ------------------------------------------------------------------------------------------- AI brief on the page */
+// Spec 022-ai-account-brief AIB-HUMAN-011, AIB-GEN-020, AIB-HUMAN-010 (tasks AIB-T07, AIB-T10, AIB-T09). The AI routes are
+// answered by `fetch`, the progress stream by a stand-in EventSource.
+describe("AI brief on the page", () => {
+  const streams: { onmessage: ((e: { data: string }) => void) | null; closed: boolean }[] = [];
+  const DRAFT = { run_id: "run_page00000001", customer_id: 7, status: "verified", html: "<p>Drafted text [CU-7]</p>", citations: ["CU-7"], issues: [], word_count: 2 };
+
+  beforeEach(() => {
+    stubViewport(true);
+    streams.length = 0;
+    vi.stubGlobal(
+      "EventSource",
+      class {
+        onmessage: ((e: { data: string }) => void) | null = null;
+        onerror: (() => void) | null = null;
+        closed = false;
+        constructor() {
+          streams.push(this);
+        }
+        close() {
+          this.closed = true;
+        }
+      },
+    );
+    fetchMock.mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url === "/api/ai/status") return reply(200, { enabled: true, available: true, auto_draft: true });
+      if (url === "/api/ai/brief") return reply(202, { runId: "run_page00000001" });
+      if (url.startsWith("/api/ai/runs/")) return reply(200, { runId: "run_page00000001", status: "succeeded", draft: DRAFT });
+      if (init?.method === "POST") return reply(200, { id: 7, summary_last_modified: "2026-11-18T08:00:00" });
+      if (url.includes("/table/customer")) return reply(200, serverRows);
+      return reply(404, { error: `unexpected request ${url}` });
+    });
+  });
+
+  it("AIB-HUMAN-011 the reopen button shows the run and then the waiting draft, announced politely, without moving the focus", async () => {
+    const { user } = await openCustomer();
+    await user.click(await within(summaryDialog()).findByRole("button", { name: /Regenerate with AI/ }));
+    await waitFor(() => expect(streams).toHaveLength(1));
+    await closeSummary(user);
+
+    expect(reopenButton()).toHaveAttribute("title", "AI is drafting the summary…");
+    expect(reopenButton()).toHaveAccessibleDescription("AI is drafting the summary…");
+    const focused = document.activeElement;
+    act(() => streams[0].onmessage?.({ data: JSON.stringify({ status: "succeeded" }) }));
+
+    await waitFor(() => expect(reopenButton()).toHaveAccessibleDescription("AI draft ready — not saved"));
+    expect(screen.getByTestId("ai-draft-badge")).toBeInTheDocument();
+    expect(document.querySelector('[aria-live="polite"]')).toHaveTextContent("AI draft ready — not saved");
+    expect(document.activeElement).toBe(focused);
+  });
+
+  it("AIB-GEN-020 a run that finishes while the dialog is closed does not reopen it; the grids stay usable", async () => {
+    const { user } = await openCustomer();
+    await user.click(await within(summaryDialog()).findByRole("button", { name: /Regenerate with AI/ }));
+    await waitFor(() => expect(streams).toHaveLength(1));
+    await closeSummary(user);
+    expect(screen.getByRole("region", { name: "Use Cases panel" })).toBeInTheDocument();
+    act(() => streams[0].onmessage?.({ data: JSON.stringify({ status: "succeeded" }) }));
+    await waitFor(() => expect(screen.getByTestId("ai-draft-badge")).toBeInTheDocument());
+    noDialog();
+    expect(screen.getByRole("region", { name: "Events panel" })).toBeInTheDocument();
+  });
+
+  it("AIB-HUMAN-010 reopening the dialog after closing it mid-run shows the waiting draft", async () => {
+    const { user } = await openCustomer();
+    await user.click(await within(summaryDialog()).findByRole("button", { name: /Regenerate with AI/ }));
+    await waitFor(() => expect(streams).toHaveLength(1));
+    await closeSummary(user);
+    expect(streams[0].closed).toBe(false);
+    act(() => streams[0].onmessage?.({ data: JSON.stringify({ status: "succeeded" }) }));
+    await waitFor(() => expect(screen.getByTestId("ai-draft-badge")).toBeInTheDocument());
+    await user.click(reopenButton());
+    expect(within(summaryDialog()).getByText("Drafted text [CU-7]")).toBeInTheDocument();
+    expect(within(summaryDialog()).getByText("AI draft — not saved. Check it, then Save, Edit or Discard.")).toBeInTheDocument();
+  });
+});

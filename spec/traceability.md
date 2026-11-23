@@ -25,17 +25,17 @@
 | security | SEC | `src/lib/html.ts`, `src/lib/csv.ts`, `vite.config.ts`, `package.json` |
 | performance-reliability | PERF/REL/COMP/DT | cross-cutting, `package.json` |
 | quality | QA | `eslint.config.js`, `tsconfig*.json`, `package.json` (scripts) |
-| ai-account-brief | AIB | planned: `server/ai/steps/*`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`, called from `Customers.tsx`), `CustomerDetails.tsx` (summary dialog content), `AiDraftBanner.tsx` · agents: `spec/agents/{retriever,analyst,writer,critic,guard}.md` · contracts: `spec/contracts/*.v1.schema.json` |
-| ai-evaluation | EVAL | planned: `evals/**` · agents: `spec/agents/judge.md`, `spec/agents/eval-analyst.md` |
-| agent-ops | AOPS | planned: `server/ai/{orchestrator,resilience,trace,config,client,tools}.ts`, `src/pages/AiRuns.tsx`, `docs/ai-runbook.md` · agent: `spec/agents/orchestrator.md` |
+| ai-account-brief | AIB | `server/ai/contracts.ts`, `server/ai/steps/retriever.ts`, `server/ai/tools.ts` (redaction, field builders), `server/ai/steps/{analyst,writer,llm}.ts`, `server/ai/prompts/{analyst,writer}.v1.md`, `server/ai/steps/guard.ts`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts`, `src/components/customers/AiDraftBanner.tsx` · planned: `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`, called from `Customers.tsx`), `CustomerDetails.tsx` (summary dialog content), `AiDraftBanner.tsx` · agents: `spec/agents/{analyst,writer}.md` · contracts: `spec/contracts/*.v1.schema.json` |
+| ai-evaluation | EVAL | `evals/run.ts`, `evals/lib/dataset.ts`, `evals/dataset/*`, `evals/graders/code/index.ts`, `evals/thresholds.json`, `evals/configs/*`, `evals/register.mjs`, `evals/resolve-ts.mjs` · planned: `evals/graders/judge/` (eval-only judge AGENT-EVAL-JUDGE, CR-20261121-2) |
+| agent-ops | AOPS | `server/ai/{config,client,orchestrator,trace,tools}.ts`, `server/ai/contracts.ts` (hand-off validation) · planned: `server/ai/resilience.ts`, `src/pages/AiRuns.tsx`, `docs/ai-runbook.md`; gateway route in `server/ai/{config,client,trace,orchestrator}.ts` (AOPS-T12, CR-20261123-1) · code steps, no agent spec (CR-20261121-1) |
 | mcp-tooling | MCP | planned: `mcp/workbook-mcp/**`, `.mcp.json` |
-| dev-agents | DEVA | `spec/scripts/spec_lint.py` (checks 10–13), `spec/templates/{agent,handoff}.md`, `spec/agents/`, `spec/contracts/`, `spec/handoffs/` · planned: `.claude/**`, `.github/workflows/review.yml` |
+| dev-agents | DEVA | `spec/scripts/spec_lint.py` (checks 10–13, retired agents and tasks), `spec/templates/{agent,handoff}.md`, `spec/agents/` (Analyst, Writer, Spec author; retired roster), `spec/contracts/`, `spec/handoffs/`, `.claude/agents/spec-author.md`, `.claude/hooks/*.py`, `.claude/skills/*/SKILL.md` |
 
 ## 2. Source file → specs (reverse lookup)
 
 | File | Specs |
 |---|---|
-| `server/workbook.ts` | workbook-storage, workbook-api, data-model |
+| `server/workbook.ts` | workbook-storage, workbook-api, data-model, agent-ops (read model for `server/ai/tools.ts`) |
 | `src/pages/Customers.tsx` | workspace-layout, customer-search, executive-summary (selected-row re-pick; summary dialog from LAY-T11/SUM-T13) |
 | `src/components/customers/ParentActivity.tsx` | use-cases-panel, events-panel, design-system |
 | `src/components/customers/UseCaseForm.tsx` | use-case-form, use-case-bulk (helpers) |
@@ -53,13 +53,25 @@
 | `tests/integration/summary.test.ts` | workbook-api (API-SUMM-001, API-SUMM-002) |
 | `tests/component/CustomerDetails.test.tsx`, `tests/unit/fmtUtc.test.ts` | executive-summary (SUM-EDIT-001, SUM-EDIT-004..006, SUM-VIEW-004; SUM-VIEW-001, SUM-VIEW-006, and LAY-DLG-007..009 through `onStateChange` / `onSaved`) |
 | `src/lib/customerSource.ts` (`saveSummary`), `src/hooks/useCustomers.ts` (`useSaveSummary`) | executive-summary (SUM-EDIT-001), client-data-layer |
-| `tests/hooks/test_hooks.py` | dev-agents (DEVA-GUARD-001..004, DEVA-GATE-001, DEVA-GATE-002, DEVA-CTX-001) |
+| `tests/hooks/test_hooks.py` | dev-agents (DEVA-GUARD-001..004, DEVA-GATE-001, DEVA-GATE-002 incl. related tests only, DEVA-CTX-001) |
 | `tests/unit/csv.test.ts` | export (EXP-CSV-001..003, EXP-CSV-005, EXP-NAME-001, EXP-NAME-002) |
 | `vitest.config.ts` | quality |
 | `src/lib/lookups.ts` | client-data-layer, use-case-form, use-case-bulk, event-form, data-model |
 | `vite.config.ts` | workbook-api, security, tech steering |
-| `spec/scripts/spec_lint.py` | quality (G1), dev-agents (DEVA-SPEC-001..003, DEVA-HAND-002) |
-| `server/ai/tools.ts` (planned) | agent-ops (runtime tools), mcp-tooling (shared by the MCP server) |
+| `spec/scripts/spec_lint.py` | quality (G1), dev-agents (DEVA-SPEC-001, DEVA-SPEC-002, DEVA-SPEC-004, DEVA-SPEC-005, DEVA-HAND-002..004) |
+| `server/ai/tools.ts` | agent-ops (runtime tools), ai-account-brief (redaction and fact builders for the Retriever), mcp-tooling (shared by the MCP server) |
+| `server/ai/contracts.ts` | ai-account-brief (contracts), agent-ops (hand-off validation) |
+| `server/ai/config.ts`, `server/ai/client.ts`, `server/ai/orchestrator.ts`, `server/ai/trace.ts` | agent-ops (AOPS-ORCH-006 four-step pipeline, AOPS-FAIL-008, AOPS-OBS-007) |
+| `tests/integration/orchestrator.test.ts`, `tests/unit/ai-config.test.ts`, `tests/unit/ai-trace.test.ts`, `tests/unit/ai-client.test.ts`, `tests/integration/tools.test.ts` | agent-ops (AOPS-ORCH-002..004, AOPS-ORCH-006, AOPS-FAIL-007, AOPS-FAIL-008, AOPS-OBS-002, AOPS-OBS-007) |
+| `tests/unit/contracts.test.ts` | ai-account-brief (contracts), agent-ops (AOPS-ORCH-002), dev-agents (DEVA-HAND-004) |
+| `server/ai/config.ts`, `server/ai/client.ts`, `server/ai/trace.ts` (gateway route), `server/ai/orchestrator.ts` (route on spans), `tests/unit/ai-gateway.test.ts` | agent-ops (AOPS-ROUTE-001..008), security (SEC-SUPPLY-005); AOPS-T12, CR-20261123-1 |
+| `.claude/hooks/gates_on_stop.py` | dev-agents (DEVA-GATE-002: related tests only, CR-20261121-1) |
+| `server/ai/steps/retriever.ts` | ai-account-brief (retriever code step, `code:retriever`) |
+| `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/*.v1.md`, `tests/integration/analyst-writer.test.ts`, `tests/integration/analyst-writer.live.test.ts` | ai-account-brief (AIB-CITE-002, AIB-FAITH-001..003, AIB-FMT-001; agent specs AGENT-ANALYST, AGENT-WRITER) |
+| `server/ai/steps/guard.ts`, `tests/unit/ai-guard.test.ts` | ai-account-brief (AIB-CITE-002, AIB-CITE-003, AIB-CITE-004, AIB-SAFE-002, AIB-FMT-002) |
+| `server/ai/routes.ts`, `server/workbook.ts` (mounts `/api/ai`), `tests/integration/ai-routes.test.ts`, `tests/integration/harness.ts` | ai-account-brief (AIB-API-001..004, AIB-GEN-022); agent-ops (AOPS-FAIL-007, AOPS-REC-002) |
+| `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts`, `src/components/customers/AiDraftBanner.tsx`, `src/components/customers/CustomerDetails.tsx`, `src/components/customers/SummaryDialog.tsx`, `src/pages/Customers.tsx`, `tests/component/AiBrief.test.tsx`, `tests/component/Customers.test.tsx` | ai-account-brief (AIB-GEN-004, -008, -011, -012, -015, -017..022, AIB-HUMAN-003, -005..007, -009..012, AIB-CITE-004, AIB-API-004) |
+| `evals/**`, `tests/unit/eval-graders.test.ts`, `tests/integration/eval-harness.test.ts` | ai-evaluation (EVAL-DATA-001..005, EVAL-CODE-001..006, EVAL-GATE-003..005, EVAL-EXP-003); agent-ops (AOPS-ROUTE-008) |
 
 ## 3. Shared tasks (one piece of work, several specs)
 Do these once and mark every linked task ✅ together.
@@ -92,8 +104,10 @@ A11Y-T04 ──► A11Y-T05
 SUM-T09 (✅) ──► AIB-T07 (an AI draft must be savable)
 LAY-T09 + LAY-T11 + LAY-T12 + SUM-T13 (summary dialog) ──► AIB-T10, AIB-T07 ──► AIB-T09
 AOPS-T01 ──► AIB-T03 ──► AOPS-T04 ;  AOPS-T01 ──► AIB-T05 ──► AIB-T06 ──► AIB-T10 ──► AIB-T07
-AIB-T03 ──► EVAL-T04 ──► EVAL-T05 ──► EVAL-T06 ──► EVAL-T07 (ADR-0007)
+AOPS-T01 ──► AOPS-T12 (gateway mode) ──► AIB-T03 live check ;  AOPS-T12 ──► EVAL-T04, AOPS-T10 (gateway route, bulk opt-in)
+AIB-T03 ──► EVAL-T04 ──► EVAL-T06 ──► EVAL-T07 (ADR-0007)
+                 └──► EVAL-T11 (judge) ──► EVAL-T12 (κ calibration) ──► EVAL-T06 report
 AOPS-T02 ──► MCP-T02
-QA-T07 ──► EVAL-T09 (G7 in CI), DEVA-T12 (headless review)
+QA-T07 ──► EVAL-T09 (G7 in CI)
 DEVA-T05 + DEVA-T09 ──► DEVA-T11 (first hand-offs)
 ```

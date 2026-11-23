@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState } from "react";
-import { FileText } from "lucide-react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TopBar } from "@/components/customers/TopBar";
 import { SearchBox } from "@/components/customers/SearchBox";
@@ -7,6 +7,7 @@ import { SummaryDialog } from "@/components/customers/SummaryDialog";
 import { EventsPanel, UseCasesPanel } from "@/components/customers/ParentActivity";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { useCustomers } from "@/hooks/useCustomers";
+import { useAutoBrief } from "@/hooks/useAiBrief";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 // Wider hit area around the 1px divider, with a grip that brightens on hover/drag.
@@ -40,6 +41,21 @@ const Customers = () => {
     setSelected(null);
     setSummaryOpen(false);
   };
+  // The AI brief belongs to the selected customer, not to the dialog: closing the dialog keeps the run and the draft
+  // (AIB-HUMAN-010); a customer change or a cleared selection cancels the run (AIB-GEN-008). AIB-T10.
+  const customerId = selected?.id == null ? null : Number(selected.id);
+  const summaryEmpty = !(typeof selected?.executive_summary === "string" && selected.executive_summary.trim());
+  const brief = useAutoBrief(customerId, { summaryEmpty, open: summaryOpen });
+  // AIB-HUMAN-011: one polite announcement when a draft becomes ready while the dialog is closed; the focus never moves.
+  const [announcement, setAnnouncement] = useState("");
+  const wasRunning = useRef(false);
+  useEffect(() => {
+    if (wasRunning.current && brief.draftReady && !summaryOpen) setAnnouncement("AI draft ready — not saved");
+    if (summaryOpen || customerId == null) setAnnouncement("");
+    wasRunning.current = brief.running;
+  }, [brief.running, brief.draftReady, summaryOpen, customerId]);
+  const indicatorId = useId();
+  const indicator = brief.running ? "AI is drafting the summary…" : brief.draftReady ? "AI draft ready — not saved" : "";
   const desktop = useMediaQuery("(min-width: 1024px)");
   const errorMessage = error ? (error as Error).message : undefined;
 
@@ -63,6 +79,9 @@ const Customers = () => {
         />
       </div>
 
+      <span className="sr-only" aria-live="polite">
+        {announcement}
+      </span>
       <TopBar
         selectedLabel={
           selected
@@ -80,11 +99,25 @@ const Customers = () => {
               variant="ghost"
               size="sm"
               aria-label="Executive summary"
-              className="h-7 shrink-0 gap-1.5 px-2 text-xs"
+              aria-describedby={indicator ? indicatorId : undefined}
+              title={indicator || undefined}
+              className="relative h-7 shrink-0 gap-1.5 px-2 text-xs"
               onClick={() => setSummaryOpen(true)}
             >
-              <FileText className="h-3.5 w-3.5" aria-hidden />
+              {brief.running ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+              ) : (
+                <FileText className="h-3.5 w-3.5" aria-hidden />
+              )}
               <span className="hidden sm:inline">Executive summary</span>
+              {brief.draftReady && (
+                <span aria-hidden data-testid="ai-draft-badge" className="absolute right-0.5 top-0.5 h-2 w-2 rounded-full bg-amber-500 ring-2 ring-background" />
+              )}
+              {indicator && (
+                <span id={indicatorId} className="sr-only">
+                  {indicator}
+                </span>
+              )}
             </Button>
           ) : undefined
         }
@@ -124,6 +157,7 @@ const Customers = () => {
                 open={summaryOpen}
                 onOpenChange={setSummaryOpen}
                 returnFocusRef={summaryButtonRef}
+                ai={brief}
               />
             );
             if (!desktop) {

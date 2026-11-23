@@ -1,7 +1,8 @@
 # Task hand-offs
 
-One file per task delivered by a development agent: `spec/handoffs/<TASK-ID>.md`, written by the
-[implementer](../agents/implementer.md) and completed by the [reviewer](../agents/reviewer.md) (DEVA-HAND-001..003).
+One file per delivered task: `spec/handoffs/<TASK-ID>.md`. Since CR-20261121-1 the main session writes it
+(`agent: session`) and records the review verdict (`reviewer: session`, or `human` when the owner reviews)
+(DEVA-HAND-002..004). Older files name the retired implementer and reviewer agents ([roster](../agents/README.md#retired-agents)).
 It is the audit trail of what an agent promised, did and proved for each task.
 
 - Template: [templates/handoff.md](../templates/handoff.md) · contract: [task-handoff.v1](../contracts/task-handoff.v1.schema.json).

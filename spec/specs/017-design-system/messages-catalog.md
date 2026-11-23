@@ -80,8 +80,8 @@ the first 6 characters of the run ID (AOPS-OBS-005).
 |---|---|---|---|
 | ~~AI available~~ | ~~Summary header button~~ | ~~Draft with AI~~ | Retired 2026-11-20 (CR-20261120-1; AIB-GEN-002 Deprecated), replaced by "Regenerate with AI" |
 | AI enabled | Summary dialog header button | Regenerate with AI | AIB-GEN-017 |
-| Automatic draft running | Summary dialog body, above the progress | No executive summary yet. Drafting one with AI… | AIB-GEN-016 |
-| Run progress | Summary dialog, `aria-live`, with [Cancel] | Reading records… · Analysing… · Writing… · Checking (revision n)… | AIB-GEN-018 |
+| Automatic draft running | Summary dialog body, above the progress | No executive summary yet. Drafting one with AI… | AIB-GEN-021 |
+| Run progress | Summary dialog, `aria-live`, with [Cancel] | Reading records… · Analysing… · Writing… · Checking… (the revision number was dropped with the revision loop, CR-20261121-1) | AIB-GEN-018 |
 | Unsaved edits | Confirm dialog | Replace your unsaved changes with an AI draft? [Replace] [Keep editing] | AIB-GEN-011 |
 | Run failed | Summary dialog, inline, with [Try again] | Could not draft the summary: <reason> (run <id>) | AIB-GEN-004 |
 | Breaker open | *Regenerate with AI* tooltip | AI is temporarily unavailable. Try again in a few minutes. | AIB-GEN-012 |
@@ -91,11 +91,21 @@ the first 6 characters of the run ID (AOPS-OBS-005).
 | ~~Draft waiting, band collapsed~~ | ~~Band header badge~~ | ~~AI draft — not saved~~ | Retired 2026-11-20 (CR-20261120-2; AIB-HUMAN-008 Deprecated), replaced by the two reopen-button rows below |
 | Run in progress, dialog closed | Reopen button indicator: title and accessible description | AI is drafting the summary… | AIB-HUMAN-011 |
 | Draft waiting, dialog closed | Reopen button badge: title, accessible description and polite live announcement | AI draft ready — not saved | AIB-HUMAN-011 |
-| Unverified draft | Dialog and editor banner + list | Unverified draft: check the points below before saving | AIB-HUMAN-002 |
+| Unverified draft | Dialog and editor banner + list | Unverified draft: check the points below before saving | AIB-HUMAN-012 |
 | Server: AI off | API 503 | AI is not enabled | AIB-API-001 |
 | Server: refusal | Run error reason | The model declined this request | AOPS-FAIL-004 |
 | Server: budget | Run error reason | Budget exceeded | AOPS-BUDG-001 |
 | Server: final check | Run error reason | Draft did not pass the final check | AIB-SAFE-002 |
+| Server: model or workbook unavailable | Run error reason | AI is unavailable right now | AIB-API-003 |
+| Server: any other run failure | Run error reason | Something went wrong while drafting | AIB-API-003 |
+| Server: breaker open | API 503 | AI is temporarily unavailable. Try again in a few minutes. | AIB-API-001 |
+| Server: unknown customer | API 404 | Customer not found | AIB-API-001 |
+| Server: invalid request | API 400 | customerId must be a whole number | AIB-API-001 |
+| Server: unknown run | API 404 | Run not found | AIB-API-003 |
+| Server: unknown AI route | API 404 | Unknown AI request | AIB-API-003 |
+| Uncited factual sentence | Unverified-draft list | <Section>, sentence <n>: a factual statement has no citation. | AIB-CITE-003 |
+| Unknown citation | Unverified-draft list | <Section>, sentence <n>: cites <fact ID>, which is not in this customer's records. | AIB-CITE-003 |
+| Draft over the length budget | Unverified-draft list | The draft had <n> words; sentences after the 350-word limit were removed. | AIB-FMT-002 |
 
 Saving an AI draft uses the summary messages above: toast "Executive summary updated", inline "Could not save: <message>".
 

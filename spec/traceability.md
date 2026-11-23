@@ -25,7 +25,7 @@
 | security | SEC | `src/lib/html.ts`, `src/lib/csv.ts`, `vite.config.ts`, `package.json` |
 | performance-reliability | PERF/REL/COMP/DT | cross-cutting, `package.json` |
 | quality | QA | `eslint.config.js`, `tsconfig*.json`, `package.json` (scripts) |
-| ai-account-brief | AIB | `server/ai/contracts.ts`, `server/ai/steps/retriever.ts`, `server/ai/tools.ts` (redaction, field builders), `server/ai/steps/{analyst,writer,llm}.ts`, `server/ai/prompts/{analyst,writer}.v1.md`, `server/ai/steps/guard.ts`, `server/ai/routes.ts` · planned: `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`, called from `Customers.tsx`), `CustomerDetails.tsx` (summary dialog content), `AiDraftBanner.tsx` · agents: `spec/agents/{analyst,writer}.md` · contracts: `spec/contracts/*.v1.schema.json` |
+| ai-account-brief | AIB | `server/ai/contracts.ts`, `server/ai/steps/retriever.ts`, `server/ai/tools.ts` (redaction, field builders), `server/ai/steps/{analyst,writer,llm}.ts`, `server/ai/prompts/{analyst,writer}.v1.md`, `server/ai/steps/guard.ts`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts`, `src/components/customers/AiDraftBanner.tsx` · planned: `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`, called from `Customers.tsx`), `CustomerDetails.tsx` (summary dialog content), `AiDraftBanner.tsx` · agents: `spec/agents/{analyst,writer}.md` · contracts: `spec/contracts/*.v1.schema.json` |
 | ai-evaluation | EVAL | planned: `evals/**` (deterministic graders; eval-only judge AGENT-EVAL-JUDGE since CR-20261121-2) |
 | agent-ops | AOPS | `server/ai/{config,client,orchestrator,trace,tools}.ts`, `server/ai/contracts.ts` (hand-off validation) · planned: `server/ai/resilience.ts`, `src/pages/AiRuns.tsx`, `docs/ai-runbook.md`; gateway route in `server/ai/{config,client,trace,orchestrator}.ts` (AOPS-T12, CR-20261123-1) · code steps, no agent spec (CR-20261121-1) |
 | mcp-tooling | MCP | planned: `mcp/workbook-mcp/**`, `.mcp.json` |
@@ -70,6 +70,7 @@
 | `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/*.v1.md`, `tests/integration/analyst-writer.test.ts`, `tests/integration/analyst-writer.live.test.ts` | ai-account-brief (AIB-CITE-002, AIB-FAITH-001..003, AIB-FMT-001; agent specs AGENT-ANALYST, AGENT-WRITER) |
 | `server/ai/steps/guard.ts`, `tests/unit/ai-guard.test.ts` | ai-account-brief (AIB-CITE-002, AIB-CITE-003, AIB-CITE-004, AIB-SAFE-002, AIB-FMT-002) |
 | `server/ai/routes.ts`, `server/workbook.ts` (mounts `/api/ai`), `tests/integration/ai-routes.test.ts`, `tests/integration/harness.ts` | ai-account-brief (AIB-API-001..004, AIB-GEN-022); agent-ops (AOPS-FAIL-007, AOPS-REC-002) |
+| `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts`, `src/components/customers/AiDraftBanner.tsx`, `src/components/customers/CustomerDetails.tsx`, `src/components/customers/SummaryDialog.tsx`, `src/pages/Customers.tsx`, `tests/component/AiBrief.test.tsx`, `tests/component/Customers.test.tsx` | ai-account-brief (AIB-GEN-004, -008, -011, -012, -015, -017..022, AIB-HUMAN-003, -005..007, -009..012, AIB-CITE-004, AIB-API-004) |
 
 ## 3. Shared tasks (one piece of work, several specs)
 Do these once and mark every linked task ✅ together.

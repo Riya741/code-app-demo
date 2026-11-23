@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CustomerDetails, type SummaryState } from "@/components/customers/CustomerDetails";
+import type { BriefController } from "@/hooks/useAiBrief";
 
 const IDLE: SummaryState = { editing: false, dirty: false, saving: false };
 
@@ -39,12 +40,15 @@ export function SummaryDialog({
   open,
   onOpenChange,
   returnFocusRef,
+  ai,
 }: {
   row: Record<string, unknown>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   /** The reopen button; it gets the focus when the dialog closes, however it was opened (LAY-DLG-006). */
   returnFocusRef: RefObject<HTMLElement>;
+  /** The page's AI brief (AIB-T07); it lives in the page, so closing the dialog keeps the run and the draft (AIB-HUMAN-010). */
+  ai?: BriefController;
 }) {
   const titleId = useId();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -107,6 +111,7 @@ export function SummaryDialog({
             className={PANEL_CLASS}
             onStateChange={trackState}
             onSaved={() => onOpenChange(false)}
+            ai={ai}
           />
         </DialogContent>
       </Dialog>

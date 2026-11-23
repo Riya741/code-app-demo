@@ -81,7 +81,7 @@ the first 6 characters of the run ID (AOPS-OBS-005).
 | ~~AI available~~ | ~~Summary header button~~ | ~~Draft with AI~~ | Retired 2026-11-20 (CR-20261120-1; AIB-GEN-002 Deprecated), replaced by "Regenerate with AI" |
 | AI enabled | Summary dialog header button | Regenerate with AI | AIB-GEN-017 |
 | Automatic draft running | Summary dialog body, above the progress | No executive summary yet. Drafting one with AI… | AIB-GEN-021 |
-| Run progress | Summary dialog, `aria-live`, with [Cancel] | Reading records… · Analysing… · Writing… · Checking (revision n)… | AIB-GEN-018 |
+| Run progress | Summary dialog, `aria-live`, with [Cancel] | Reading records… · Analysing… · Writing… · Checking… (the revision number was dropped with the revision loop, CR-20261121-1) | AIB-GEN-018 |
 | Unsaved edits | Confirm dialog | Replace your unsaved changes with an AI draft? [Replace] [Keep editing] | AIB-GEN-011 |
 | Run failed | Summary dialog, inline, with [Try again] | Could not draft the summary: <reason> (run <id>) | AIB-GEN-004 |
 | Breaker open | *Regenerate with AI* tooltip | AI is temporarily unavailable. Try again in a few minutes. | AIB-GEN-012 |

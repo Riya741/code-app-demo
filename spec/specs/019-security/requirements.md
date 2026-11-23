@@ -76,5 +76,6 @@ authentication. This spec covers content safety, exposure and data handling.
 - **Source:** `package.json`
 
 #### SEC-SUPPLY-005: Model keys stay in the environment and go only to their own host
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/config.ts`, `server/ai/client.ts`, `server/ai/trace.ts`
 - **Criterion:** THE optional model keys `ANTHROPIC_API_KEY` (direct route) and `PORTKEY_API_KEY` (gateway route, CR-20261123-1) SHALL be read only from the server's environment, never from a file, SHALL NOT be committed, logged, traced, written to a checkpoint or sent to the browser, and each SHALL be sent only to its own route's host (AOPS-ROUTE-005).

@@ -1,7 +1,7 @@
 # Tasks — AI Account Brief
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 10 tasks — ✅ 2 · 🔄 1 · ⬜ 7 · ⛔ 0
+**Summary:** 10 tasks — ✅ 3 · 🔄 0 · ⬜ 7 · ⛔ 0
 
 Build order and dependencies: [024-agent-ops tasks](../024-agent-ops/tasks.md) build the orchestrator these steps run in.
 
@@ -11,8 +11,9 @@ Build order and dependencies: [024-agent-ops tasks](../024-agent-ops/tasks.md) b
 - [x] **AIB-T02** Retriever step: fact sheet with fact IDs, field allow-list, redaction, data wrapping.
   - Status: ✅ Done · Covers: AIB-CITE-001, AIB-SAFE-001, AIB-SAFE-003, AIB-FAITH-003 · Files: `server/ai/steps/retriever.ts`, `server/ai/tools.ts` (redaction, field builders), `tests/integration/retriever.test.ts`, `tests/unit/redaction.test.ts`, `tests/integration/tools.test.ts` (one AOPS-ORCH-005 test for the `result_too_large` backstop, from the AOPS-T02 review)
   - Verified 2026-11-21: 18 retriever, 27 redaction and 16 tools tests (fact IDs from the workbook `id`, allow-listed fields only, every string field redacted and capped with an exact tally, planted instructions only inside the escaped data block, sparse and empty customers, output valid against fact-sheet.v1, workbook byte-identical, linear-time patterns on 32 767-character cells); G1, G3, G4 (full suite: 24 files, 300 passed + 1 expected fail; the one failure in that run (a hard-coded agent version after the retriever spec bump) fixed and re-run) pass; review failed once (event `stage` and lookup names sent unredacted), passed on the second round ([hand-off](../../handoffs/AIB-T02.md)). Retriever agent spec bumped to 1.0.1.
-- [ ] **AIB-T03** Analyst and Writer steps with prompts v1 (headers cite their agent specs).
-  - Status: 🔄 In progress · Covers: AIB-CITE-002, AIB-FAITH-001, AIB-FAITH-002, AIB-FMT-001 · Files: `server/ai/steps/`, `server/ai/prompts/` · Depends on: AOPS-T01; the live check also on AOPS-T12 · Re-scoped by CR-20261121-1 (no Critic; citation checks moved to AIB-T04)
+- [x] **AIB-T03** Analyst and Writer steps with prompts v1 (headers cite their agent specs).
+  - Status: ✅ Done · Covers: AIB-CITE-002, AIB-FAITH-001, AIB-FAITH-002, AIB-FMT-001 · Files: `server/ai/steps/`, `server/ai/prompts/` · Depends on: AOPS-T01; the live check also on AOPS-T12 · Re-scoped by CR-20261121-1 (no Critic; citation checks moved to AIB-T04)
+  - Verified 2026-11-23: 28 integration tests in `tests/integration/analyst-writer.test.ts` (fake model on the fixture; prompt headers, model schemas against the contracts, fact IDs from the sheet, section order, no_activity, tool loop limits, stop reasons) and one live run through the Perficient Portkey gateway (`analyst-writer.live.test.ts`, CR-20261123-1); G1, G3, G4 (full suite: 26 files, 340 passed + 1 expected fail + 1 skipped) pass; review pass ([hand-off](../../handoffs/AIB-T03.md)).
   - Step: live check through gateway mode (CR-20261123-1). The owner has no personal Anthropic key, so the one live run waits for AOPS-T12. Then change the skip condition of `tests/integration/analyst-writer.live.test.ts` to `AI_LIVE_CHECK=1` plus the selected route's key (`hasCredentials` from `loadAiConfig`, not `ANTHROPIC_API_KEY` alone), and run it once with `AI_GATEWAY=portkey`, `AI_GATEWAY_URL`, `AI_GATEWAY_MODEL_PREFIX` and `PORTKEY_API_KEY` set (two model calls, fictional fixture). Record in the hand-off that the trace shows `route: gateway`. Everything else in this task is done with the fake model; the task stays 🔄 until this check has run.
 - [ ] **AIB-T04** Guard step: citation checks that set `unverified` with issues, HTML from sentences, citation markers, sanitise, word budget, final schema check.
   - Status: ⬜ Not started · Covers: AIB-SAFE-002, AIB-FMT-002, AIB-CITE-004, AIB-CITE-003 · Files: `server/ai/steps/guard.ts` · Citation checks added by CR-20261121-1 (were the Critic's)

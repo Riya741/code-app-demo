@@ -81,12 +81,34 @@ export type FaultRates = Readonly<Partial<Record<FaultKind, number>>>;
 export const MODEL_MODES = ["live", "replay"] as const;
 export type ModelMode = (typeof MODEL_MODES)[number];
 
+/** `AI_GATEWAY` values (AOPS-ROUTE-001, CR-20261123-1); `none` is the direct route. */
+export const GATEWAYS = ["none", "portkey"] as const;
+export type Route = "direct" | "gateway";
+
+/** The gateway route's settings (AOPS-ROUTE-002). Holds no key. */
+export interface GatewayConfig {
+  readonly kind: "portkey";
+  /** `AI_GATEWAY_URL`: the gateway root; the SDK appends `/v1/messages`. */
+  readonly url: string;
+  readonly host: string;
+  /** `AI_GATEWAY_MODEL_PREFIX`, e.g. `@aws-bedrock-use2/us.anthropic.`; added to the model on the wire only. */
+  readonly modelPrefix: string;
+  /** The provider slug from the prefix, e.g. `@aws-bedrock-use2` (traced, AOPS-ROUTE-006). */
+  readonly provider: string;
+  /** `AI_GATEWAY_ALLOW_BULK === "1"` (AOPS-ROUTE-008). */
+  readonly allowBulk: boolean;
+}
+
 export interface AiConfig {
   /** `AI_ENABLED === "true"`. */
   readonly enabled: boolean;
-  /** Whether `ANTHROPIC_API_KEY` is set. The key itself is never stored here. */
+  /** Whether the selected route's key is set (`ANTHROPIC_API_KEY` direct, `PORTKEY_API_KEY` gateway). Never the key. */
   readonly hasCredentials: boolean;
   readonly modelMode: ModelMode;
+  /** `direct` unless `AI_GATEWAY=portkey` (AOPS-ROUTE-001). */
+  readonly route: Route;
+  /** Set only on the gateway route. */
+  readonly gateway: GatewayConfig | null;
   /** Settings per LLM step: agent-spec defaults, overridden by `AI_MODEL_<AGENT>` etc. */
   readonly steps: Readonly<Partial<Record<StepName, StepSettings>>>;
   readonly limits: RunLimits;
@@ -194,6 +216,60 @@ export function isInside(child: string, parent: string): boolean {
   return !outside;
 }
 
+const GATEWAY_PREFIX = /^@[a-z0-9][a-z0-9-]{0,62}\/([a-z0-9-]{1,32}\.){0,4}$/;
+
+/**
+ * The gateway settings (AOPS-ROUTE-002); read only when `AI_GATEWAY=portkey`. Errors name the variable and the rule.
+ * `null` with errors recorded when a setting is missing or invalid (AI then stays disabled).
+ */
+function parseGateway(r: Reader): GatewayConfig | null {
+  const before = r.errors.length;
+  const rawUrl = r.raw("AI_GATEWAY_URL");
+  let url: URL | null = null;
+  try {
+    url = rawUrl ? new URL(rawUrl) : null;
+  } catch {
+    url = null;
+  }
+  const host = url?.hostname.toLowerCase() ?? "";
+  const urlPath = url?.pathname.replace(/\/+$/, "") ?? "";
+  if (
+    !url ||
+    url.protocol !== "https:" ||
+    url.username !== "" ||
+    url.password !== "" ||
+    url.search !== "" ||
+    url.hash !== "" ||
+    /\/v1$/i.test(urlPath) ||
+    host === "anthropic.com" ||
+    host.endsWith(".anthropic.com")
+  ) {
+    r.errors.push("AI_GATEWAY_URL must be an https URL of the gateway root (no credentials, query, fragment or trailing /v1; not an anthropic.com host)");
+  }
+  const prefix = r.raw("AI_GATEWAY_MODEL_PREFIX");
+  if (!prefix || !GATEWAY_PREFIX.test(prefix)) {
+    r.errors.push("AI_GATEWAY_MODEL_PREFIX must look like @provider/ or @provider/vendor. (lower-case letters, digits, '-')");
+  }
+  if (r.errors.length > before || !url || !prefix) return null;
+  return Object.freeze({
+    kind: "portkey" as const,
+    url: `${url.origin}${urlPath}`,
+    host,
+    modelPrefix: prefix,
+    provider: prefix.slice(0, prefix.indexOf("/")),
+    allowBulk: r.raw("AI_GATEWAY_ALLOW_BULK") === "1",
+  });
+}
+
+/**
+ * AOPS-ROUTE-008: the refusal for a bulk command (eval harness, chaos run) on the gateway route without
+ * `AI_GATEWAY_ALLOW_BULK=1`, or `null` when it may run. Called before any model call; wired in EVAL-T04 and AOPS-T10.
+ */
+export function gatewayBulkRefusal(config: AiConfig): string | null {
+  if (config.route !== "gateway" || config.gateway?.allowBulk) return null;
+  return "Bulk model runs through the AI gateway need AI_GATEWAY_ALLOW_BULK=1 for this command.";
+}
+
 /** Parses the AI settings. Never throws; never reads a file; never keeps the API key. */
 export function loadAiConfig(env: Env = process.env, options: LoadOptions = {}): AiConfigResult {
   const r = new Reader(env);
@@ -229,13 +305,20 @@ export function loadAiConfig(env: Env = process.env, options: LoadOptions = {}):
   // Checkpoints hold workbook text; they must never land where git could pick them up (ai-data-policy §6).
   if (isInside(runsDir, projectDir)) r.errors.push("AI_RUNS_DIR must be outside the project folder");
 
+  const gateway = r.oneOf("AI_GATEWAY", GATEWAYS, "none") === "portkey" ? parseGateway(r) : null;
+  const route: Route = gateway ? "gateway" : "direct";
+  // Only the selected route's key is looked at (AOPS-ROUTE-004); its value is never kept.
+  const keyName = route === "gateway" ? "PORTKEY_API_KEY" : "ANTHROPIC_API_KEY";
+
   if (r.errors.length) return { ok: false, errors: [...new Set(r.errors)] };
   return {
     ok: true,
     config: Object.freeze({
       enabled: env.AI_ENABLED === "true",
-      hasCredentials: (env.ANTHROPIC_API_KEY ?? "").trim() !== "",
+      hasCredentials: (env[keyName] ?? "").trim() !== "",
       modelMode,
+      route,
+      gateway,
       steps: Object.freeze(steps),
       limits,
       faults,

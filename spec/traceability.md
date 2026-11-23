@@ -25,9 +25,9 @@
 | security | SEC | `src/lib/html.ts`, `src/lib/csv.ts`, `vite.config.ts`, `package.json` |
 | performance-reliability | PERF/REL/COMP/DT | cross-cutting, `package.json` |
 | quality | QA | `eslint.config.js`, `tsconfig*.json`, `package.json` (scripts) |
-| ai-account-brief | AIB | `server/ai/contracts.ts`, `server/ai/steps/retriever.ts`, `server/ai/tools.ts` (redaction, field builders) · planned: `server/ai/steps/{analyst,writer,guard}.ts`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`, called from `Customers.tsx`), `CustomerDetails.tsx` (summary dialog content), `AiDraftBanner.tsx` · agents: `spec/agents/{analyst,writer}.md` · contracts: `spec/contracts/*.v1.schema.json` |
+| ai-account-brief | AIB | `server/ai/contracts.ts`, `server/ai/steps/retriever.ts`, `server/ai/tools.ts` (redaction, field builders), `server/ai/steps/{analyst,writer,llm}.ts`, `server/ai/prompts/{analyst,writer}.v1.md` · planned: `server/ai/steps/guard.ts`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`, called from `Customers.tsx`), `CustomerDetails.tsx` (summary dialog content), `AiDraftBanner.tsx` · agents: `spec/agents/{analyst,writer}.md` · contracts: `spec/contracts/*.v1.schema.json` |
 | ai-evaluation | EVAL | planned: `evals/**` (deterministic graders; eval-only judge AGENT-EVAL-JUDGE since CR-20261121-2) |
-| agent-ops | AOPS | `server/ai/{config,client,orchestrator,trace,tools}.ts`, `server/ai/contracts.ts` (hand-off validation) · planned: `server/ai/resilience.ts`, `src/pages/AiRuns.tsx`, `docs/ai-runbook.md`; gateway route in `server/ai/{config,client,trace}.ts` (AOPS-T12, CR-20261123-1) · code steps, no agent spec (CR-20261121-1) |
+| agent-ops | AOPS | `server/ai/{config,client,orchestrator,trace,tools}.ts`, `server/ai/contracts.ts` (hand-off validation) · planned: `server/ai/resilience.ts`, `src/pages/AiRuns.tsx`, `docs/ai-runbook.md`; gateway route in `server/ai/{config,client,trace,orchestrator}.ts` (AOPS-T12, CR-20261123-1) · code steps, no agent spec (CR-20261121-1) |
 | mcp-tooling | MCP | planned: `mcp/workbook-mcp/**`, `.mcp.json` |
 | dev-agents | DEVA | `spec/scripts/spec_lint.py` (checks 10–13, retired agents and tasks), `spec/templates/{agent,handoff}.md`, `spec/agents/` (Analyst, Writer, Spec author; retired roster), `spec/contracts/`, `spec/handoffs/`, `.claude/agents/spec-author.md`, `.claude/hooks/*.py`, `.claude/skills/*/SKILL.md` |
 
@@ -64,9 +64,10 @@
 | `server/ai/config.ts`, `server/ai/client.ts`, `server/ai/orchestrator.ts`, `server/ai/trace.ts` | agent-ops (AOPS-ORCH-006 four-step pipeline, AOPS-FAIL-008, AOPS-OBS-007) |
 | `tests/integration/orchestrator.test.ts`, `tests/unit/ai-config.test.ts`, `tests/unit/ai-trace.test.ts`, `tests/unit/ai-client.test.ts`, `tests/integration/tools.test.ts` | agent-ops (AOPS-ORCH-002..004, AOPS-ORCH-006, AOPS-FAIL-007, AOPS-FAIL-008, AOPS-OBS-002, AOPS-OBS-007) |
 | `tests/unit/contracts.test.ts` | ai-account-brief (contracts), agent-ops (AOPS-ORCH-002), dev-agents (DEVA-HAND-004) |
-| `server/ai/config.ts`, `server/ai/client.ts`, `server/ai/trace.ts` (gateway route, planned) and `tests/integration/gateway.live.test.ts` (planned) | agent-ops (AOPS-ROUTE-001..008), security (SEC-SUPPLY-005); AOPS-T12, CR-20261123-1 |
+| `server/ai/config.ts`, `server/ai/client.ts`, `server/ai/trace.ts` (gateway route), `server/ai/orchestrator.ts` (route on spans), `tests/unit/ai-gateway.test.ts` | agent-ops (AOPS-ROUTE-001..008), security (SEC-SUPPLY-005); AOPS-T12, CR-20261123-1 |
 | `.claude/hooks/gates_on_stop.py` | dev-agents (DEVA-GATE-002: related tests only, CR-20261121-1) |
 | `server/ai/steps/retriever.ts` | ai-account-brief (retriever code step, `code:retriever`) |
+| `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/*.v1.md`, `tests/integration/analyst-writer.test.ts`, `tests/integration/analyst-writer.live.test.ts` | ai-account-brief (AIB-CITE-002, AIB-FAITH-001..003, AIB-FMT-001; agent specs AGENT-ANALYST, AGENT-WRITER) |
 
 ## 3. Shared tasks (one piece of work, several specs)
 Do these once and mark every linked task ✅ together.

@@ -62,16 +62,16 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | **Cross-cutting** | | | | | | | | | | | |
 | [017-design-system](specs/017-design-system/) | DS | 16 | 14 | 1 | 0 | 1 | 8 | 5 | 0 | 3 | 0 |
 | [018-accessibility](specs/018-accessibility/) | A11Y | 15 | 10 | 2 | 3 | 0 | 6 | 1 | 0 | 5 | 0 |
-| [019-security](specs/019-security/) | SEC | 10 | 6 | 1 | 1 | 2 | 6 | 3 | 0 | 3 | 0 |
+| [019-security](specs/019-security/) | SEC | 10 | 7 | 1 | 1 | 1 | 6 | 3 | 0 | 3 | 0 |
 | [020-performance-reliability](specs/020-performance-reliability/) | PERF/REL/COMP/DT | 23 | 16 | 4 | 1 | 2 | 7 | 2 | 0 | 5 | 0 |
 | [021-quality](specs/021-quality/) | QA | 15 | 12 | 0 | 0 | 3 | 11 | 6 | 0 | 5 | 0 |
 | **AI & agents** (CR-20261117-1) | | | | | | | | | | | |
-| [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 35 | 2 | 2 | 0 | 31 | 10 | 2 | 1 | 7 | 0 |
+| [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 35 | 3 | 5 | 0 | 27 | 10 | 3 | 0 | 7 | 0 |
 | [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 0 | 0 | 0 | 32 | 12 | 1 | 0 | 10 | 1 |
-| [024-agent-ops](specs/024-agent-ops/) | AOPS | 35 | 8 | 1 | 0 | 26 | 12 | 3 | 0 | 9 | 0 |
+| [024-agent-ops](specs/024-agent-ops/) | AOPS | 35 | 15 | 2 | 0 | 18 | 12 | 4 | 0 | 8 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
 | [026-dev-agents](specs/026-dev-agents/) | DEVA | 17 | 16 | 0 | 0 | 1 | 15 | 14 | 0 | 1 | 0 |
-| **Total** | | **528** | **376** | **23** | **10** | **119** | **243** | **149** | **1** | **88** | **5** |
+| **Total** | | **528** | **385** | **27** | **10** | **106** | **243** | **151** | **0** | **87** | **5** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,

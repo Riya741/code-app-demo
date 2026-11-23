@@ -317,7 +317,10 @@ export async function runBrief(deps: OrchestratorDeps, request: RunRequest): Pro
     }),
   };
   // The orchestrator is code, not an agent: the run span carries no agent ID (AOPS-OBS-007).
-  const runSpan = tracer.start("run", { limits: deps.config.limits, retries: 0 });
+  // AOPS-ROUTE-006: where model calls go, on the run span and every llm_call span (host and provider only, never a key).
+  const gw = deps.config.gateway;
+  const routeFields = { route: deps.config.route ?? "direct", ...(gw ? { gatewayHost: gw.host, gatewayProvider: gw.provider } : {}) };
+  const runSpan = tracer.start("run", { limits: deps.config.limits, retries: 0, ...routeFields });
 
   /** Runs one step: helpers, then validation of its output (AOPS-ORCH-002). Throws `StepFailure`. */
   async function runStep<N extends StepName>(at: Position, input: StepInputs[N]): Promise<StepOutputs[N]> {
@@ -375,7 +378,7 @@ export async function runBrief(deps: OrchestratorDeps, request: RunRequest): Pro
           max_tokens: settings.maxTokens,
           output_config: { ...(req.output_config ?? {}), effort: settings.effort },
         };
-        const callSpan = tracer.start("llm_call", { step, agent, agentVersion, promptVersion, revision: at.revision, ...settingFields }, span);
+        const callSpan = tracer.start("llm_call", { step, agent, agentVersion, promptVersion, revision: at.revision, ...settingFields, ...routeFields }, span);
         // Resilience (retry, timeout, stop reasons, faults, breaker: AOPS-T03, AOPS-T06) wraps this call.
         let response: ModelResponse;
         try {

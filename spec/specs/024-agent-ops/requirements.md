@@ -183,35 +183,44 @@ the pipeline to reach the same model through that gateway when I explicitly turn
 live checks I need without the gateway becoming the normal path.
 
 #### AOPS-ROUTE-001: Direct route by default
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/config.ts`
 - **Criterion:** THE server SHALL call the model at `https://api.anthropic.com` (the direct route) unless `AI_GATEWAY` is exactly `portkey`; WHEN `AI_GATEWAY` is unset, blank or `none` THE direct route SHALL be used, and IF it has any other value THEN `loadAiConfig` SHALL return an error naming the variable and the rule, and AI SHALL stay disabled.
 
 #### AOPS-ROUTE-002: Gateway settings validated
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/config.ts` (`parseGateway`)
 - **Criterion:** WHERE `AI_GATEWAY=portkey` THE config SHALL require `AI_GATEWAY_URL`, an `https` URL with no user info, query or fragment, a path that does not end in `/v1`, and a host that is not `anthropic.com` or one of its subdomains, and `AI_GATEWAY_MODEL_PREFIX` matching `^@[a-z0-9][a-z0-9-]{0,62}/([a-z0-9-]{1,32}\.){0,4}$`; IF either is missing or invalid THEN `loadAiConfig` SHALL return an error naming the variable and the rule, never the value, and AI SHALL stay disabled; on the direct route these variables SHALL NOT be read.
 
 #### AOPS-ROUTE-003: Same model through the gateway
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/client.ts` (`GatewayModelClient`)
 - **Criterion:** WHILE the gateway route is selected THE client SHALL send every model call with the model `AI_GATEWAY_MODEL_PREFIX` followed by the step's configured model ID, while the config, budgets, cost and traces keep the plain model ID from the agent spec or `AI_MODEL_<AGENT>`; IF a response's `model` does not end with the plain model ID THEN THE call SHALL fail as a model error and its content SHALL NOT be used.
 
 #### AOPS-ROUTE-004: Credentials of the selected route
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/config.ts`, `server/ai/client.ts`
 - **Criterion:** THE gateway key SHALL be read only from the environment variable `PORTKEY_API_KEY` and the direct key only from `ANTHROPIC_API_KEY`; `hasCredentials` SHALL reflect only the selected route's key, and WHILE the model mode is live and that key is missing, `aiStatus` SHALL report `no_credentials` and no model client SHALL be created (AOPS-FAIL-007).
 
 #### AOPS-ROUTE-005: Each key only to its own host
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/client.ts`
 - **Criterion:** WHILE the gateway route is selected THE SDK SHALL be constructed with `baseURL` set to `AI_GATEWAY_URL`, the Portkey key only in an explicit gateway request header, and `apiKey` and `authToken` set to `null`, so that no Anthropic credential is read or sent; WHILE the direct route is selected `PORTKEY_API_KEY` SHALL NOT be read or sent; on both routes `ANTHROPIC_BASE_URL` SHALL be ignored and `maxRetries: 0`, `logLevel: "off"` and `openTelemetry: false` SHALL stay set.
+- **Note:** 2026-11-23, AOPS-T12 build: the SDK falls back to its default credential chain (Anthropic profiles on disk) when `apiKey` and `authToken` are both `null`, which would break this criterion. The gateway route therefore passes the Portkey key as the SDK's one explicit credential, `authToken`, sent as `Authorization: Bearer` to the gateway host only (the header the gateway's own OpenAI-style example uses); `apiKey` stays `null`. Intent unchanged: no Anthropic credential is read or sent.
 
 #### AOPS-ROUTE-006: Route recorded in the trace
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/orchestrator.ts`, `server/ai/trace.ts`
 - **Criterion:** THE run span and every `llm_call` span SHALL record the route (`direct` or `gateway`) and, on the gateway route, the gateway host from `AI_GATEWAY_URL` and the provider slug from `AI_GATEWAY_MODEL_PREFIX` (e.g. `@aws-bedrock-use2`); no span, log or error SHALL contain a key or a request header value (Article XII.7, AOPS-OBS-002).
 
 #### AOPS-ROUTE-007: Tests never call the gateway
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `tests/unit/ai-gateway.test.ts`, `tests/integration/analyst-writer.live.test.ts`
 - **Criterion:** `npm test` SHALL make no call to the gateway or to the Anthropic API: tests SHALL exercise the gateway route only through an injected fake SDK, and a live check that may reach the gateway SHALL be skipped unless `AI_LIVE_CHECK=1` and the selected route's key are set, and SHALL make at most the model calls of one run.
 
 #### AOPS-ROUTE-008: Separate opt-in for bulk runs through the gateway
-- **Status:** 📝 Planned
+- **Status:** ⚠️ Partial — `gatewayBulkRefusal` is built and tested; wiring it into the eval harness (EVAL-T04) and the chaos run (AOPS-T10) is pending
+- **Source:** `server/ai/config.ts`
 - **Criterion:** WHILE the gateway route is selected THE eval harness (every command that calls a model live) and the chaos run (AOPS-TEST-003) SHALL refuse to start, before any model call, unless `AI_GATEWAY_ALLOW_BULK` is exactly `1`, and the refusal SHALL name that variable; replay runs and `npm run ai:metrics`, which make no model call, SHALL need no opt-in.
 
 ## Out of scope

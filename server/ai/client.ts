@@ -74,7 +74,14 @@ export const DEFAULT_BASE_URL = "https://api.anthropic.com";
  * Not closable by an option: `ANTHROPIC_CUSTOM_HEADERS` still adds headers (recorded in the AOPS-T01 hand-off).
  */
 export interface SdkOptions {
-  apiKey: string;
+  /** Direct route: the Anthropic key. Gateway route: `null`. */
+  apiKey: string | null;
+  /**
+   * Gateway route only: the Portkey key, sent as `Authorization: Bearer` to the gateway host (AOPS-ROUTE-005 as amended
+   * 2026-11-23: with both `apiKey` and `authToken` null the SDK falls back to its credential chain, which reads
+   * Anthropic profiles from disk; one explicit credential keeps the environment and files unread).
+   */
+  authToken?: string;
   baseURL: string;
   maxRetries: 0;
   logLevel: "off";
@@ -112,6 +119,33 @@ class LiveModelClient implements ModelClient {
   }
 }
 
+/** The gateway answered with another model than the one asked for (AOPS-ROUTE-003); the content is not used. */
+export class GatewayModelMismatchError extends Error {
+  constructor() {
+    super("The gateway answered with a different model");
+    this.name = "GatewayModelMismatchError";
+  }
+}
+
+/**
+ * The gateway route (AOPS-ROUTE-003): sends `prefix + model`, checks that the response's model ends with the plain
+ * model ID, and returns the response with the plain ID, so cost, budgets and traces keep the agent-spec model.
+ */
+class GatewayModelClient extends LiveModelClient {
+  constructor(
+    sdk: SdkLike,
+    private readonly prefix: string,
+  ) {
+    super(sdk);
+  }
+
+  override async create(params: ModelRequest, options: ModelCallOptions = {}): Promise<ModelResponse> {
+    const response = await super.create({ ...params, model: `${this.prefix}${params.model}` }, options);
+    if (typeof response.model !== "string" || !response.model.endsWith(params.model)) throw new GatewayModelMismatchError();
+    return { ...response, model: params.model };
+  }
+}
+
 export interface ClientDeps {
   /** Where `ANTHROPIC_API_KEY` is read from. Default: `process.env`. */
   readonly env?: Env;
@@ -128,10 +162,19 @@ export interface ClientDeps {
 export function createModelClient(result: AiConfigResult, deps: ClientDeps = {}): ModelClient | null {
   if (!aiStatus(result).enabled || !result.ok) return null;
   if (result.config.modelMode === "replay") return deps.replay ? deps.replay() : null;
-  const apiKey = (deps.env ?? process.env).ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return null;
+  const env = deps.env ?? process.env;
   const Sdk = deps.Sdk ?? (Anthropic as unknown as SdkConstructor);
-  return new LiveModelClient(new Sdk({ apiKey, baseURL: DEFAULT_BASE_URL, maxRetries: 0, logLevel: "off", openTelemetry: false }));
+  const hardening = { maxRetries: 0, logLevel: "off", openTelemetry: false } as const;
+  const gateway = result.config.gateway;
+  if (gateway) {
+    // Gateway route: only PORTKEY_API_KEY is read, and it goes only to the gateway host (AOPS-ROUTE-004/005).
+    const authToken = env.PORTKEY_API_KEY?.trim();
+    if (!authToken) return null;
+    return new GatewayModelClient(new Sdk({ apiKey: null, authToken, baseURL: gateway.url, ...hardening }), gateway.modelPrefix);
+  }
+  const apiKey = env.ANTHROPIC_API_KEY?.trim();
+  if (!apiKey) return null;
+  return new LiveModelClient(new Sdk({ apiKey, baseURL: DEFAULT_BASE_URL, ...hardening }));
 }
 
 /* ------------------------------------------------------------------------------------------- fake client */

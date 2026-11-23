@@ -135,7 +135,8 @@ trust it and check it quickly.
 - **Criterion:** THE fact sheet SHALL give every record a stable fact ID (`CU-<id>` customer, `UC-<id>` use case, `EV-<id>` event) built from the workbook `id`.
 
 #### AIB-CITE-002: Every factual sentence cites its records
-- **Status:** 📝 Planned
+- **Status:** ⚠️ Partial — every Analyst point cites fact IDs from the fact sheet (checked in code) and every Writer sentence carries `fact_ids`; the citation markers in the shown draft and the uncited-sentence check come with the Guard (AIB-T04)
+- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v1.md`
 - **Criterion:** THE draft SHALL mark every factual sentence with the fact IDs of the use cases or events it is based on.
 
 #### AIB-CITE-003: Invalid or missing citations fail verification
@@ -150,16 +151,18 @@ trust it and check it quickly.
 **User story:** As a CSS, I want the draft to say only what the records support, so that I never pass on an invented fact.
 
 #### AIB-FAITH-001: No invented entities
-- **Status:** 📝 Planned
+- **Status:** ⚠️ Partial — the Analyst sees only this customer's allow-listed data, the Writer only the insights, and both prompts forbid other names; measured by the eval graders (EVAL-T02)
+- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v1.md`
 - **Criterion:** THE draft SHALL NOT name any person, customer, subsidiary, department or solution that is not in the run's fact sheet.
 
 #### AIB-FAITH-002: Numbers, statuses and dates match
-- **Status:** 📝 Planned
+- **Status:** ⚠️ Partial — the fact sheet goes in unchanged (true counts, stored calendar days) and the prompts require them verbatim; measured by the eval graders (EVAL-T02)
+- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v1.md`
 - **Criterion:** Counts, statuses and dates stated in the draft SHALL match the source records (dates as the stored calendar day, DT-TIME-003).
 
 #### AIB-FAITH-003: Sparse or empty customers
-- **Status:** ⚠️ Partial — the fact sheet carries exactly the customer's records and true counts with nothing padded; the one-sentence draft behaviour needs AIB-T03 and the 023 eval
-- **Source:** `server/ai/steps/retriever.ts`
+- **Status:** ⚠️ Partial — the fact sheet carries exactly the customer's records; the Analyst step requires `no_activity` to match and allows at most one overview point without activity (AIB-T03); the draft behaviour is measured by the 023 eval
+- **Source:** `server/ai/steps/retriever.ts`, `server/ai/steps/analyst.ts`
 - **Criterion:** IF the customer has no active use cases and no events THEN THE draft SHALL say so in one sentence and SHALL NOT describe any activity; IF it has one or two records THEN THE draft SHALL NOT pad beyond them.
 
 ### AIB-R4 — Safe output
@@ -185,7 +188,8 @@ markup or obey text hidden in a note.
 **User story:** As a team lead, I want every brief in the same shape, so that account reviews read consistently.
 
 #### AIB-FMT-001: Fixed sections
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/steps/writer.ts` (four headings in order, checked), `server/ai/contracts.ts` (≥ 1 sentence per section), `server/ai/prompts/writer.v1.md`
 - **Criterion:** THE draft SHALL have the sections *Overview*, *Wins*, *Risks* and *Next steps*, in that order; a section with nothing to say SHALL contain one sentence saying so.
 
 #### AIB-FMT-002: Length budget

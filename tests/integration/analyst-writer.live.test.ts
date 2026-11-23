@@ -1,8 +1,10 @@
 // @vitest-environment node
 // One live check of the Analyst and Writer steps against the real API (task AIB-T03). Skipped unless both
-// AI_LIVE_CHECK=1 and ANTHROPIC_API_KEY are set, so `npm test` never calls the API or needs a key. Run it with:
+// AI_LIVE_CHECK=1 and the selected route's key are set, so `npm test` never calls a model or needs a key. Run it with:
 //
 //   $env:AI_LIVE_CHECK = "1"; npx vitest run tests/integration/analyst-writer.live.test.ts
+//   Gateway route (CR-20261123-1) also: AI_GATEWAY=portkey, AI_GATEWAY_URL=<gateway root, no /v1>,
+//   AI_GATEWAY_MODEL_PREFIX=@aws-bedrock-use2/us.anthropic. and PORTKEY_API_KEY in the environment.
 //
 // Uses the fictional 8-customer fixture only (ADR-0006) and the agent-spec defaults (claude-sonnet-5-5, effort medium):
 // two model calls, a few cents. The key is read by the client from the environment and never printed; traces go to a
@@ -21,7 +23,9 @@ import { writerStep } from "../../server/ai/steps/writer";
 import { eventsByParent, useCasesByParent as liveUseCases } from "../../server/workbook";
 import { ROOT, workbookApi } from "./harness";
 
-const live = process.env.AI_LIVE_CHECK === "1" && (process.env.ANTHROPIC_API_KEY ?? "").trim() !== "";
+// The selected route's key (AOPS-ROUTE-004, AOPS-ROUTE-007): PORTKEY_API_KEY when AI_GATEWAY=portkey, else ANTHROPIC_API_KEY.
+const routeKey = process.env.AI_GATEWAY === "portkey" ? process.env.PORTKEY_API_KEY : process.env.ANTHROPIC_API_KEY;
+const live = process.env.AI_LIVE_CHECK === "1" && (routeKey ?? "").trim() !== "";
 
 describe.skipIf(!live)("live check (AI_LIVE_CHECK=1)", () => {
   const api = workbookApi();

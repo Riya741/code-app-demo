@@ -107,6 +107,10 @@ export interface Span {
   resultChars?: number;
   errorCode?: string;
   errors?: string[];
+  /** AOPS-ROUTE-006: `direct` or `gateway`; on the gateway route also its host and provider slug (never a key). */
+  route?: "direct" | "gateway";
+  gatewayHost?: string;
+  gatewayProvider?: string;
 }
 
 /** Fields a caller may set when a span starts or ends. */
@@ -208,6 +212,10 @@ const member = <T extends string>(v: unknown, options: readonly T[]): T | undefi
  * The record written for a span: every field re-checked against its allowed shape; anything else is dropped
  * (AOPS-OBS-002). Returns `null` if the span's identity fields are malformed.
  */
+/** Shapes of the route fields (AOPS-ROUTE-006): a DNS host name and a `@provider` slug. */
+const GATEWAY_HOST = /^[a-z0-9]([a-z0-9-]{0,62}\.)+[a-z0-9-]{1,63}$/;
+const GATEWAY_PROVIDER = /^@[a-z0-9][a-z0-9-]{0,62}$/;
+
 export function toTraceRecord(span: Span): Record<string, unknown> | null {
   const runId = match(span.runId, RUN_ID);
   const spanId = match(span.spanId, SPAN_ID);
@@ -254,6 +262,9 @@ export function toTraceRecord(span: Span): Record<string, unknown> | null {
     toolNameHash: match(span.toolNameHash, HASH),
     resultChars: count(span.resultChars),
     errorCode: match(span.errorCode, CODE),
+    route: member(span.route, ["direct", "gateway"] as const),
+    gatewayHost: match(span.gatewayHost, GATEWAY_HOST),
+    gatewayProvider: match(span.gatewayProvider, GATEWAY_PROVIDER),
     errors: Array.isArray(span.errors) && span.errors.length ? maskContractErrors(span.errors.filter((e) => typeof e === "string")) : undefined,
   };
   for (const key of Object.keys(record)) if (record[key] === undefined) delete record[key];

@@ -1,7 +1,7 @@
 # Tasks — Quality, Testing and Definition of Done
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 11 tasks — ✅ 6 · 🔄 0 · ⬜ 5 · ⛔ 0
+**Summary:** 11 tasks — ✅ 6 · 🔄 1 · ⬜ 4 · ⛔ 0
 
 - [x] **QA-T00** ESLint configuration and SDD process documents (constitution, steering, specs, templates).
   - Status: ✅ Done · Covers: QA-TRACE-002, QA-GATE-001, QA-DOD-001..005
@@ -22,7 +22,7 @@
 - [ ] **QA-T06** Enable `strictNullChecks`, then `strict`, for `src/`.
   - Status: ⬜ Not started · Covers: QA-GATE-002 · Depends on: QA-T05
 - [ ] **QA-T07** CI pipeline running lint, typecheck and tests.
-  - Status: ⬜ Not started · Covers: QA-GATE-003 · Unblocked 2026-11-16 by SEC-T02; needs a remote (GitHub) for Actions
+  - Status: 🔄 In progress · Covers: QA-GATE-003 · Unblocked 2026-11-16 by SEC-T02; needs a remote (GitHub) for Actions
 - [x] **QA-T08** Fix the lint errors raised by the first locked dependency install (newer `typescript-eslint` rules).
   - Status: ✅ Done · Covers: QA-GATE-001 · Files: `src/components/ui/command.tsx`, `src/lib/html.ts`, `tailwind.config.ts`
   - Found 2026-11-16: `npm run lint` reported 4 errors (empty interface, literal NBSP in a regex, two `require()` imports). Fixed without behaviour change: NBSP regex now `/\u00a0/g` (checked to match U+00A0 only); Tailwind plugins imported as ES modules (built CSS still contains `.prose` and `animate-in`). Lint: 0 errors, 7 existing `react-refresh` warnings.

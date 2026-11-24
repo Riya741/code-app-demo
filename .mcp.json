@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "workbook": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "--no-warnings",
+        "--experimental-transform-types",
+        "--import",
+        "./evals/register.mjs",
+        "mcp/workbook-mcp/src/main.ts"
+      ]
+    }
+  }
+}

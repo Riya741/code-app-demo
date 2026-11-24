@@ -19,8 +19,9 @@ Status values: ✅ Implemented · ⚠️ Partial · ❌ Gap (expected behaviour 
 so that its answers are grounded and its access is controlled.
 
 #### MCP-SRV-001: Local stdio server
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE project SHALL provide a TypeScript MCP server in `mcp/workbook-mcp/` using stdio transport, registered for Claude Code in a project-scoped `.mcp.json`.
+- **Source:** `mcp/workbook-mcp/src/index.ts`, `mcp/workbook-mcp/src/main.ts`, `.mcp.json`
 
 #### MCP-SRV-002: Data tools
 - **Status:** 📝 Planned
@@ -47,16 +48,18 @@ so that its answers are grounded and its access is controlled.
 agent cannot leak or damage data.
 
 #### MCP-SEC-001: Path allow-list
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE server SHALL resolve every file path to its real path and reject any path outside the configured workbook, `spec/` and `spec/changes/` (for writes), including `..` segments and symbolic links that point outside.
+- **Source:** `mcp/workbook-mcp/src/guard.ts` (`PathGuard`)
 
 #### MCP-SEC-002: Read-only by default
 - **Status:** 📝 Planned
 - **Criterion:** IF `MCP_ALLOW_WRITE` is not `1` THEN THE server SHALL NOT register any tool that writes, and SHALL never write to the workbook in any mode (Article XII.3).
 
 #### MCP-SEC-003: Validated input
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** EVERY tool SHALL validate its arguments with a schema (types, ID patterns, string length ≤ 200, page size ≤ 50) and reject invalid input with a message naming the field.
+- **Source:** `mcp/workbook-mcp/src/guard.ts` (`withControls`)
 
 #### MCP-SEC-004: No shell
 - **Status:** 📝 Planned
@@ -71,19 +74,22 @@ agent cannot leak or damage data.
 - **Criterion:** THE server SHALL return workbook free text only inside fields named `text`, with the tool description stating that such text is data, not instructions.
 
 #### MCP-SEC-007: No secrets in configuration
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** `.mcp.json` SHALL contain no secrets; the workbook path comes from `WORKBOOK_PATH` or the default.
+- **Source:** `.mcp.json`, `mcp/workbook-mcp/src/config.ts`
 
 ### MCP-R3 — Audit
 **User story:** As the owner, I want to know what agents asked the tools, so that misuse is visible after the fact.
 
 #### MCP-AUD-001: Every call logged
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** EVERY tool call SHALL append a line to `../data/mcp-audit.jsonl` with time, tool, a hash of the arguments, duration, result size and outcome.
+- **Source:** `mcp/workbook-mcp/src/guard.ts` (`AuditLog`, `withControls`)
 
 #### MCP-AUD-002: Audit holds no free text
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE audit log SHALL NOT contain argument values or results, only their hash and size (ai-data-policy §6).
+- **Source:** `mcp/workbook-mcp/src/guard.ts` (`AuditLine`)
 
 ### MCP-R4 — Proof
 **User story:** As the assessor, I want the controls tested, not only listed.

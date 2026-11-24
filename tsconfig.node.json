@@ -18,5 +18,5 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["vite.config.ts", "vitest.config.ts", "server", "evals"]
+  "include": ["vite.config.ts", "vitest.config.ts", "server", "evals", "mcp"]
 }

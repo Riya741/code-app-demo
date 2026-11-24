@@ -12,7 +12,7 @@ through one wrapper that validates input, enforces the path allow-list, applies 
 | `mcp/workbook-mcp/src/main.ts` | Stdio entry point started by `.mcp.json` (`node --experimental-transform-types --import ./evals/register.mjs`) |
 | `mcp/workbook-mcp/src/config.ts` | Paths from the repository root: workbook (`WORKBOOK_PATH` or default), `spec/`, `spec/changes/`, audit log; no secrets |
 | `mcp/workbook-mcp/src/guard.ts` | `withControls(tool, args)`: string cap, zod schema, `PathGuard` allow-list, result cap, audit line; `MESSAGES` |
-| `mcp/workbook-mcp/src/specTools.ts` | `get_requirement`, `list_open_gaps`, `trace_requirement`, `run_spec_lint`, `propose_change_request` |
+| `mcp/workbook-mcp/src/specTools.ts` | `get_requirement`, `list_open_gaps`, `trace_requirement`, `run_spec_lint`; resources and the `draft-account-brief` prompt; `EVAL_METRICS` (metric → grader requirement) · planned: `propose_change_request` (MCP-T04) |
 | `server/ai/tools.ts` | Shared data functions (024-agent-ops) |
 | `.mcp.json` | Project registration (no secrets) |
 | `tests/mcp/*.test.ts` | Tool and control tests (`guard.test.ts`, `server.test.ts` from MCP-T01) |
@@ -48,6 +48,24 @@ client ─► tools/call ─► withControls: validate ─► allow-list ─► 
   returned real path. `..` segments are refused before resolving.
 - If the audit line cannot be written, the call fails closed with "The audit log could not be written."
 - An unregistered tool name is client text, so the audit line records it as `(unknown)` (MCP-AUD-002).
+
+## Implementation notes (MCP-T03)
+- Spec tools read only through `PathGuard` (MCP-SEC-001), so they never read `tests/` or `evals/`. As a result:
+  - `trace_requirement` finds **sources** from the requirement's `Source:` line and traceability §2.
+  - It finds **tests** from traceability §2 and from the evidence tables of the hand-offs of the covering tasks. It
+    does not read test titles.
+  - It finds **eval metrics** from `EVAL_METRICS`, the summary metrics each EVAL-CODE grader requirement defines. A test
+    keeps the map in step with `Summary` in `evals/graders/code/index.ts`. Other requirements get an empty list until a
+    spec says which metric measures them.
+- Covers lines are read with ranges expanded (`API-GEN-001..004`), across every spec, so shared tasks are found.
+- `run_spec_lint` takes no arguments. It runs `execFile("py" | "python3", ["-I", <real path of spec_lint.py>])`
+  with `shell: false`, the repository as cwd, and a 120 s timeout.
+  - Exit code 1 means "errors found".
+  - Any other failure returns "Spec lint could not run."
+- Resource reads and prompt requests are validated and audited under the fixed labels `resources/read` and
+  `prompts/get`. A refusal is an MCP protocol error (these methods have no error result).
+- The prompt takes `customer_id` (digits only). It asks for the four AIB sections with cited fact IDs, from
+  workbook-mcp data tools only, and marks the result as a draft. The data tools arrive with MCP-T02.
 
 ## Error handling
 Rejections return MCP tool errors with a short reason ("id must match PREFIX-AREA-NNN", "path outside allow-list");

@@ -28,16 +28,18 @@ so that its answers are grounded and its access is controlled.
 - **Criterion:** THE server SHALL offer the read tools `search_customers`, `get_customer_facts`, `list_use_cases` and `list_events`, returning paged, structured results.
 
 #### MCP-SRV-003: Spec tools
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE server SHALL offer the read tools `get_requirement`, `list_open_gaps` and `trace_requirement` (requirement → tasks → source files → tests), and the exec tool `run_spec_lint`.
+- **Source:** `mcp/workbook-mcp/src/specTools.ts`, `mcp/workbook-mcp/src/index.ts`
 
 #### MCP-SRV-004: Shared implementation
 - **Status:** 📝 Planned
 - **Criterion:** THE data tools SHALL call the functions in `server/ai/tools.ts` used by the runtime agents, and SHALL NOT duplicate their query logic.
 
 #### MCP-SRV-005: Resources and prompt
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE server SHALL expose the resources `spec://constitution` and `spec://specs/{nnn}/requirements`, and the prompt `draft-account-brief`.
+- **Source:** `mcp/workbook-mcp/src/specTools.ts` (`listSpecResources`, `readSpecResource`, `draftBriefMessages`), `mcp/workbook-mcp/src/index.ts`
 
 #### MCP-SRV-006: Change-request tool
 - **Status:** 📝 Planned
@@ -62,8 +64,9 @@ agent cannot leak or damage data.
 - **Source:** `mcp/workbook-mcp/src/guard.ts` (`withControls`)
 
 #### MCP-SEC-004: No shell
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE `run_spec_lint` tool SHALL start the lint with `execFile` and a fixed argument list, and no tool argument SHALL reach a command line.
+- **Source:** `mcp/workbook-mcp/src/specTools.ts` (`makeRunSpecLint`, `specLintCommand`)
 
 #### MCP-SEC-005: Data minimisation
 - **Status:** 📝 Planned

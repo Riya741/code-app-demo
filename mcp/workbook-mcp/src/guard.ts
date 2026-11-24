@@ -259,19 +259,28 @@ export async function withControls(tool: McpTool | undefined, rawArgs: unknown, 
     outcome = known ? e.outcome : "error";
   }
   try {
-    controls.audit.append({
-      time: new Date().toISOString(),
-      // An unregistered name is client text, so it is not logged (MCP-AUD-002).
-      tool: tool ? tool.name : "(unknown)",
-      args_sha256: argsHash(rawArgs),
-      duration_ms: Math.max(0, Math.round(now() - started)),
-      result_bytes: Buffer.byteLength(result.content[0].text, "utf8"),
-      outcome,
-    });
+    // An unregistered name is client text, so it is not logged (MCP-AUD-002).
+    writeAudit(controls, tool ? tool.name : "(unknown)", rawArgs, started, outcome, Buffer.byteLength(result.content[0].text, "utf8"));
   } catch {
     return textResult(MESSAGES.auditFailed, true);
   }
   return result;
+}
+
+/**
+ * One audit line (MCP-AUD-001). `label` is a registered tool name or a fixed method name such as "resources/read",
+ * never client text. Throws if the line cannot be written, so the caller can fail closed.
+ */
+export function writeAudit(controls: Controls, label: string, rawArgs: unknown, started: number, outcome: AuditOutcome, resultBytes: number): void {
+  const now = controls.now ?? (() => performance.now());
+  controls.audit.append({
+    time: new Date().toISOString(),
+    tool: label,
+    args_sha256: argsHash(rawArgs),
+    duration_ms: Math.max(0, Math.round(now() - started)),
+    result_bytes: resultBytes,
+    outcome,
+  });
 }
 
 /** A tool definition, typed from its schema. */

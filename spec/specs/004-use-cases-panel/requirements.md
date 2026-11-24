@@ -56,9 +56,9 @@ expansion, multi-select for cloning, per-row clone/edit/delete, and CSV export.
 - **Source:** `src/components/customers/ParentActivity.tsx`, `src/components/customers/DataGrid.tsx`
 
 #### UCP-GRID-004: Launch date sort and display
-- **Status:** ⚠️ Partial — Displayed one day early west of UTC (see performance-reliability DT-TIME-003)
+- **Status:** ✅ Implemented
 - **Criterion:** Launch Date SHALL be sorted/filtered as `YYYY-MM-DD` and displayed as a short date ("Nov 11, 2026") in the user's locale **on the stored calendar day**; dates before 2000 SHALL be empty.
-- **Source:** `src/components/customers/ParentActivity.tsx`, `src/components/customers/DataGrid.tsx`
+- **Source:** `src/lib/dates.ts`, `src/components/customers/ParentActivity.tsx`, `src/components/customers/DataGrid.tsx`
 
 ### UCP-R3 — Row behaviour
 

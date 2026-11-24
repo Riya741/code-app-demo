@@ -14,7 +14,6 @@ Rules:
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
-| DT-TIME-003 | High | Date-only values show stored day (One day early west of UTC) | [020-performance-reliability](../specs/020-performance-reliability/requirements.md) | UCP-T08 ⬜, PERF-T03 ⬜ (deferred, CR-20261123-2) | Open |
 | SRCH-ARIA-002 | Medium | Expose active option with aria-activedescendant | [001-customer-search](../specs/001-customer-search/requirements.md) | SRCH-T06 ⬜ | Open |
 | EVF-ADD-004 | Medium | Validate whole numbers | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T07 ⬜ | Open |
 | GRID-ROW-006 | Medium | Keyboard row expansion | [009-data-grid](../specs/009-data-grid/requirements.md) | GRID-T06 ⬜ | Open |
@@ -27,9 +26,7 @@ Rules:
 | UCF-EDIT-005 | Low | Value saved as plain text on edit (Implemented; no test names it yet) | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T11 ⬜ | Open |
 | UCF-EDIT-006 | Low | Launch date saved as a calendar date on edit (Implemented; no test names it yet) | [005-use-case-form](../specs/005-use-case-form/requirements.md) | UCF-T11 ⬜ | Open |
 | EVF-EDIT-003 | Low | Attendee names saved as plain text on edit (Implemented; no test names it yet) | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T10 ⬜ | Open |
-| UCP-GRID-004 | Low | Launch date sort and display (Displayed one day early west of UTC (see performance-reliability DT-TIME-003)) | [004-use-cases-panel](../specs/004-use-cases-panel/requirements.md) | UCP-T08 ⬜ | Open |
 | UCB-PASTE-004 | Low | Split on tabs only when present (Splits on tabs and commas together) | [006-use-case-bulk](../specs/006-use-case-bulk/requirements.md) | UCB-T09 ⬜ | Open |
-| EVP-GRID-003 | Low | Show stored calendar day (One day early west of UTC) | [007-events-panel](../specs/007-events-panel/requirements.md) | EVP-T07 ⬜ | Open |
 | EXP-NAME-002 | Low | Keep any-script letters in names (Only ASCII letters/digits kept; non-Latin names become `customer`) | [010-export](../specs/010-export/requirements.md) | EXP-T04 ⬜, EXP-T07 ⬜ | Open |
 | RTX-EDIT-007 | Low | Placeholder per field (Always "Write the executive summary...") | [011-rich-text](../specs/011-rich-text/requirements.md) | RTX-T06 ⬜ | Open |
 | DATA-LINK-006 | Low | One agreed key column (Client may write the alternate `<name>_id` key (detectKey); server joins on `id`) | [012-data-model](../specs/012-data-model/requirements.md) | DATA-T04 ⬜ | Open |
@@ -57,6 +54,9 @@ Known limits agreed as acceptable at the current data size. Revisit using the tr
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
+| ~~DT-TIME-003~~ | High | ~~Date-only values show stored day~~ | [020-performance-reliability](../specs/020-performance-reliability/requirements.md) | UCP-T08 ✅, PERF-T03 ✅ | Closed 2026-11-24 |
+| ~~UCP-GRID-004~~ | Low | ~~Launch date sort and display~~ | [004-use-cases-panel](../specs/004-use-cases-panel/requirements.md) | UCP-T08 ✅ | Closed 2026-11-24 |
+| ~~EVP-GRID-003~~ | Low | ~~Show stored calendar day~~ | [007-events-panel](../specs/007-events-panel/requirements.md) | EVP-T07 ✅ | Closed 2026-11-24 |
 | ~~API-WRITE-008~~ | High | ~~Validate references~~ | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T08 ✅ | Closed 2026-11-24 |
 | ~~DEVA-GATE-002~~ | Low | ~~Gates before stopping (the hook ran the whole test suite, not the affected tests)~~ | [026-dev-agents](../specs/026-dev-agents/requirements.md) | DEVA-T17 ✅ | Closed 2026-11-21 |
 | ~~AIB-CITE-001~~ | Low | ~~Stable fact IDs~~ | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T01 ✅, AIB-T02 ✅ | Closed 2026-11-21 |

@@ -123,9 +123,9 @@ Cross-cutting quality attributes.
 - **Source:** `server/workbook.ts`, `src/lib/csv.ts`, `src/components/customers/ParentActivity.tsx`
 
 #### DT-TIME-003: Date-only values show stored day
-- **Status:** ❌ Gap — One day early west of UTC
+- **Status:** ✅ Implemented
 - **Criterion:** Date-only values SHALL display the stored calendar day in every time zone.
-- **Source:** `server/workbook.ts`, `src/lib/csv.ts`, `src/components/customers/ParentActivity.tsx`
+- **Source:** `src/lib/dates.ts`, `server/workbook.ts`, `src/lib/csv.ts`, `src/components/customers/ParentActivity.tsx`
 
 #### DT-TIME-004: UTC date in file names
 - **Status:** ✅ Implemented

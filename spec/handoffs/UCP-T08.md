@@ -5,9 +5,9 @@ agent: session
 covers: [UCP-GRID-004, DT-TIME-003]
 files_changed: [src/lib/dates.ts, src/components/customers/ParentActivity.tsx]
 tests: [tests/unit/dates.test.ts, tests/component/ParentActivity.test.tsx]
-gates: {G1: pass, G3: pass, G4: pass}
-verdict: pending
-reviewer: session
+gates: {G1: pass, G3: pass, G4: pass, G5: pass}
+verdict: pass
+reviewer: human
 ---
 # Hand-off: UCP-T08 Show launch dates on the stored calendar day in all time zones
 
@@ -45,10 +45,10 @@ Both component tests failed against the previous `ParentActivity.tsx`; all 10 pa
 | G1 | `py -I spec/scripts/spec_lint.py` | 0 errors |
 | G3 | `npm run lint` · `npm run typecheck` | 0 errors (8 old warnings) · clean |
 | G4 | `npm test` | passed |
-| G5 | manual, owner | **waiting**: the Use Cases and Events grids and the event delete dialog, light and dark, ≥ 1024px and < 1024px; dates as before, e.g. "Nov 11, 2026" (optional: with the OS time zone set to America/Los_Angeles, the stored day is shown) |
+| G5 | manual, owner | pass (2026-11-24): the Use Cases and Events grids and the event delete dialog, light and dark, ≥ 1024px and < 1024px; dates as before, e.g. "Nov 11, 2026" (optional: with the OS time zone set to America/Los_Angeles, the stored day is shown) |
 
 ## Open questions
-- G5 needs the owner (UI change).
+- None.
 
 ## Review
 Session review, 2026-11-24, code and tests: pass.
@@ -57,4 +57,4 @@ Session review, 2026-11-24, code and tests: pass.
 - **CLAUDE.md data access:** unchanged (a pure formatting helper in `src/lib`).
 - **Article VI:** no colour change.
 
-The verdict stays `pending` until G5 passes.
+Owner G5, 2026-11-24: pass. Verdict `pass`.

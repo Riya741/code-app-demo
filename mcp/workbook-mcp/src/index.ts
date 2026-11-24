@@ -5,8 +5,8 @@
  * validation, the path allow-list, the result cap and the audit line apply to every tool, including a call to a name
  * that is not registered. Resource reads and prompt requests are validated and audited the same way, under the fixed
  * labels "resources/read" and "prompts/get". Data tools come from dataTools.ts (MCP-T02); spec tools, resources and
- * the prompt from specTools.ts (MCP-T03); the change-request tool (MCP-T04) is added by its task. `main.ts` connects
- * to stdio.
+ * the prompt from specTools.ts (MCP-T03), as is `propose_change_request` (MCP-T04), registered only when
+ * `MCP_ALLOW_WRITE=1`. `main.ts` connects to stdio.
  */
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import {
@@ -35,7 +35,7 @@ import {
   SPEC_TOOLS,
 } from "./specTools";
 
-/** The tools this server offers. The change-request tool (MCP-T04) joins later. */
+/** Every tool. Tools marked `writes` are registered only when `MCP_ALLOW_WRITE=1` (MCP-SEC-002). */
 export const TOOLS: readonly McpTool[] = Object.freeze([...DATA_TOOLS, ...SPEC_TOOLS]);
 
 export interface ServerOptions {
@@ -74,7 +74,8 @@ async function auditedRequest<T>(controls: Controls, label: string, rawArgs: unk
 
 export function createServer(options: ServerOptions = {}): Server {
   const config = options.config ?? loadConfig();
-  const tools = new Map((options.tools ?? TOOLS).map((t) => [t.name, t] as const));
+  // MCP-SEC-002: without MCP_ALLOW_WRITE=1 a write tool is neither listed nor callable ("Unknown tool.").
+  const tools = new Map((options.tools ?? TOOLS).filter((t) => !t.writes || config.allowWrite).map((t) => [t.name, t] as const));
   const paths = new PathGuard(config);
   let store: ReadOnlyStore | undefined = options.workbook;
   // Opened on first use, so the server starts without a workbook; the path goes through the allow-list (MCP-SEC-001).

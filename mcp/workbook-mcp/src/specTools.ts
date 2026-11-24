@@ -4,6 +4,9 @@
  * - MCP-SRV-003: `get_requirement`, `list_open_gaps`, `trace_requirement` (requirement → tasks → source files → tests →
  *   eval metrics) and `run_spec_lint`.
  * - MCP-SRV-005: resources `spec://constitution` and `spec://specs/{nnn}/requirements`, prompt `draft-account-brief`.
+ * - MCP-SRV-006 / MCP-SEC-002 (task MCP-T04): `propose_change_request` writes one new change request from
+ *   `spec/templates/change-request.md` into `spec/changes/`. It is marked `writes`, so the server registers it only when
+ *   `MCP_ALLOW_WRITE=1`, and its only write goes to the path the allow-list returns in write mode.
  * - MCP-SEC-004: `run_spec_lint` starts the linter with `execFile`, a fixed program and a fixed argument list; it takes
  *   no arguments, so nothing a client sends can reach a command line.
  * - MCP-SEC-001: every file is opened through `ctx.paths` (the allow-list), so the tools read only under `spec/`.
@@ -321,7 +324,173 @@ export function makeRunSpecLint(execFile: ExecFileFn = nodeExecFile as unknown a
   });
 }
 
-export const SPEC_TOOLS: readonly McpTool[] = Object.freeze([getRequirement, listOpenGaps, traceRequirement, makeRunSpecLint()]);
+/* ------------------------------------------------------------------------------------------- change request (write) */
+
+const TASK_IDS = /\b([A-Z][A-Z0-9]{1,4}-T\d{2})\b/g;
+const RETIRED_TASKS = /^\*\*Retired tasks:\*\*(.*)$/;
+
+/** Every requirement ID and task ID spec lint knows (requirement headings, task lines, retired tasks). */
+function knownIds(ctx: ToolContext): { requirements: Set<string>; tasks: Set<string> } {
+  const requirements = new Set<string>();
+  const tasks = new Set<string>();
+  for (const spec of specFolders(ctx)) {
+    for (const line of (readSpecFile(ctx, `spec/specs/${spec}/requirements.md`) ?? "").split("\n")) {
+      const m = REQ_HEADING.exec(line);
+      if (m) requirements.add(m[1]);
+    }
+    for (const line of (readSpecFile(ctx, `spec/specs/${spec}/tasks.md`) ?? "").split("\n")) {
+      const t = TASK_LINE.exec(line);
+      if (t) tasks.add(t[2]);
+      const r = RETIRED_TASKS.exec(line);
+      if (r) for (const [, id] of r[1].matchAll(TASK_IDS)) tasks.add(id);
+    }
+  }
+  return { requirements, tasks };
+}
+
+/** One line of plain text: control characters dropped, whitespace runs made one space. */
+// eslint-disable-next-line no-control-regex
+const oneLine = (s: string) => s.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim();
+
+const crText = (min: number) =>
+  z
+    .string()
+    .transform(oneLine)
+    .pipe(
+      z
+        .string()
+        .min(min, `must be at least ${min} characters`)
+        .refine((v) => !/^(```|~~~)/.test(v), "must not start a code fence"),
+    );
+
+/** Lower-case words of the title, joined by "-", at most 40 characters ("change" if nothing is left). */
+export function slugOf(title: string): string {
+  const slug = title
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40)
+    .replace(/-+$/, "");
+  return slug || "change";
+}
+
+const pad = (n: number) => String(n).padStart(2, "0");
+const compactDay = (d: Date) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+const isoDay = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+/** Fills spec/templates/change-request.md. Free text goes in fenced blocks, so it cannot become a heading, link or HTML. */
+export function fillChangeRequest(template: string, v: { id: string; title: string; problem: string; behaviour: string; day: string }): string {
+  const fence = "```";
+  const steps: [string, string][] = [
+    ["# Change Request: <title>", `# Change Request: ${v.title}`],
+    ["- **ID:** CR-<yyyymmdd>-<n>", `- **ID:** ${v.id}`],
+    ["- **Author / date:**", `- **Author / date:** Proposed by an agent through workbook-mcp (propose_change_request) · ${v.day}`],
+    ["- **Type:** New feature", "- **Type:** <owner to choose> New feature"],
+    ["- **Specs affected:** <e.g. specs/005-use-case-form>", "- **Specs affected:** <owner to fill in>"],
+    [
+      "- **Constitution articles affected:** <e.g. II, IV>",
+      "- **Constitution articles affected:** <owner to fill in>\n" +
+        "- **Status:** Proposed, not reviewed. Nothing changes until the owner reviews and approves it (spec/workflow.md).",
+    ],
+    ["What is wrong or missing today, from the user's point of view.", `${fence}text\n${v.problem}\n${fence}`],
+    ["What should happen instead. Be concrete: text, fields, edge cases.", `${fence}text\n${v.behaviour}\n${fence}`],
+  ];
+  let out = template.replace(/\r\n/g, "\n");
+  for (const [from, to] of steps) {
+    if (!out.includes(from)) throw new Error("The change-request template has changed.");
+    out = out.replace(from, () => to);
+  }
+  return out.endsWith("\n") ? out : `${out}\n`;
+}
+
+/** The clock of `propose_change_request`; injectable so tests can fix the date. */
+export interface ChangeRequestDeps {
+  now: () => Date;
+}
+
+export function makeProposeChangeRequest(deps: ChangeRequestDeps = { now: () => new Date() }): McpTool {
+  return defineTool({
+    name: "propose_change_request",
+    description:
+      "Write a new change request from the project template into spec/changes/ and return its path. It only proposes: " +
+      "the file is marked as not reviewed, and nothing else in the specs or code changes. Use it when a requirement " +
+      "is missing or wrong. title: plain words; problem and behaviour: one short paragraph each (at most 200 characters). " +
+      "Requirement and task IDs you mention must exist.",
+    schema: z
+      .object({
+        title: z
+          .string()
+          .transform(oneLine)
+          .pipe(
+            z
+              .string()
+              .min(3, "must be at least 3 characters")
+              .regex(/^[\p{L}\p{N} ,.:;'()/&+-]+$/u, "letters, digits, spaces and , . : ; ' ( ) / & + - only"),
+          ),
+        problem: crText(10),
+        behaviour: crText(10),
+      })
+      .strict(),
+    inputSchema: {
+      type: "object",
+      properties: {
+        title: { type: "string", description: "Short title in plain words, e.g. 'Export events to CSV'.", maxLength: 200 },
+        problem: { type: "string", description: "What is wrong or missing today, from the user's point of view.", maxLength: 200 },
+        behaviour: { type: "string", description: "What should happen instead.", maxLength: 200 },
+      },
+      required: ["title", "problem", "behaviour"],
+      additionalProperties: false,
+    },
+    writes: true,
+    handler: async ({ title, problem, behaviour }, ctx) => {
+      // Unknown IDs would make spec lint (G1) fail on the new file: refuse them, naming the field.
+      const known = knownIds(ctx);
+      for (const [field, text] of [["title", title], ["problem", problem], ["behaviour", behaviour]] as const) {
+        const unknownReq = idsIn(text).find((id) => !known.requirements.has(id));
+        if (unknownReq) throw new ControlError("rejected", `Invalid input: ${field}: unknown requirement ${unknownReq}`);
+        const unknownTask = [...text.matchAll(TASK_IDS)].map((m) => m[1]).find((id) => !known.tasks.has(id));
+        if (unknownTask) throw new ControlError("rejected", `Invalid input: ${field}: unknown task ${unknownTask}`);
+      }
+      const template = readSpecFile(ctx, "spec/templates/change-request.md");
+      if (template == null) throw new Error("The change-request template is missing.");
+
+      const now = deps.now();
+      const day = compactDay(now);
+      const dir = ctx.paths.resolve("spec/changes", "read");
+      const sameDay = new RegExp(`^CR-${day}-(\\d+)-`);
+      const taken = fs
+        .readdirSync(dir)
+        .map((f) => sameDay.exec(f)?.[1])
+        .filter((n): n is string => n != null)
+        .map(Number);
+      let n = taken.length ? Math.max(...taken) + 1 : 1;
+      for (let attempt = 0; attempt < 5; attempt++, n++) {
+        const id = `CR-${day}-${n}`;
+        const rel = `spec/changes/${id}-${slugOf(title)}.md`;
+        const target = ctx.paths.resolve(rel, "write");
+        try {
+          // "wx": never overwrite; a name taken in the meantime moves on to the next number.
+          fs.writeFileSync(target, fillChangeRequest(template, { id, title, problem, behaviour, day: isoDay(now) }), { encoding: "utf8", flag: "wx" });
+          return { id, path: rel };
+        } catch (e) {
+          if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
+        }
+      }
+      throw new Error("No free change-request number.");
+    },
+  });
+}
+
+/** Read tools are always offered; `propose_change_request` only when writes are enabled (filtered in `createServer`). */
+export const SPEC_TOOLS: readonly McpTool[] = Object.freeze([
+  getRequirement,
+  listOpenGaps,
+  traceRequirement,
+  makeRunSpecLint(),
+  makeProposeChangeRequest(),
+]);
 
 /* ------------------------------------------------------------------------------------------- resources */
 

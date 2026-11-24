@@ -3,6 +3,7 @@
  *
  * MCP-SEC-007: nothing here is secret and nothing is read from a file. The workbook path comes from `WORKBOOK_PATH`
  * or the app's default (`../data/code-app-data.xlsx`, as in `vite.config.ts`); `.mcp.json` passes no values.
+ * MCP-SEC-002: writes stay off unless the environment sets `MCP_ALLOW_WRITE=1`.
  * Paths are anchored to the repository, found from this file's location, so the server does not depend on the
  * directory the MCP client starts it in.
  */
@@ -20,6 +21,8 @@ export interface McpConfig {
   readonly changesDir: string;
   /** Append-only audit log, outside the repository (MCP-AUD-001). */
   readonly auditPath: string;
+  /** MCP-SEC-002: write tools are registered only when `MCP_ALLOW_WRITE` is exactly `1`. */
+  readonly allowWrite: boolean;
 }
 
 export const SERVER_NAME = "workbook-mcp";
@@ -37,5 +40,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env, repoRoot: strin
     specDir: path.join(repoRoot, "spec"),
     changesDir: path.join(repoRoot, "spec", "changes"),
     auditPath: path.join(dataDir, "mcp-audit.jsonl"),
+    allowWrite: env.MCP_ALLOW_WRITE === "1",
   });
 }

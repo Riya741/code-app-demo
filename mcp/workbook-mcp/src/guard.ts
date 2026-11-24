@@ -54,6 +54,8 @@ export interface McpTool<S extends z.ZodTypeAny = z.ZodTypeAny> {
   readonly schema: S;
   readonly inputSchema: JsonInputSchema;
   readonly handler: (input: z.infer<S>, ctx: ToolContext) => Promise<unknown>;
+  /** A tool that writes a file. Registered only when writes are enabled (MCP-SEC-002); it may write only to `spec/changes/`. */
+  readonly writes?: true;
 }
 
 export type AuditOutcome = "ok" | "rejected" | "error";

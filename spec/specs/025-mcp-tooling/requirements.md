@@ -44,8 +44,9 @@ so that its answers are grounded and its access is controlled.
 - **Source:** `mcp/workbook-mcp/src/specTools.ts` (`listSpecResources`, `readSpecResource`, `draftBriefMessages`), `mcp/workbook-mcp/src/index.ts`
 
 #### MCP-SRV-006: Change-request tool
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** WHERE `MCP_ALLOW_WRITE=1` THE server SHALL offer `propose_change_request(title, problem, behaviour)`, which writes a new file from the change-request template under `spec/changes/` and returns its path.
+- **Source:** `mcp/workbook-mcp/src/specTools.ts` (`makeProposeChangeRequest`, `fillChangeRequest`), `spec/templates/change-request.md`
 
 ### MCP-R2 — Security
 **User story:** As the owner, I want the tools to expose only what an agent needs, so that a confused or manipulated
@@ -57,8 +58,9 @@ agent cannot leak or damage data.
 - **Source:** `mcp/workbook-mcp/src/guard.ts` (`PathGuard`)
 
 #### MCP-SEC-002: Read-only by default
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** IF `MCP_ALLOW_WRITE` is not `1` THEN THE server SHALL NOT register any tool that writes, and SHALL never write to the workbook in any mode (Article XII.3).
+- **Source:** `mcp/workbook-mcp/src/config.ts` (`allowWrite`), `mcp/workbook-mcp/src/index.ts` (write tools filtered), `mcp/workbook-mcp/src/guard.ts` (`PathGuard` write mode, `ToolContext.workbook` read-only)
 
 #### MCP-SEC-003: Validated input
 - **Status:** ✅ Implemented

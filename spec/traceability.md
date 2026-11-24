@@ -23,7 +23,7 @@
 | design-system | DS | `src/index.css`, `tailwind.config.ts`, `components.json`, `src/components/customers/{Panel,Combobox,FormBits,ConfirmDelete,ExportButton}.tsx`, `src/components/ui/*` |
 | accessibility | A11Y | cross-cutting |
 | security | SEC | `src/lib/html.ts`, `src/lib/csv.ts`, `vite.config.ts`, `package.json` |
-| performance-reliability | PERF/REL/COMP/DT | cross-cutting, `package.json` |
+| performance-reliability | PERF/REL/COMP/DT | cross-cutting, `package.json`, `src/lib/dates.ts` (DT-TIME-003) |
 | quality | QA | `eslint.config.js`, `tsconfig*.json`, `package.json` (scripts) |
 | ai-account-brief | AIB | `server/ai/contracts.ts`, `server/ai/steps/retriever.ts`, `server/ai/tools.ts` (redaction, field builders), `server/ai/steps/{analyst,writer,llm}.ts`, `server/ai/prompts/{analyst,writer}.v1.md`, `server/ai/steps/guard.ts`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts`, `src/components/customers/AiDraftBanner.tsx` · planned: `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`, called from `Customers.tsx`), `CustomerDetails.tsx` (summary dialog content), `AiDraftBanner.tsx` · agents: `spec/agents/{analyst,writer}.md` · contracts: `spec/contracts/*.v1.schema.json` |
 | ai-evaluation | EVAL | `evals/run.ts`, `evals/lib/dataset.ts`, `evals/dataset/*`, `evals/graders/code/index.ts`, `evals/thresholds.json`, `evals/configs/*`, `evals/register.mjs`, `evals/resolve-ts.mjs` · planned: `evals/graders/judge/` (eval-only judge AGENT-EVAL-JUDGE, CR-20261121-2) |
@@ -38,6 +38,7 @@
 | `server/workbook.ts` | workbook-storage, workbook-api, data-model, agent-ops (read model for `server/ai/tools.ts`) |
 | `src/pages/Customers.tsx` | workspace-layout, customer-search, executive-summary (selected-row re-pick; summary dialog from LAY-T11/SUM-T13) |
 | `src/components/customers/ParentActivity.tsx` | use-cases-panel, events-panel, design-system |
+| `src/lib/dates.ts` | performance-reliability (DT-TIME-003), use-cases-panel (UCP-GRID-004), events-panel (EVP-GRID-003) |
 | `src/components/customers/UseCaseForm.tsx` | use-case-form, use-case-bulk (helpers) |
 | `src/components/customers/CustomerDetails.tsx` | executive-summary, rich-text |
 | `src/components/customers/SummaryDialog.tsx` | workspace-layout (LAY-DLG-001..014), executive-summary (SUM-VIEW-006) |
@@ -54,6 +55,7 @@
 | `tests/component/CustomerDetails.test.tsx`, `tests/unit/fmtUtc.test.ts` | executive-summary (SUM-EDIT-001, SUM-EDIT-004..006, SUM-VIEW-004; SUM-VIEW-001, SUM-VIEW-006, and LAY-DLG-007..009 through `onStateChange` / `onSaved`) |
 | `src/lib/customerSource.ts` (`saveSummary`), `src/hooks/useCustomers.ts` (`useSaveSummary`) | executive-summary (SUM-EDIT-001), client-data-layer |
 | `tests/hooks/test_hooks.py` | dev-agents (DEVA-GUARD-001..004, DEVA-GATE-001, DEVA-GATE-002 incl. related tests only, DEVA-CTX-001) |
+| `tests/unit/dates.test.ts`, `tests/component/ParentActivity.test.tsx` | performance-reliability (DT-TIME-003), use-cases-panel (UCP-GRID-004), events-panel (EVP-GRID-003) |
 | `tests/unit/csv.test.ts` | export (EXP-CSV-001..003, EXP-CSV-005, EXP-NAME-001, EXP-NAME-002) |
 | `vitest.config.ts` | quality |
 | `src/lib/lookups.ts` | client-data-layer, use-case-form, use-case-bulk, event-form, data-model |
@@ -78,7 +80,7 @@ Do these once and mark every linked task ✅ together.
 
 | Work | Tasks |
 |---|---|
-| Date display on stored calendar day (`src/lib/dates.ts`) | UCP-T08, EVP-T07, PERF-T03 |
+| Date display on stored calendar day (`src/lib/dates.ts`) | UCP-T08 ✅, EVP-T07 ✅, PERF-T03 ✅ |
 | Workbook backups | STO-T06, PERF-T04 |
 | Summary endpoint | API-T09, SUM-T07 (both ✅ 2026-11-17) |
 | Localhost binding | SEC-T01, API-T10 |

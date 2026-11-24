@@ -1,7 +1,7 @@
 # Tasks — Use Cases Panel
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 9 tasks — ✅ 7 · 🔄 0 · ⬜ 2 · ⛔ 0
+**Summary:** 9 tasks — ✅ 8 · 🔄 0 · ⬜ 1 · ⛔ 0
 
 - [x] **UCP-T01** Header: title, count, Live tally.
   - Status: ✅ Done · Covers: UCP-HEAD-001, UCP-HEAD-002 · Files: `ParentActivity.tsx`
@@ -17,10 +17,11 @@
   - Status: ✅ Done · Covers: UCP-HEAD-005, UCP-CSV-001 · Files: `ParentActivity.tsx`, `DataGrid.tsx`
 - [x] **UCP-T07** Loading, error and empty states.
   - Status: ✅ Done · Covers: UCP-STATE-001..003 · Files: `ParentActivity.tsx` (`ListState`)
-- [ ] **UCP-T08** Show launch dates on the stored calendar day in all time zones.
-  - Status: ⬜ Not started · Covers: UCP-GRID-004, DT-TIME-003 · Files: new `src/lib/dates.ts`, `ParentActivity.tsx` · Shared with EVP-T07, PERF-T03
+- [x] **UCP-T08** Show launch dates on the stored calendar day in all time zones.
+  - Status: ✅ Done · Covers: UCP-GRID-004, DT-TIME-003 · Files: new `src/lib/dates.ts`, `ParentActivity.tsx` · Shared with EVP-T07, PERF-T03
   - Step: Add `formatDay("YYYY-MM-DD")` using a local `Date(y, m-1, d)`
   - Step: Use it for Launch Date and in the delete description
   - Step: Verify with the OS time zone set to America/Los_Angeles
+  - Verified 2026-11-24: `formatDay` / `isoDay` in `src/lib/dates.ts` used for Launch Date and the delete description; `tests/unit/dates.test.ts` (UTC−10 to UTC+14) and "UCP-GRID-004 …" in `tests/component/ParentActivity.test.tsx` (TZ America/Los_Angeles; failed against the old code); G1, G3, G4 pass; G5 passed (owner: light and dark, ≥ 1024px and < 1024px) ([hand-off](../../handoffs/UCP-T08.md)).
 - [ ] **UCP-T09** Component tests: tallies, export content, clone-to selection.
   - Status: ⬜ Not started · Covers: UCP-HEAD-002, UCP-CSV-001, UCP-ROW-003 · Depends on: QA-T02

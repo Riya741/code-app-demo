@@ -45,10 +45,10 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [001-customer-search](specs/001-customer-search/) | SRCH | 20 | 19 | 0 | 1 | 0 | 9 | 7 | 0 | 2 | 0 |
 | [002-workspace-layout](specs/002-workspace-layout/) | LAY | 31 | 30 | 1 | 0 | 0 | 12 | 11 | 0 | 1 | 0 |
 | [003-executive-summary](specs/003-executive-summary/) | SUM | 14 | 14 | 0 | 0 | 0 | 13 | 12 | 0 | 1 | 0 |
-| [004-use-cases-panel](specs/004-use-cases-panel/) | UCP | 21 | 20 | 1 | 0 | 0 | 9 | 7 | 0 | 2 | 0 |
+| [004-use-cases-panel](specs/004-use-cases-panel/) | UCP | 21 | 21 | 0 | 0 | 0 | 9 | 8 | 0 | 1 | 0 |
 | [005-use-case-form](specs/005-use-case-form/) | UCF | 23 | 20 | 2 | 0 | 1 | 11 | 8 | 0 | 3 | 0 |
 | [006-use-case-bulk](specs/006-use-case-bulk/) | UCB | 25 | 24 | 1 | 0 | 0 | 11 | 8 | 0 | 3 | 0 |
-| [007-events-panel](specs/007-events-panel/) | EVP | 13 | 12 | 1 | 0 | 0 | 9 | 6 | 0 | 3 | 0 |
+| [007-events-panel](specs/007-events-panel/) | EVP | 13 | 13 | 0 | 0 | 0 | 9 | 7 | 0 | 2 | 0 |
 | [008-event-form](specs/008-event-form/) | EVF | 12 | 9 | 1 | 1 | 1 | 10 | 6 | 0 | 3 | 1 |
 | [009-data-grid](specs/009-data-grid/) | GRID | 19 | 18 | 0 | 1 | 0 | 7 | 5 | 0 | 2 | 0 |
 | [010-export](specs/010-export/) | EXP | 11 | 9 | 1 | 0 | 1 | 7 | 4 | 0 | 3 | 0 |
@@ -63,7 +63,7 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [017-design-system](specs/017-design-system/) | DS | 16 | 14 | 1 | 0 | 1 | 8 | 5 | 0 | 3 | 0 |
 | [018-accessibility](specs/018-accessibility/) | A11Y | 15 | 10 | 2 | 3 | 0 | 6 | 1 | 0 | 5 | 0 |
 | [019-security](specs/019-security/) | SEC | 10 | 7 | 1 | 1 | 1 | 6 | 3 | 0 | 3 | 0 |
-| [020-performance-reliability](specs/020-performance-reliability/) | PERF/REL/COMP/DT | 23 | 16 | 4 | 1 | 2 | 7 | 2 | 0 | 5 | 0 |
+| [020-performance-reliability](specs/020-performance-reliability/) | PERF/REL/COMP/DT | 23 | 17 | 4 | 0 | 2 | 7 | 3 | 0 | 4 | 0 |
 | [021-quality](specs/021-quality/) | QA | 15 | 13 | 0 | 0 | 2 | 11 | 7 | 0 | 4 | 0 |
 | **AI & agents** (CR-20261117-1) | | | | | | | | | | | |
 | [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 36 | 32 | 4 | 0 | 0 | 11 | 11 | 0 | 0 | 0 |
@@ -71,7 +71,7 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 35 | 15 | 2 | 0 | 18 | 12 | 4 | 0 | 8 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
 | [026-dev-agents](specs/026-dev-agents/) | DEVA | 17 | 16 | 0 | 0 | 1 | 15 | 14 | 0 | 1 | 0 |
-| **Total** | | **529** | **430** | **27** | **9** | **63** | **244** | **165** | **0** | **75** | **4** |
+| **Total** | | **529** | **433** | **25** | **8** | **63** | **244** | **168** | **0** | **72** | **4** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,

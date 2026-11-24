@@ -39,9 +39,9 @@ Lists all events held with the selected customer's subsidiaries, with tallies, r
 - **Source:** `src/components/customers/ParentActivity.tsx`, `src/components/customers/DataGrid.tsx`
 
 #### EVP-GRID-003: Show stored calendar day
-- **Status:** ⚠️ Partial — One day early west of UTC
+- **Status:** ✅ Implemented
 - **Criterion:** Event Date SHALL display the stored calendar day in every time zone; dates before 2000 SHALL be empty.
-- **Source:** `src/components/customers/ParentActivity.tsx`, `src/components/customers/DataGrid.tsx`
+- **Source:** `src/lib/dates.ts`, `src/components/customers/ParentActivity.tsx`, `src/components/customers/DataGrid.tsx`
 
 #### EVP-GRID-004: Expandable attendees and notes
 - **Status:** ✅ Implemented

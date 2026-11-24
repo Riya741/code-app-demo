@@ -7,7 +7,7 @@
   specs/014-workbook-api, specs/020-performance-reliability (tasks only); gates/gap-register.md (notes)
 - **Constitution articles affected:** none amended; compliance unchanged (the deferred tasks harden or measure; no rule
   depends on them being done now)
-- **Status:** Proposed 2026-11-23 · waiting for the owner's approval · branch `aib-t06-t10-t07-client`
+- **Status:** Approved by the owner 2026-11-24 · applied on branch `cr-20261123-2-approve`
 
 ## 1. Problem
 This is a competency project, not a client deliverable. The owner asked on 2026-11-23 to finish "ASAP with minimal
@@ -46,4 +46,4 @@ phase, and their requirements keep their current status: no requirement is marke
 - **Undo:** remove the notes; nothing else changes.
 
 ## 5. Review
-- [ ] Owner approves the deferral list (or strikes tasks to keep)
+- [x] Owner approves the deferral list (2026-11-24, no tasks struck); notes applied, AIB-T08 closed with a note, EVAL-T09 unblocked (QA-T07 done) and deferred

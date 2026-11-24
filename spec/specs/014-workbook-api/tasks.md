@@ -1,7 +1,7 @@
 # Tasks — Workbook HTTP API
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 14 tasks — ✅ 11 · 🔄 0 · ⬜ 3 · ⛔ 0
+**Summary:** 14 tasks — ✅ 12 · 🔄 0 · ⬜ 2 · ⛔ 0
 
 - [x] **API-T01** Vite plugin wiring for dev and preview; JSON responses and error mapping.
   - Status: ✅ Done · Covers: API-GEN-001..004 · Files: `server/workbook.ts`, `vite.config.ts`
@@ -17,11 +17,12 @@
   - Status: ✅ Done · Covers: API-WRITE-006, API-WRITE-007
 - [x] **API-T07** Soft delete with 404/409.
   - Status: ✅ Done · Covers: API-DEL-001, API-DEL-002
-- [ ] **API-T08** Foreign-key and allowed-value validation on writes.
-  - Status: ⬜ Not started · Covers: API-WRITE-008
+- [x] **API-T08** Foreign-key and allowed-value validation on writes.
+  - Status: ✅ Done · Covers: API-WRITE-008 · Files: `server/workbook.ts`, `tests/integration/workbook-api.test.ts`, `spec/specs/017-design-system/messages-catalog.md`
   - Step: FK existence checks
   - Step: Solution ↔ status / type checks
   - Step: Add messages to the messages catalog
+  - Verified 2026-11-24: `checkRefs` and `checkSolutionValues` in `server/workbook.ts` run before any change; 5 integration tests titled `API-WRITE-008 …` (4 failed against the old code), file hash unchanged on every refusal; G1, G3, G4 pass; G5 n/a (server only) ([hand-off](../../handoffs/API-T08.md)).
 - [x] **API-T09** `POST /customers/:id/summary`.
   - Status: ✅ Done · Covers: API-SUMM-001, SUM-EDIT-001 · Unblocks: SUM-T09
   - Verified 2026-11-17 via the agent workflow (implementer subagent, read-only reviewer subagent; hand-off `spec/handoffs/API-T09.md`, verdict pass): `POST /customers/:id/summary` in `server/workbook.ts`; 6 integration tests (`tests/integration/summary.test.ts`). Same work as SUM-T07.

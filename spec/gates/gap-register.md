@@ -14,7 +14,6 @@ Rules:
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
-| API-WRITE-008 | High | Validate references | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T08 ⬜, API-T11 ⬜ (deferred, CR-20261123-2) | Open |
 | DT-TIME-003 | High | Date-only values show stored day (One day early west of UTC) | [020-performance-reliability](../specs/020-performance-reliability/requirements.md) | UCP-T08 ⬜, PERF-T03 ⬜ (deferred, CR-20261123-2) | Open |
 | SRCH-ARIA-002 | Medium | Expose active option with aria-activedescendant | [001-customer-search](../specs/001-customer-search/requirements.md) | SRCH-T06 ⬜ | Open |
 | EVF-ADD-004 | Medium | Validate whole numbers | [008-event-form](../specs/008-event-form/requirements.md) | EVF-T07 ⬜ | Open |
@@ -58,6 +57,7 @@ Known limits agreed as acceptable at the current data size. Revisit using the tr
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
+| ~~API-WRITE-008~~ | High | ~~Validate references~~ | [014-workbook-api](../specs/014-workbook-api/requirements.md) | API-T08 ✅ | Closed 2026-11-24 |
 | ~~DEVA-GATE-002~~ | Low | ~~Gates before stopping (the hook ran the whole test suite, not the affected tests)~~ | [026-dev-agents](../specs/026-dev-agents/requirements.md) | DEVA-T17 ✅ | Closed 2026-11-21 |
 | ~~AIB-CITE-001~~ | Low | ~~Stable fact IDs~~ | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T01 ✅, AIB-T02 ✅ | Closed 2026-11-21 |
 | ~~AOPS-ORCH-002~~ | Low | ~~Every hand-off is validated~~ | [024-agent-ops](../specs/024-agent-ops/requirements.md) | AIB-T01 ✅, AOPS-T01 ✅ | Closed 2026-11-21 |

@@ -46,11 +46,16 @@ relink use_case_personnel, use_case_content_type
 if previousStatus !== status_id: append history (if sheet exists)
 ```
 
-## Planned design — API-WRITE-008 validation
-Before assigning, check each provided FK exists (`subsidiary`, `department`, `stakeholder`, `solution`, `status`,
-`use_case_type`, personnel/content type ids) and that `(solution_id, status_id)` exists in `solution_status` and
-`(solution_id, use_case_type_id)` in `solution_use_case_type` when type is given. 400 with "Unknown <field>: <id>"
-or "Status <id> is not allowed for solution <id>".
+## Implemented — API-WRITE-008 validation (API-T08, 2026-11-24)
+After `required()` and the 404 lookup, before any change: `checkRefs` checks that each reference given in the body
+names a row's `id` in its sheet (use case: `parent_id` → `customer`, `subsidiary_id`, `department_id`,
+`stakeholder_id`, `solution_id`, `status_id`, `use_case_type_id`, and the `personnel_ids` / `content_type_ids` lists;
+event: `SubsidiaryId`, `EventTypeId`, `PersonnelIds`, `SolutionIds`). Empty values are skipped; a value that is not a
+number names no row. Then `checkSolutionValues` requires `(solution_id, status_id)` in `solution_status` and, when a
+type is given, `(solution_id, use_case_type_id)` in `solution_use_case_type`. 400 with "Unknown <field>: <value>",
+"Status <id> is not allowed for solution <id>." or "Use case type <id> is not allowed for solution <id>."; the file
+is untouched. References use the `id` column only (DATA-LINK-006). Not checked: that the subsidiary belongs to the
+customer or the department to the subsidiary (no requirement asks for it).
 
 ## Implemented — API-SUMM-001 summary (API-T09, 2026-11-17)
 `saveSummary(s, id, body)`: find customer by `id` (404 "Customer <id> was not found."), set
@@ -78,5 +83,5 @@ exception (exit task API-T13) is closed by that amendment. Use cases and events 
 |---|---|
 | II | Atomic saves, soft delete, history; an edit replaces only the record's own link rows, as Article II.4 (v1.1.1) allows. ✅ |
 | III | Message-only errors (SEC-SAFE-003); local-only by default (SEC-EXPO-001). ✅ |
-| IV | Required fields enforced; FK/allowed-value checks missing (API-T08). ⚠️ |
+| IV | Required fields, references and allowed solution values enforced (API-T08). ✅ |
 | IX | Server owns joins and persistence. ✅ |

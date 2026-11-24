@@ -185,6 +185,31 @@ function required(body: Record<string, unknown>, ...keys: string[]) {
   if (missing.length) throw new HttpError(400, `Missing: ${missing.join(", ")}`);
 }
 
+/**
+ * API-WRITE-008: every reference given in the body must name a row of its sheet; a value that is not a number names
+ * none. Runs before any change, so a rejected save leaves the file untouched. `refs` are [body field, sheet, value(s)];
+ * empty values are skipped (required fields are checked by `required()` first).
+ */
+function checkRefs(s: Store, body: Record<string, unknown>, refs: [field: string, sheet: string, list?: "list"][]) {
+  for (const [field, sheet, list] of refs) {
+    const raw = body[field];
+    if (raw == null || raw === "") continue;
+    const values = list ? ids(raw) : [num(raw)];
+    const known = new Set(s.table(sheet).rows.map((r) => r.id));
+    const unknown = values.find((v) => v == null || !known.has(v));
+    if (unknown !== undefined) throw new HttpError(400, `Unknown ${field}: ${unknown ?? String(raw)}`);
+  }
+}
+
+/** API-WRITE-008: the status, and the use case type when given, must be allowed for the solution. */
+function checkSolutionValues(s: Store, solutionId: number, statusId: number, typeId: number | null) {
+  const allows = (sheet: string, col: string, id: number) => s.table(sheet).rows.some((r) => r.solution_id === solutionId && r[col] === id);
+  if (!allows("solution_status", "status_id", statusId)) throw new HttpError(400, `Status ${statusId} is not allowed for solution ${solutionId}.`);
+  if (typeId != null && !allows("solution_use_case_type", "use_case_type_id", typeId)) {
+    throw new HttpError(400, `Use case type ${typeId} is not allowed for solution ${solutionId}.`);
+  }
+}
+
 /* ------------------------------------------------------------------------------------------- queries */
 
 export function useCasesByParent(s: Pick<Store, "table">, parentId: number) {
@@ -297,6 +322,18 @@ function saveUseCase(s: Store, body: Record<string, unknown>) {
   const given = num(body.id);
   let row = given == null ? undefined : sheet.rows.find((r) => r.id === given);
   if (given != null && !row) throw new HttpError(404, `Use case ${given} was not found.`);
+  checkRefs(s, body, [
+    ["parent_id", "customer"],
+    ["subsidiary_id", "subsidiary"],
+    ["department_id", "department"],
+    ["stakeholder_id", "stakeholder"],
+    ["solution_id", "solution"],
+    ["status_id", "status"],
+    ["use_case_type_id", "use_case_type"],
+    ["personnel_ids", "personnel", "list"],
+    ["content_type_ids", "content_type", "list"],
+  ]);
+  checkSolutionValues(s, num(body.solution_id) as number, num(body.status_id) as number, num(body.use_case_type_id));
 
   const fields: Row = {
     parent_id: num(body.parent_id),
@@ -342,6 +379,12 @@ function saveEvent(s: Store, body: Record<string, unknown>) {
   const given = num(body.Id);
   let row = given == null ? undefined : sheet.rows.find((r) => r.id === given);
   if (given != null && !row) throw new HttpError(404, `Event ${given} was not found.`);
+  checkRefs(s, body, [
+    ["SubsidiaryId", "subsidiary"],
+    ["EventTypeId", "event_type"],
+    ["PersonnelIds", "personnel", "list"],
+    ["SolutionIds", "solution", "list"],
+  ]);
 
   const fields: Row = {
     subsidiary_id: num(body.SubsidiaryId),

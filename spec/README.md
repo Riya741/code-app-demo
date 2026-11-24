@@ -56,7 +56,7 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | **Data & backend** | | | | | | | | | | | |
 | [012-data-model](specs/012-data-model/) | DATA | 19 | 17 | 1 | 1 | 0 | 9 | 7 | 0 | 1 | 1 |
 | [013-workbook-storage](specs/013-workbook-storage/) | STO | 18 | 16 | 1 | 0 | 1 | 7 | 5 | 0 | 2 | 0 |
-| [014-workbook-api](specs/014-workbook-api/) | API | 23 | 22 | 0 | 1 | 0 | 14 | 11 | 0 | 3 | 0 |
+| [014-workbook-api](specs/014-workbook-api/) | API | 23 | 23 | 0 | 0 | 0 | 14 | 12 | 0 | 2 | 0 |
 | [015-client-data-layer](specs/015-client-data-layer/) | CDL | 15 | 14 | 1 | 0 | 0 | 7 | 5 | 0 | 1 | 1 |
 | [016-data-pipeline](specs/016-data-pipeline/) | PIPE | 28 | 28 | 0 | 0 | 0 | 8 | 5 | 0 | 3 | 0 |
 | **Cross-cutting** | | | | | | | | | | | |
@@ -71,7 +71,7 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 35 | 15 | 2 | 0 | 18 | 12 | 4 | 0 | 8 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
 | [026-dev-agents](specs/026-dev-agents/) | DEVA | 17 | 16 | 0 | 0 | 1 | 15 | 14 | 0 | 1 | 0 |
-| **Total** | | **529** | **429** | **27** | **10** | **63** | **244** | **164** | **0** | **76** | **4** |
+| **Total** | | **529** | **430** | **27** | **9** | **63** | **244** | **165** | **0** | **75** | **4** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,

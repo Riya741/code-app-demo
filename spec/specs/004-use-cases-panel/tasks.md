@@ -1,7 +1,7 @@
 # Tasks — Use Cases Panel
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 9 tasks — ✅ 7 · 🔄 0 · ⬜ 2 · ⛔ 0
+**Summary:** 9 tasks — ✅ 7 · 🔄 1 · ⬜ 1 · ⛔ 0
 
 - [x] **UCP-T01** Header: title, count, Live tally.
   - Status: ✅ Done · Covers: UCP-HEAD-001, UCP-HEAD-002 · Files: `ParentActivity.tsx`
@@ -18,7 +18,7 @@
 - [x] **UCP-T07** Loading, error and empty states.
   - Status: ✅ Done · Covers: UCP-STATE-001..003 · Files: `ParentActivity.tsx` (`ListState`)
 - [ ] **UCP-T08** Show launch dates on the stored calendar day in all time zones.
-  - Status: ⬜ Not started · Covers: UCP-GRID-004, DT-TIME-003 · Files: new `src/lib/dates.ts`, `ParentActivity.tsx` · Shared with EVP-T07, PERF-T03
+  - Status: 🔄 In progress · Covers: UCP-GRID-004, DT-TIME-003 · Files: new `src/lib/dates.ts`, `ParentActivity.tsx` · Shared with EVP-T07, PERF-T03
   - Step: Add `formatDay("YYYY-MM-DD")` using a local `Date(y, m-1, d)`
   - Step: Use it for Launch Date and in the delete description
   - Step: Verify with the OS time zone set to America/Los_Angeles

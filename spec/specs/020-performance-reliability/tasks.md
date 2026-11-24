@@ -1,14 +1,14 @@
 # Tasks — Performance, Reliability, Compatibility, Dates
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 7 tasks — ✅ 2 · 🔄 0 · ⬜ 5 · ⛔ 0
+**Summary:** 7 tasks — ✅ 2 · 🔄 1 · ⬜ 4 · ⛔ 0
 
 - [x] **PERF-T01** Performance mechanisms (search index, caching, lazy editor, mtime reload).
   - Status: ✅ Done · Covers: PERF-SPEED-001..004
 - [x] **PERF-T02** Reliability mechanisms (atomic save, lock error, reload on failure, queue, retry).
   - Status: ✅ Done · Covers: REL-SAFE-001..005, REL-SAFE-007
 - [ ] **PERF-T03** Add `src/lib/dates.ts` `formatDay` and use it everywhere dates are shown.
-  - Status: ⬜ Not started · Covers: DT-TIME-003 · Same work as UCP-T08 / EVP-T07 · Deferred by CR-20261123-2
+  - Status: 🔄 In progress · Covers: DT-TIME-003 · Same work as UCP-T08 / EVP-T07 · Deferred by CR-20261123-2; delivered with UCP-T08 (shared work, one helper)
 - [ ] **PERF-T04** Workbook backups.
   - Status: ⬜ Not started · Covers: REL-SAFE-008 · Same work as STO-T06
 - [ ] **PERF-T05** Add `"engines": { "node": ">=20.19" }` and rename the package to `code-app-demo`.

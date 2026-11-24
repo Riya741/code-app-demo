@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { htmlToText } from "@/lib/html";
 import { exportFileName } from "@/lib/csv";
+import { formatDay, isoDay } from "@/lib/dates";
 import { ExportButton } from "@/components/customers/ExportButton";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
@@ -20,14 +21,6 @@ import { RICH_TEXT_CLASS, looksLikeHtml, sanitizeHtml } from "@/lib/html";
 import { useDeleteEvent, useDeleteUseCase, useEvents, useUseCases } from "@/hooks/useParentActivity";
 import type { EventRow, UseCaseRow } from "@/lib/parentData";
 
-/** Dates before 2000 are placeholder values (e.g. 1900-01-01) and are treated as empty. */
-const validDate = (v?: string) => {
-  if (!v) return null;
-  const d = new Date(v);
-  return isNaN(d.getTime()) || d.getFullYear() < 2000 ? null : d;
-};
-const fmtDate = (v?: string) =>
-  validDate(v)?.toLocaleDateString([], { year: "numeric", month: "short", day: "numeric" }) ?? "";
 
 function statusPill(status?: string) {
   const s = (status ?? "").toLowerCase();
@@ -101,9 +94,6 @@ function ListState({
   }
   return <>{children}</>;
 }
-
-/** yyyy-mm-dd for filtering/sorting; undefined when the date is missing or a placeholder. */
-const isoDay = (v?: string) => (validDate(v) ? v!.slice(0, 10) : undefined);
 
 /** Multi-value fields arrive as one delimited string; show them comma separated. */
 const commaList = (v?: string) => v?.split(/\s*[;|]+\s*|\s*[\r\n]+\s*/).map((x) => x.trim()).filter(Boolean).join(", ") || undefined;
@@ -208,7 +198,7 @@ const useCaseColumns: ColumnDef<UseCaseRow>[] = [
   },
   {
     id: "launch", header: "Launch Date", accessorFn: (r) => isoDay(r.expected_launch_date), sortUndefined: "last",
-    cell: ({ row }) => fmtDate(row.original.expected_launch_date) || <Dash />,
+    cell: ({ row }) => formatDay(row.original.expected_launch_date) || <Dash />,
     meta: { filter: "date", className: "min-w-[100px] whitespace-nowrap" },
   },
   {
@@ -246,7 +236,7 @@ const eventColumns: ColumnDef<EventRow>[] = [
   },
   {
     id: "date", header: "Event Date", accessorFn: (r) => isoDay(r.event_date), sortUndefined: "last", sortDescFirst: true,
-    cell: ({ row }) => fmtDate(row.original.event_date) || <Dash />,
+    cell: ({ row }) => formatDay(row.original.event_date) || <Dash />,
     meta: { filter: "date", className: "min-w-[100px] whitespace-nowrap" },
   },
   {
@@ -519,7 +509,7 @@ export function EventsPanel({
         description={
           <>
             <span className="font-medium text-foreground">{target?.event_type || "Event"}</span>
-            {fmtDate(target?.event_date) && <> on {fmtDate(target?.event_date)}</>}
+            {formatDay(target?.event_date) && <> on {formatDay(target?.event_date)}</>}
             {target?.subsidiary_name && <> ({target.subsidiary_name})</>} will be removed from this customer. This cannot be undone from the app.
           </>
         }

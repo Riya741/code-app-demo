@@ -1,10 +1,11 @@
 # Tasks — MCP Tooling (`workbook-mcp`)
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 6 tasks — ✅ 0 · 🔄 0 · ⬜ 5 · ⛔ 1
+**Summary:** 6 tasks — ✅ 1 · 🔄 0 · ⬜ 4 · ⛔ 1
 
-- [ ] **MCP-T01** Server scaffold, `.mcp.json`, controls wrapper (validation, allow-list, caps, audit).
-  - Status: ⬜ Not started · Covers: MCP-SRV-001, MCP-SEC-001, MCP-SEC-003, MCP-SEC-007, MCP-AUD-001, MCP-AUD-002 · Files: `mcp/workbook-mcp/`, `.mcp.json`
+- [x] **MCP-T01** Server scaffold, `.mcp.json`, controls wrapper (validation, allow-list, caps, audit).
+  - Status: ✅ Done · Covers: MCP-SRV-001, MCP-SEC-001, MCP-SEC-003, MCP-SEC-007, MCP-AUD-001, MCP-AUD-002 · Files: `mcp/workbook-mcp/`, `.mcp.json`
+  - Verified 2026-11-24: `createServer` + `withControls` + `PathGuard` + `AuditLog` in `mcp/workbook-mcp/src/`, stdio entry `main.ts` registered in `.mcp.json`; 19 tests in `tests/mcp/{guard,server}.test.ts` (junction escape, `..`, oversize string, unknown fields, unknown tool, audit without values, real stdio start from `.mcp.json`); no tools registered yet (MCP-T02..T04); G1, G3, G4 pass; G5 n/a (no UI) ([hand-off](../../handoffs/MCP-T01.md)).
 - [ ] **MCP-T02** Data tools over `server/ai/tools.ts` with redaction.
   - Status: ⛔ Blocked by AOPS-T02 (shared tools) · Covers: MCP-SRV-002, MCP-SRV-004, MCP-SEC-005, MCP-SEC-006
 - [ ] **MCP-T03** Spec tools, resources, prompt; `run_spec_lint` via `execFile`.

@@ -8,12 +8,14 @@ through one wrapper that validates input, enforces the path allow-list, applies 
 ## Components and files
 | File | Role |
 |---|---|
-| `mcp/workbook-mcp/src/index.ts` | Server set-up (`@modelcontextprotocol/sdk`), tool/resource/prompt registration |
-| `mcp/workbook-mcp/src/guard.ts` | `withControls(handler)`: schema validation, allow-list, size caps, audit |
+| `mcp/workbook-mcp/src/index.ts` | Server set-up (`@modelcontextprotocol/sdk`, low-level `Server`), tool/resource/prompt registration (`createServer`) |
+| `mcp/workbook-mcp/src/main.ts` | Stdio entry point started by `.mcp.json` (`node --experimental-transform-types --import ./evals/register.mjs`) |
+| `mcp/workbook-mcp/src/config.ts` | Paths from the repository root: workbook (`WORKBOOK_PATH` or default), `spec/`, `spec/changes/`, audit log; no secrets |
+| `mcp/workbook-mcp/src/guard.ts` | `withControls(tool, args)`: string cap, zod schema, `PathGuard` allow-list, result cap, audit line; `MESSAGES` |
 | `mcp/workbook-mcp/src/specTools.ts` | `get_requirement`, `list_open_gaps`, `trace_requirement`, `run_spec_lint`, `propose_change_request` |
 | `server/ai/tools.ts` | Shared data functions (024-agent-ops) |
 | `.mcp.json` | Project registration (no secrets) |
-| `tests/mcp/*.test.ts` | Tool and control tests |
+| `tests/mcp/*.test.ts` | Tool and control tests (`guard.test.ts`, `server.test.ts` from MCP-T01) |
 
 ## Interfaces
 ```ts
@@ -37,6 +39,15 @@ Read-only. The only write is a new file under `spec/changes/` when enabled. The 
 client ─► tools/call ─► withControls: validate ─► allow-list ─► handler ─► redact ─► cap ─► audit ─► result
                                   └── any rejection ─► error result with field name + audit line (outcome: rejected)
 ```
+
+## Implementation notes (MCP-T01)
+- The low-level SDK `Server` is used instead of `McpServer`, so a call with invalid input or an unknown tool name
+  still reaches `withControls` and is audited; `McpServer` would refuse it inside the SDK first.
+- The zod schema of each tool is authoritative; the JSON Schema in `tools/list` is advertised for the client.
+- A path is checked after `realpath` (nearest existing folder for a file not created yet) and handlers open the
+  returned real path. `..` segments are refused before resolving.
+- If the audit line cannot be written, the call fails closed with "The audit log could not be written."
+- An unregistered tool name is client text, so the audit line records it as `(unknown)` (MCP-AUD-002).
 
 ## Error handling
 Rejections return MCP tool errors with a short reason ("id must match PREFIX-AREA-NNN", "path outside allow-list");

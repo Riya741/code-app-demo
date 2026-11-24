@@ -1,7 +1,7 @@
 # Tasks — MCP Tooling (`workbook-mcp`)
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 6 tasks — ✅ 4 · 🔄 0 · ⬜ 2 · ⛔ 0
+**Summary:** 6 tasks — ✅ 5 · 🔄 1 · ⬜ 0 · ⛔ 0
 
 - [x] **MCP-T01** Server scaffold, `.mcp.json`, controls wrapper (validation, allow-list, caps, audit).
   - Status: ✅ Done · Covers: MCP-SRV-001, MCP-SEC-001, MCP-SEC-003, MCP-SEC-007, MCP-AUD-001, MCP-AUD-002 · Files: `mcp/workbook-mcp/`, `.mcp.json`
@@ -17,7 +17,8 @@
   - Verified 2026-11-24: `propose_change_request` (marked `writes`) registered only when `MCP_ALLOW_WRITE=1`; writes `spec/changes/CR-<day>-<n>-<slug>.md` from the template with flag `wx`; 8 tests in `tests/mcp/changeRequest.test.ts` (off for unset / 0 / true / yes / " 1", numbering, slugging a traversal title, fenced one-line text, unknown IDs and odd input refused with nothing written, audit without text, workbook byte-identical with writes on, only two file-write calls in the server); a generated CR with hostile Markdown passed spec lint in the real repo (file removed); G1, G3, G4 pass; G5 n/a (no UI) ([hand-off](../../handoffs/MCP-T04.md)).
 
 ## Test tasks
-- [ ] **MCP-T05** Tool tests and hostile-input tests per control.
-  - Status: ⬜ Not started · Covers: MCP-TEST-001 · Depends on: MCP-T01
+- [x] **MCP-T05** Tool tests and hostile-input tests per control.
+  - Status: ✅ Done · Covers: MCP-TEST-001 · Depends on: MCP-T01
+  - Verified 2026-11-24: `tests/mcp/hostile.test.ts` (6 tests) checks that every registered tool, the write tool included, is called by name in a test, and sweeps every tool: oversize string in each string field, an unknown field with shell metacharacters, traversal and shell text in each ID / number field, hostile free text in a context where nothing can be read or written, and every listed tool through the real server with each refusal audited. Per-control hostile tests (MCP-SEC-001 traversal + junction, MCP-SEC-002, MCP-SEC-003 oversize, MCP-SEC-004 shell metacharacters) are mapped in the file header; G1, G3, G4 pass; G5 n/a ([hand-off](../../handoffs/MCP-T05.md)).
 - [ ] **MCP-T06** MCP Inspector and Claude Code session evidence.
-  - Status: ⬜ Not started · Covers: MCP-TEST-002 · Depends on: MCP-T03
+  - Status: 🔄 In progress · Covers: MCP-TEST-002 · Depends on: MCP-T03 · MCP Inspector part done 2026-11-24 ([evidence](../../../l2-competency/evidence/mcp-workbook-server.md)); Claude Code session waits for the owner

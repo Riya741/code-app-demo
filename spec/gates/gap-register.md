@@ -38,6 +38,7 @@ Rules:
 | AOPS-FAIL-007 | Low | Degrade gracefully (No client and `enabled: false` done; the status route comes with AIB-T05) | [024-agent-ops](../specs/024-agent-ops/requirements.md) | AIB-T05 ✅, AOPS-T09 ⬜ (deferred, CR-20261123-2) | Open |
 | AIB-SAFE-001 | Low | Data is not instructions (Escaped data block done; draft behaviour needs prompts and the eval) | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T03 ✅, EVAL-T01 ✅ (dataset; the live eval run measures it) | Open |
 | AIB-FAITH-003 | Low | Sparse or empty customers (Fact sheet exact; draft behaviour needs prompts and the eval) | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T03 ✅, EVAL-T01 ✅ (dataset; the live eval run measures it) | Open |
+| MCP-TEST-002 | Low | Works in a real client (MCP Inspector session recorded; Claude Code session not yet) | [025-mcp-tooling](../specs/025-mcp-tooling/requirements.md) | MCP-T06 🔄 | Open |
 
 ## Accepted limitations
 Known limits agreed as acceptable at the current data size. Revisit using the triggers in the requirement.

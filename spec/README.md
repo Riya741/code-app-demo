@@ -69,9 +69,9 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 36 | 32 | 4 | 0 | 0 | 11 | 11 | 0 | 0 | 0 |
 | [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 14 | 1 | 0 | 17 | 12 | 5 | 0 | 7 | 0 |
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 35 | 15 | 2 | 0 | 18 | 12 | 4 | 0 | 8 | 0 |
-| [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 15 | 0 | 0 | 2 | 6 | 4 | 0 | 2 | 0 |
+| [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 16 | 1 | 0 | 0 | 6 | 5 | 1 | 0 | 0 |
 | [026-dev-agents](specs/026-dev-agents/) | DEVA | 17 | 16 | 0 | 0 | 1 | 15 | 14 | 0 | 1 | 0 |
-| **Total** | | **529** | **448** | **25** | **8** | **48** | **244** | **172** | **0** | **69** | **3** |
+| **Total** | | **529** | **449** | **26** | **8** | **46** | **244** | **173** | **1** | **67** | **3** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,

@@ -1,7 +1,7 @@
 # Tasks — MCP Tooling (`workbook-mcp`)
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 6 tasks — ✅ 3 · 🔄 0 · ⬜ 3 · ⛔ 0
+**Summary:** 6 tasks — ✅ 4 · 🔄 0 · ⬜ 2 · ⛔ 0
 
 - [x] **MCP-T01** Server scaffold, `.mcp.json`, controls wrapper (validation, allow-list, caps, audit).
   - Status: ✅ Done · Covers: MCP-SRV-001, MCP-SEC-001, MCP-SEC-003, MCP-SEC-007, MCP-AUD-001, MCP-AUD-002 · Files: `mcp/workbook-mcp/`, `.mcp.json`
@@ -12,8 +12,9 @@
 - [x] **MCP-T03** Spec tools, resources, prompt; `run_spec_lint` via `execFile`.
   - Status: ✅ Done · Covers: MCP-SRV-003, MCP-SRV-005, MCP-SEC-004 · Files: `mcp/workbook-mcp/src/specTools.ts`
   - Verified 2026-11-24: 4 spec tools, 2 resources (plus template) and the `draft-account-brief` prompt registered in `createServer`; 15 tests in `tests/mcp/specTools.test.ts` on a fixture spec set and the real one (range and cross-spec Covers, gap rows, trace, `execFile` with fixed argv and `shell: false`, shell metacharacters refused before running, real lint run, hostile resource URIs and prompt arguments refused and audited); G1, G3, G4 pass; G5 n/a (no UI) ([hand-off](../../handoffs/MCP-T03.md)).
-- [ ] **MCP-T04** Change-request tool behind `MCP_ALLOW_WRITE`.
-  - Status: ⬜ Not started · Covers: MCP-SRV-006, MCP-SEC-002
+- [x] **MCP-T04** Change-request tool behind `MCP_ALLOW_WRITE`.
+  - Status: ✅ Done · Covers: MCP-SRV-006, MCP-SEC-002 · Files: `mcp/workbook-mcp/src/{specTools,index,config,guard}.ts`
+  - Verified 2026-11-24: `propose_change_request` (marked `writes`) registered only when `MCP_ALLOW_WRITE=1`; writes `spec/changes/CR-<day>-<n>-<slug>.md` from the template with flag `wx`; 8 tests in `tests/mcp/changeRequest.test.ts` (off for unset / 0 / true / yes / " 1", numbering, slugging a traversal title, fenced one-line text, unknown IDs and odd input refused with nothing written, audit without text, workbook byte-identical with writes on, only two file-write calls in the server); a generated CR with hostile Markdown passed spec lint in the real repo (file removed); G1, G3, G4 pass; G5 n/a (no UI) ([hand-off](../../handoffs/MCP-T04.md)).
 
 ## Test tasks
 - [ ] **MCP-T05** Tool tests and hostile-input tests per control.

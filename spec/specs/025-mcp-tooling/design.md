@@ -12,7 +12,7 @@ through one wrapper that validates input, enforces the path allow-list, applies 
 | `mcp/workbook-mcp/src/main.ts` | Stdio entry point started by `.mcp.json` (`node --experimental-transform-types --import ./evals/register.mjs`) |
 | `mcp/workbook-mcp/src/config.ts` | Paths from the repository root: workbook (`WORKBOOK_PATH` or default), `spec/`, `spec/changes/`, audit log; no secrets |
 | `mcp/workbook-mcp/src/guard.ts` | `withControls(tool, args)`: string cap, zod schema, `PathGuard` allow-list, result cap, audit line; `MESSAGES` |
-| `mcp/workbook-mcp/src/specTools.ts` | `get_requirement`, `list_open_gaps`, `trace_requirement`, `run_spec_lint`; resources and the `draft-account-brief` prompt; `EVAL_METRICS` (metric → grader requirement) · planned: `propose_change_request` (MCP-T04) |
+| `mcp/workbook-mcp/src/specTools.ts` | `get_requirement`, `list_open_gaps`, `trace_requirement`, `run_spec_lint`, `propose_change_request` (write, `MCP_ALLOW_WRITE=1` only); resources and the `draft-account-brief` prompt; `EVAL_METRICS` (metric → grader requirement) |
 | `mcp/workbook-mcp/src/dataTools.ts` | `search_customers` (app ranking `src/lib/search.ts`), `get_customer_facts` (Retriever `retrieve`, notes cut to 300), and `get_use_case` / `get_event` / `list_use_cases` / `list_events` wrapped from `server/ai/tools.ts` |
 | `server/ai/tools.ts` | Shared data functions (024-agent-ops) |
 | `.mcp.json` | Project registration (no secrets) |
@@ -49,6 +49,26 @@ client ─► tools/call ─► withControls: validate ─► allow-list ─► 
   returned real path. `..` segments are refused before resolving.
 - If the audit line cannot be written, the call fails closed with "The audit log could not be written."
 - An unregistered tool name is client text, so the audit line records it as `(unknown)` (MCP-AUD-002).
+
+## Implementation notes (MCP-T04)
+- **Registration:** `McpTool.writes` marks a write tool. `createServer` drops write tools unless
+  `config.allowWrite`, which is `MCP_ALLOW_WRITE === "1"` exactly. A dropped tool is neither listed nor callable
+  ("Unknown tool."). `.mcp.json` sets no environment, so writes are off unless the owner's environment turns them on.
+- **File name:** `propose_change_request` writes `spec/changes/CR-<local yyyymmdd>-<n>-<slug>.md`, where `n` is one
+  more than the highest number used that day.
+  - The file is written with flag `wx` (never overwrite) to the path `PathGuard` returns in write mode.
+  - The slug is ASCII words from the title, at most 40 characters.
+  - The tool returns `{ id, path }`.
+- **Content:** the file is filled from `spec/templates/change-request.md`.
+  - Title in the heading, ID, author ("proposed by an agent through workbook-mcp") and date.
+  - A `Status:` line saying it is proposed and not reviewed.
+  - Problem and behaviour as one line each inside a fenced `text` block, so text cannot become a heading, link or HTML.
+  - Type, specs and articles are left for the owner.
+- **Keeping spec lint clean:** every requirement or task ID in the text must exist (retired tasks count). Otherwise
+  the call is refused, naming the field, because spec lint would fail on the new file. Text that starts a code fence
+  is refused too.
+- **Workbook (MCP-SEC-002):** the server's only file writes are this file and the audit line. The workbook store is
+  read-only and `PathGuard` refuses the workbook in write mode.
 
 ## Implementation notes (MCP-T02)
 - **Record tools:** `get_use_case`, `get_event`, `list_use_cases` and `list_events` are the `server/ai/tools.ts`

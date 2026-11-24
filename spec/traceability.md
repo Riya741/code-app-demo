@@ -28,7 +28,7 @@
 | ai-account-brief | AIB | `server/ai/contracts.ts`, `server/ai/steps/retriever.ts`, `server/ai/tools.ts` (redaction, field builders), `server/ai/steps/{analyst,writer,llm}.ts`, `server/ai/prompts/{analyst,writer}.v1.md`, `server/ai/steps/guard.ts`, `server/ai/routes.ts`, `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts`, `src/components/customers/AiDraftBanner.tsx` · planned: `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts` (incl. `useAutoBrief`, called from `Customers.tsx`), `CustomerDetails.tsx` (summary dialog content), `AiDraftBanner.tsx` · agents: `spec/agents/{analyst,writer}.md` · contracts: `spec/contracts/*.v1.schema.json` |
 | ai-evaluation | EVAL | `evals/run.ts`, `evals/lib/dataset.ts`, `evals/dataset/*`, `evals/graders/code/index.ts`, `evals/thresholds.json`, `evals/configs/*`, `evals/register.mjs`, `evals/resolve-ts.mjs` · planned: `evals/graders/judge/` (eval-only judge AGENT-EVAL-JUDGE, CR-20261121-2) |
 | agent-ops | AOPS | `server/ai/{config,client,orchestrator,trace,tools}.ts`, `server/ai/contracts.ts` (hand-off validation) · planned: `server/ai/resilience.ts`, `src/pages/AiRuns.tsx`, `docs/ai-runbook.md`; gateway route in `server/ai/{config,client,trace,orchestrator}.ts` (AOPS-T12, CR-20261123-1) · code steps, no agent spec (CR-20261121-1) |
-| mcp-tooling | MCP | `mcp/workbook-mcp/src/{index,main,config,guard,specTools,dataTools}.ts`, `.mcp.json`, `tsconfig.node.json` (typecheck); reuses `server/ai/tools.ts`, `server/ai/steps/retriever.ts` (`textMax`), `src/lib/search.ts` · planned: `propose_change_request` (MCP-T04) |
+| mcp-tooling | MCP | `mcp/workbook-mcp/src/{index,main,config,guard,specTools,dataTools}.ts`, `.mcp.json`, `tsconfig.node.json` (typecheck); reuses `server/ai/tools.ts`, `server/ai/steps/retriever.ts` (`textMax`), `src/lib/search.ts` |
 | dev-agents | DEVA | `spec/scripts/spec_lint.py` (checks 10–13, retired agents and tasks), `spec/templates/{agent,handoff}.md`, `spec/agents/` (Analyst, Writer, Spec author; retired roster), `spec/contracts/`, `spec/handoffs/`, `.claude/agents/spec-author.md`, `.claude/hooks/*.py`, `.claude/skills/*/SKILL.md` |
 
 ## 2. Source file → specs (reverse lookup)
@@ -56,10 +56,11 @@
 | `src/lib/customerSource.ts` (`saveSummary`), `src/hooks/useCustomers.ts` (`useSaveSummary`) | executive-summary (SUM-EDIT-001), client-data-layer |
 | `tests/hooks/test_hooks.py` | dev-agents (DEVA-GUARD-001..004, DEVA-GATE-001, DEVA-GATE-002 incl. related tests only, DEVA-CTX-001) |
 | `tests/unit/dates.test.ts`, `tests/component/ParentActivity.test.tsx` | performance-reliability (DT-TIME-003), use-cases-panel (UCP-GRID-004), events-panel (EVP-GRID-003) |
-| `mcp/workbook-mcp/src/*.ts`, `.mcp.json` | mcp-tooling (MCP-SRV-001, MCP-SRV-002, MCP-SRV-003, MCP-SRV-004, MCP-SRV-005, MCP-SEC-001, MCP-SEC-003, MCP-SEC-004, MCP-SEC-005, MCP-SEC-006, MCP-SEC-007, MCP-AUD-001, MCP-AUD-002) |
+| `mcp/workbook-mcp/src/*.ts`, `.mcp.json` | mcp-tooling (MCP-SRV-001, MCP-SRV-002, MCP-SRV-003, MCP-SRV-004, MCP-SRV-005, MCP-SRV-006, MCP-SEC-001, MCP-SEC-002, MCP-SEC-003, MCP-SEC-004, MCP-SEC-005, MCP-SEC-006, MCP-SEC-007, MCP-AUD-001, MCP-AUD-002) |
 | `tests/mcp/guard.test.ts`, `tests/mcp/server.test.ts` | mcp-tooling (MCP-SRV-001, MCP-SEC-001, MCP-SEC-003, MCP-SEC-007, MCP-AUD-001, MCP-AUD-002) |
 | `tests/mcp/specTools.test.ts` | mcp-tooling (MCP-SRV-003, MCP-SRV-005, MCP-SEC-004) |
 | `tests/mcp/dataTools.test.ts` | mcp-tooling (MCP-SRV-002, MCP-SRV-004, MCP-SEC-005, MCP-SEC-006) |
+| `tests/mcp/changeRequest.test.ts` | mcp-tooling (MCP-SRV-006, MCP-SEC-002) |
 | `tests/unit/csv.test.ts` | export (EXP-CSV-001..003, EXP-CSV-005, EXP-NAME-001, EXP-NAME-002) |
 | `vitest.config.ts` | quality |
 | `src/lib/lookups.ts` | client-data-layer, use-case-form, use-case-bulk, event-form, data-model |

@@ -343,7 +343,8 @@ describe("allow-list on spec reads", () => {
     const guard = new PathGuard(fixture);
     expect(() => guard.resolve("spec/gates/gap-register.md", "read")).not.toThrow();
     const source = fs.readFileSync(path.join(repoRoot, "mcp", "workbook-mcp", "src", "specTools.ts"), "utf8");
-    // Every readFileSync / readdirSync / existsSync takes a path that came from ctx.paths.resolve.
-    for (const call of source.match(/fs\.\w+Sync\([^,)]*/g) ?? []) expect(call).toMatch(/fs\.\w+Sync\((real|dir|ctx\.paths\.resolve)/);
+    // Every fs call takes a path that came from ctx.paths.resolve (the one write target in write mode, MCP-T04).
+    for (const call of source.match(/fs\.\w+Sync\([^,)]*/g) ?? []) expect(call).toMatch(/fs\.\w+Sync\((real|dir|target|ctx\.paths\.resolve)/);
+    expect(source).toMatch(/const target = ctx\.paths\.resolve\(rel, "write"\);/);
   });
 });

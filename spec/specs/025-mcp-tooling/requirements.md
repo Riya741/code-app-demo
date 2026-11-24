@@ -104,12 +104,14 @@ agent cannot leak or damage data.
 **User story:** As the assessor, I want the controls tested, not only listed.
 
 #### MCP-TEST-001: Tests per tool and per control
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** EVERY tool SHALL have a unit test, and MCP-SEC-001..004 SHALL each have a test with a hostile input (path traversal, symlink, oversize string, shell metacharacters).
+- **Source:** `tests/mcp/hostile.test.ts`, `tests/mcp/guard.test.ts`, `tests/mcp/specTools.test.ts`, `tests/mcp/dataTools.test.ts`, `tests/mcp/changeRequest.test.ts`, `tests/mcp/server.test.ts`
 
 #### MCP-TEST-002: Works in a real client
-- **Status:** 📝 Planned
+- **Status:** ⚠️ Partial — MCP Inspector session recorded; Claude Code session not yet
 - **Criterion:** THE server SHALL be exercised from MCP Inspector and from a Claude Code session, with the evidence kept in `l2-competency/evidence/`.
+- **Source:** `l2-competency/evidence/mcp-workbook-server.md`, `.mcp.json`
 
 ## Out of scope
 - Remote (HTTP) transport and authentication; the server is local only.

@@ -12,6 +12,8 @@
  *   inserted as markup.
  * - AIB-CITE-004: each sentence ends with its known fact IDs as bracketed markers (`[UC-123]`), plain text the user can
  *   keep or delete in the editor. Unknown IDs get no marker (they are reported as issues instead).
+ * - AIB-CITE-005: at most `MARKER_CAP` markers per sentence, for the first known IDs in the Writer's order. The other
+ *   known IDs get no marker but stay in `citations`; the citation check still covers every ID (CR-20261124-1).
  * - Final check: the result is validated against brief-draft.v1 before it is returned; a failure is `invalid_output`.
  */
 import { createRequire } from "node:module";
@@ -20,6 +22,9 @@ import { validateContract, type BriefDraftV1, type FactSheetV1, type WriterDraft
 import type { StepDefinition, StepInputs } from "../orchestrator";
 
 export const WORD_BUDGET = 350;
+
+/** AIB-CITE-005: the most citation markers shown after one sentence. */
+export const MARKER_CAP = 3;
 
 /** Issue types (brief-draft.v1 `issues[].type`). */
 export const GUARD_ISSUE_TYPES = ["uncited", "unknown_citation", "over_budget"] as const;
@@ -112,13 +117,17 @@ export function sanitizeDraftHtml(html: string): string {
   return getPurifier().sanitize(html, { FORBID_TAGS: ["style"] });
 }
 
-/** AIB-SAFE-002, AIB-CITE-004: code-built HTML: a bold heading paragraph, then one paragraph of marked sentences. */
+/** AIB-SAFE-002, AIB-CITE-004, AIB-CITE-005: code-built HTML: a bold heading paragraph, then one paragraph of marked sentences. */
 export function buildHtml(sections: readonly { heading: string; sentences: readonly Sentence[] }[], known: ReadonlySet<string>): string {
   return sections
     .map((sec) => {
       const body = sec.sentences
         .map((s) => {
-          const markers = [...new Set(s.fact_ids)].filter((id) => known.has(id)).map((id) => ` [${id}]`).join("");
+          const markers = [...new Set(s.fact_ids)]
+            .filter((id) => known.has(id))
+            .slice(0, MARKER_CAP)
+            .map((id) => ` [${id}]`)
+            .join("");
           return escapeHtml(s.text.trim()) + markers;
         })
         .join(" ");

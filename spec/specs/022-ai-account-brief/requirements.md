@@ -147,7 +147,7 @@ trust it and check it quickly.
 
 #### AIB-CITE-002: Every factual sentence cites its records
 - **Status:** ✅ Implemented
-- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/guard.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v1.md`
+- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/guard.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v2.md`
 - **Criterion:** THE draft SHALL mark every factual sentence with the fact IDs of the use cases or events it is based on.
 
 #### AIB-CITE-003: Invalid or missing citations fail verification
@@ -160,17 +160,22 @@ trust it and check it quickly.
 - **Source:** `server/ai/steps/guard.ts`, `src/components/customers/CustomerDetails.tsx`, `src/components/customers/AiDraftBanner.tsx`, `src/pages/Customers.tsx`, `src/hooks/useAiBrief.ts`
 - **Criterion:** WHEN the draft opens in the editor THE citations SHALL appear as bracketed markers (`[UC-123]`) after their sentences, which the user may keep or delete before saving.
 
+#### AIB-CITE-005: At most three markers per sentence
+- **Status:** ✅ Implemented
+- **Source:** `server/ai/steps/guard.ts`, `server/ai/prompts/writer.v2.md`
+- **Criterion:** THE draft SHALL show at most 3 citation markers after any one sentence, for the first 3 known fact IDs in the Writer's order; the sentence's other known fact IDs SHALL stay in the draft's `citations` (CR-20261124-1).
+
 ### AIB-R3 — Be faithful to the records
 **User story:** As a CSS, I want the draft to say only what the records support, so that I never pass on an invented fact.
 
 #### AIB-FAITH-001: No invented entities
 - **Status:** ⚠️ Partial — the Analyst sees only this customer's allow-listed data, the Writer only the insights, and both prompts forbid other names; measured by the eval graders (EVAL-T02)
-- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v1.md`
+- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v2.md`
 - **Criterion:** THE draft SHALL NOT name any person, customer, subsidiary, department or solution that is not in the run's fact sheet.
 
 #### AIB-FAITH-002: Numbers, statuses and dates match
 - **Status:** ⚠️ Partial — the fact sheet goes in unchanged (true counts, stored calendar days) and the prompts require them verbatim; measured by the eval graders (EVAL-T02)
-- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v1.md`
+- **Source:** `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/analyst.v1.md`, `server/ai/prompts/writer.v2.md`
 - **Criterion:** Counts, statuses and dates stated in the draft SHALL match the source records (dates as the stored calendar day, DT-TIME-003).
 
 #### AIB-FAITH-003: Sparse or empty customers
@@ -203,7 +208,7 @@ markup or obey text hidden in a note.
 
 #### AIB-FMT-001: Fixed sections
 - **Status:** ✅ Implemented
-- **Source:** `server/ai/steps/writer.ts` (four headings in order, checked), `server/ai/contracts.ts` (≥ 1 sentence per section), `server/ai/prompts/writer.v1.md`
+- **Source:** `server/ai/steps/writer.ts` (four headings in order, checked), `server/ai/contracts.ts` (≥ 1 sentence per section), `server/ai/prompts/writer.v2.md`
 - **Criterion:** THE draft SHALL have the sections *Overview*, *Wins*, *Risks* and *Next steps*, in that order; a section with nothing to say SHALL contain one sentence saying so.
 
 #### AIB-FMT-002: Length budget

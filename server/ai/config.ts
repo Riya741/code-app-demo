@@ -54,7 +54,7 @@ const INTERIM: StepSettings = Object.freeze({ model: "claude-sonnet-5-5", effort
 export const STEP_AGENTS: Readonly<Record<StepName, StepAgent>> = Object.freeze({
   retrieve: { step: "retrieve", agent: null, agentVersion: null, envSuffix: null, defaults: null },
   analyse: { step: "analyse", agent: "AGENT-ANALYST", agentVersion: "1.0.0", envSuffix: "ANALYST", defaults: INTERIM },
-  write: { step: "write", agent: "AGENT-WRITER", agentVersion: "1.1.0", envSuffix: "WRITER", defaults: INTERIM },
+  write: { step: "write", agent: "AGENT-WRITER", agentVersion: "1.2.0", envSuffix: "WRITER", defaults: INTERIM },
   guard: { step: "guard", agent: null, agentVersion: null, envSuffix: null, defaults: null },
 });
 

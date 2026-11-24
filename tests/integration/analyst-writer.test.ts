@@ -155,15 +155,15 @@ const outputOf = <T>(record: RunRecord, step: string) => record.completed.find((
 
 /* ------------------------------------------------------------------------------------------- prompts */
 
-describe("prompts v1", () => {
+describe("prompts (analyst.v1, writer.v2)", () => {
   const specVersion = (file: string) => /\*\*Version:\*\*\s*(\d+\.\d+\.\d+)/.exec(fs.readFileSync(path.join(ROOT, "spec", "agents", file), "utf8"))?.[1];
 
   it("AIB-CITE-002 each prompt cites its agent spec at the current version and requires fact IDs on every point and factual sentence", () => {
     const analyst = loadPrompt("analyse");
     const writer = loadPrompt("write");
     expect([analyst.version, analyst.agent, analyst.agentVersion]).toEqual(["analyst.v1", STEP_AGENTS.analyse.agent, specVersion("analyst.md")]);
-    expect([writer.version, writer.agent, writer.agentVersion]).toEqual(["writer.v1", STEP_AGENTS.write.agent, specVersion("writer.md")]);
-    expect([analystStep.promptVersion, writerStep.promptVersion]).toEqual(["analyst.v1", "writer.v1"]);
+    expect([writer.version, writer.agent, writer.agentVersion]).toEqual(["writer.v2", STEP_AGENTS.write.agent, specVersion("writer.md")]);
+    expect([analystStep.promptVersion, writerStep.promptVersion]).toEqual(["analyst.v1", "writer.v2"]);
     // The header comment is for people and lint; it is not sent.
     expect(analyst.text).not.toContain("<!--");
     expect(writer.text).not.toContain("<!--");
@@ -187,6 +187,17 @@ describe("prompts v1", () => {
   it("AIB-FMT-001 the Writer prompt names the four sections in order and one sentence for an empty section", () => {
     expect(WRITER).toMatch(/`Overview`, `Wins`, `Risks`, `Next steps`/);
     expect(WRITER).toMatch(/When a section has no points, write one sentence saying so/);
+  });
+
+  it("AIB-CITE-005 the Writer prompt asks for 1 to 3 fact IDs per sentence and no fact ID in the sentence text", () => {
+    expect(WRITER).toMatch(/List the 1 to 3 most direct fact IDs\. If a sentence would need more than 3, split it/);
+    expect(WRITER).toMatch(/Never write a\s+fact ID \(`CU-…`, `UC-…`, `EV-…`\) in `text`, with or without brackets/);
+  });
+
+  it("AIB-FMT-002 the Writer prompt aims below the 350-word limit and caps sentences per section", () => {
+    expect(WRITER).toMatch(/Aim for 300 words or fewer/);
+    expect(WRITER).toMatch(/350 words is a hard limit/);
+    expect(WRITER).toMatch(/1 to 4 per section/);
   });
 });
 

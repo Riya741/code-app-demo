@@ -25,7 +25,7 @@ Retriever ─fact-sheet.v1─► Analyst ─analyst-to-writer.v1─► Writer �
 | `server/ai/routes.ts` | `/api/ai/status`, `/api/ai/brief`, `/api/ai/runs/:id`, `/api/ai/runs/:id/events`, `/api/ai/runs/:id/cancel` (registered by the Vite plugin next to `/api/workbook`; runs kept in memory, newest 50, until AOPS-T05) |
 | `server/ai/steps/retriever.ts` | Fact sheet from the `Store` read model; fact IDs; allow-list and redaction ([ai-data-policy](../../steering/ai-data-policy.md)) |
 | `server/ai/steps/analyst.ts`, `writer.ts` | LLM steps, one per agent spec |
-| `server/ai/steps/guard.ts` | Citation checks (AIB-CITE-003; failures make the draft `unverified` with issues), builds HTML from sentences, appends `[UC-…]` markers, sanitises, counts words, final schema check |
+| `server/ai/steps/guard.ts` | Citation checks (AIB-CITE-003; failures make the draft `unverified` with issues), builds HTML from sentences, appends up to 3 `[UC-…]` markers per sentence (AIB-CITE-005), sanitises, counts words, final schema check |
 | `server/ai/prompts/*.v1.md` | Prompts; each starts with a header citing its agent spec and requirement IDs (lint check 11) |
 | `server/ai/contracts.ts` | zod schemas matching `spec/contracts/*.schema.json` |
 | `src/lib/aiBrief.ts` | Fetchers: `getAiStatus`, `startBrief`, `getRun`, `subscribeRun` (EventSource) |

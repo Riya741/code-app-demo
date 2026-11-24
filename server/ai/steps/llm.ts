@@ -58,6 +58,9 @@ export class LlmStepError extends Error {
 /** The prompt file of each LLM step (agent spec "Implementation"). */
 const PROMPT_NAMES: Readonly<Partial<Record<StepName, string>>> = Object.freeze({ analyse: "analyst", write: "writer" });
 
+/** The prompt version each step uses (writer.v2 since AIB-T11, CR-20261124-1). */
+export const PROMPT_VERSIONS = Object.freeze({ analyse: "v1", write: "v2" } as const);
+
 export interface Prompt {
   /** e.g. `analyst.v1`; recorded on the step's spans as `promptVersion`. */
   readonly version: string;
@@ -82,7 +85,7 @@ export class PromptHeaderError extends Error {
 const cache = new Map<string, Prompt>();
 
 /** Reads and checks a step's prompt once per process. Throws `PromptHeaderError` on a header that does not match. */
-export function loadPrompt(step: "analyse" | "write", version = "v1"): Prompt {
+export function loadPrompt(step: "analyse" | "write", version: string = PROMPT_VERSIONS[step]): Prompt {
   const name = `${PROMPT_NAMES[step]}.${version}`;
   const hit = cache.get(name);
   if (hit) return hit;

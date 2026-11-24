@@ -66,12 +66,12 @@ Requirements: ✅ Implemented · ⚠️ Partial · ❌ Gap · 📝 Planned. Task
 | [020-performance-reliability](specs/020-performance-reliability/) | PERF/REL/COMP/DT | 23 | 16 | 4 | 1 | 2 | 7 | 2 | 0 | 5 | 0 |
 | [021-quality](specs/021-quality/) | QA | 15 | 13 | 0 | 0 | 2 | 11 | 7 | 0 | 4 | 0 |
 | **AI & agents** (CR-20261117-1) | | | | | | | | | | | |
-| [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 35 | 31 | 4 | 0 | 0 | 10 | 10 | 0 | 0 | 0 |
+| [022-ai-account-brief](specs/022-ai-account-brief/) | AIB | 36 | 32 | 4 | 0 | 0 | 11 | 11 | 0 | 0 | 0 |
 | [023-ai-evaluation](specs/023-ai-evaluation/) | EVAL | 32 | 14 | 1 | 0 | 17 | 12 | 5 | 0 | 7 | 0 |
 | [024-agent-ops](specs/024-agent-ops/) | AOPS | 35 | 15 | 2 | 0 | 18 | 12 | 4 | 0 | 8 | 0 |
 | [025-mcp-tooling](specs/025-mcp-tooling/) | MCP | 17 | 0 | 0 | 0 | 17 | 6 | 0 | 0 | 5 | 1 |
 | [026-dev-agents](specs/026-dev-agents/) | DEVA | 17 | 16 | 0 | 0 | 1 | 15 | 14 | 0 | 1 | 0 |
-| **Total** | | **528** | **428** | **27** | **10** | **63** | **243** | **163** | **0** | **76** | **4** |
+| **Total** | | **529** | **429** | **27** | **10** | **63** | **244** | **164** | **0** | **76** | **4** |
 
 ## Suggested next tasks (highest value first)
 Done in Phase 0 (2026-11-16): SEC-T02 git, SEC-T01 localhost, QA-T05 typecheck, QA-T01 unit tests, SRCH-T07/T09,

@@ -4,7 +4,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { SECTION_HEADINGS, validateContract, type FactSheetV1, type WriterDraftV1 } from "../../server/ai/contracts";
 import type { StepInputs } from "../../server/ai/orchestrator";
-import { GuardError, WORD_BUDGET, countWords, guard, sanitizeDraftHtml } from "../../server/ai/steps/guard";
+import { GuardError, MARKER_CAP, WORD_BUDGET, countWords, guard, sanitizeDraftHtml } from "../../server/ai/steps/guard";
 // jsdom (the sanitiser's DOM) is created on first use and is slow to start under a parallel suite: start it once here.
 beforeAll(() => void sanitizeDraftHtml(""), 60_000);
 
@@ -71,6 +71,16 @@ describe("HTML and citation markers", () => {
     expect(out.citations).toEqual(["UC-10", "UC-11", "EV-20"]);
     const headings = [...out.html.matchAll(/<strong>([^<]+)<\/strong>/g)].map((m) => m[1]);
     expect(headings).toEqual([...SECTION_HEADINGS]);
+  });
+
+  it("AIB-CITE-005 at most 3 markers per sentence, the first known IDs in the Writer's order; the rest stay in citations", async () => {
+    expect(MARKER_CAP).toBe(3);
+    const out = await guard(input(draft({ Overview: [s("Busy quarter.", ["UC-404", "EV-20", "UC-10", "UC-10", "CU-1", "UC-11"])] })));
+    expect(out.html).toContain("<p>Busy quarter. [EV-20] [UC-10] [CU-1]</p>");
+    expect(out.html).not.toContain("[UC-11]");
+    expect(out.citations).toEqual(["EV-20", "UC-10", "CU-1", "UC-11"]);
+    // The unknown ID is still reported: the cap changes what is shown, not what is checked.
+    expect(out.issues.map((i) => i.type)).toEqual(["unknown_citation"]);
   });
 });
 

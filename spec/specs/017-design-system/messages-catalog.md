@@ -50,7 +50,7 @@ Every string a user can see as feedback. Change wording here first, then in code
 | Client, non-JSON | The workbook service is not available here. It only runs with `npm run dev` / `npm run preview`. |
 | Client, generic | The workbook request failed (<status>). |
 | Client, no id | This use case has no id. / This event has no id. |
-| Server 400 | Missing: <fields> · The request body is not valid JSON. · parentId is required. · executive_summary must be a string. *(API-SUMM-002; an absent field or a non-object body uses "Missing: executive_summary")* |
+| Server 400 | Missing: <fields> · The request body is not valid JSON. · parentId is required. · executive_summary must be a string. *(API-SUMM-002; an absent field or a non-object body uses "Missing: executive_summary")* · Unknown <field>: <id> · Status <id> is not allowed for solution <id>. · Use case type <id> is not allowed for solution <id>. *(API-WRITE-008)* |
 | Server 404 | The workbook has no "<name>" sheet. · Use case <id> was not found. · Event <id> was not found. · Customer <id> was not found. · This use case could not be found. · This event could not be found. · Unknown workbook request: <METHOD> <path> |
 | Server 409 | This use case was already deleted. / This event was already deleted. |
 | Server 423 | Could not save: <file> is open in Excel. Close it and try again. |

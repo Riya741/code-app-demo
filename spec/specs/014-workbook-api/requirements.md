@@ -108,7 +108,7 @@ JSON API at `/api/workbook` served by the Vite dev/preview server. Contract deta
 - **Source:** `server/workbook.ts`
 
 #### API-WRITE-008: Validate references
-- **Status:** ❌ Gap
+- **Status:** ✅ Implemented
 - **Criterion:** THE API SHALL reject ids that do not exist in the referenced sheet and status/type values not allowed for the solution, with 400.
 - **Source:** `server/workbook.ts`
 

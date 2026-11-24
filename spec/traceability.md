@@ -17,7 +17,7 @@
 | rich-text | RTX | `src/lib/html.ts`, `src/components/customers/RichTextEditor.tsx`, `src/components/customers/RichTextField.tsx`, `src/index.css` |
 | data-model | DATA | `scripts/build_workbook.py`, `server/workbook.ts`, `../data/code-app-data.xlsx` |
 | workbook-storage | STO | `server/workbook.ts` (`Store`, `norm`, `clean`, `exclusive`) |
-| workbook-api | API | `server/workbook.ts` (`handle`, queries, `saveUseCase`, `saveEvent`, `softDelete`, `relink`), `vite.config.ts` |
+| workbook-api | API | `server/workbook.ts` (`handle`, queries, `saveUseCase`, `saveEvent`, `checkRefs`, `checkSolutionValues`, `softDelete`, `relink`), `vite.config.ts` |
 | client-data-layer | CDL | `src/lib/workbookApi.ts`, `src/lib/lookups.ts`, `src/lib/parentData.ts`, `src/lib/types.ts`, `src/hooks/*` |
 | data-pipeline | PIPE | `scripts/build_workbook.py`, `scripts/apply_use_case_notes.py` |
 | design-system | DS | `src/index.css`, `tailwind.config.ts`, `components.json`, `src/components/customers/{Panel,Combobox,FormBits,ConfirmDelete,ExportButton}.tsx`, `src/components/ui/*` |
@@ -47,7 +47,7 @@
 | `scripts/generate_demo_workbook.py`, `scripts/demo_catalogue.json` | data-pipeline (PIPE-GEN-001..008), data-model (DATA-QUAL-001, -002, -004) |
 | `tests/unit/search.test.ts` | customer-search (SRCH-RANK-001..004) |
 | `tests/component/*.test.tsx` (Testing Library) | design-system (DS-COMP-003), use-cases-panel (UCP-DEL-002), workspace-layout (LAY-SHELL-001, LAY-PANEL-004, LAY-PANEL-007, LAY-PANEL-008, LAY-DLG-001..014 in `Customers.test.tsx`, `SummaryDialog.test.tsx`, `TopBar.test.tsx`) |
-| `tests/integration/harness.ts`, `tests/integration/*.test.ts` | quality (QA-TEST-003), workbook-api (API-GEN-001..004, API-READ-004, API-WRITE-001, API-WRITE-007, API-DEL-001, API-DEL-002, API-SUMM-001, API-SUMM-002) |
+| `tests/integration/harness.ts`, `tests/integration/*.test.ts` | quality (QA-TEST-003), workbook-api (API-GEN-001..004, API-READ-004, API-WRITE-001, API-WRITE-007, API-WRITE-008, API-DEL-001, API-DEL-002, API-SUMM-001, API-SUMM-002) |
 | `tests/component/UseCaseForm.test.tsx`, `tests/integration/use-case-edit.test.ts` | use-case-form (UCF-EDIT-002, UCF-EDIT-004, UCF-ADD-002, UCF-ADD-004; UCF-EDIT-007 evidence under UCF-EDIT-002 titles until UCF-T11) |
 | `tests/component/EventForm.test.tsx`, `tests/integration/event-edit.test.ts` | event-form (EVF-EDIT-002, EVF-ADD-003; EVF-EDIT-004 evidence under an EVF-EDIT-002 title until EVF-T10) |
 | `tests/integration/summary.test.ts` | workbook-api (API-SUMM-001, API-SUMM-002) |

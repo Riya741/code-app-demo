@@ -38,7 +38,6 @@ Rules:
 | AOPS-FAIL-007 | Low | Degrade gracefully (No client and `enabled: false` done; the status route comes with AIB-T05) | [024-agent-ops](../specs/024-agent-ops/requirements.md) | AIB-T05 ✅, AOPS-T09 ⬜ (deferred, CR-20261123-2) | Open |
 | AIB-SAFE-001 | Low | Data is not instructions (Escaped data block done; draft behaviour needs prompts and the eval) | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T03 ✅, EVAL-T01 ✅ (dataset; the live eval run measures it) | Open |
 | AIB-FAITH-003 | Low | Sparse or empty customers (Fact sheet exact; draft behaviour needs prompts and the eval) | [022-ai-account-brief](../specs/022-ai-account-brief/requirements.md) | AIB-T03 ✅, EVAL-T01 ✅ (dataset; the live eval run measures it) | Open |
-| MCP-TEST-002 | Low | Works in a real client (MCP Inspector session recorded; Claude Code session not yet) | [025-mcp-tooling](../specs/025-mcp-tooling/requirements.md) | MCP-T06 🔄 | Open |
 
 ## Accepted limitations
 Known limits agreed as acceptable at the current data size. Revisit using the triggers in the requirement.
@@ -55,6 +54,7 @@ Known limits agreed as acceptable at the current data size. Revisit using the tr
 
 | Requirement | Sev | Title | Spec | Fix tasks | State |
 |---|---|---|---|---|---|
+| ~~MCP-TEST-002~~ | Low | ~~Works in a real client~~ | [025-mcp-tooling](../specs/025-mcp-tooling/requirements.md) | MCP-T06 ✅ | Closed 2026-11-24 |
 | ~~DT-TIME-003~~ | High | ~~Date-only values show stored day~~ | [020-performance-reliability](../specs/020-performance-reliability/requirements.md) | UCP-T08 ✅, PERF-T03 ✅ | Closed 2026-11-24 |
 | ~~UCP-GRID-004~~ | Low | ~~Launch date sort and display~~ | [004-use-cases-panel](../specs/004-use-cases-panel/requirements.md) | UCP-T08 ✅ | Closed 2026-11-24 |
 | ~~EVP-GRID-003~~ | Low | ~~Show stored calendar day~~ | [007-events-panel](../specs/007-events-panel/requirements.md) | EVP-T07 ✅ | Closed 2026-11-24 |

@@ -2,7 +2,13 @@
 
 **Top marks (25–30):** *Advanced Claude Code / Copilot (agent modes, CLI, skills) delivering working software.*
 
-**Today: 8–12 (Developing). Target: 26–29.**
+**Status 2026-11-24: estimate 22–25. Target: 26–29.** Evidence: [ai-dev-log.md](evidence/ai-dev-log.md)
+(every task, Phases 0–6, with fix-ups), [before/after](evidence/before-after.md),
+[sessions/](evidence/sessions/README.md).
+
+> **Changed since this plan was written:** CR-20261121-1 replaced the implementer, test-writer and reviewer subagents
+> with main-session delivery through the `task-implement` and `task-close` skills, to save tokens. Each subagent had
+> been re-reading context the session already held. Hooks still guard every edit.
 
 ## 1. Where you stand
 
@@ -105,10 +111,10 @@ honest view of where the agent needed help. Assessors value candour about limits
 
 ## Evidence checklist for Topic 2
 
-- [ ] Git history with task-ID commits; PRs if using GitHub
+- [x] Git history with task-ID commits, one branch per task merged into `main` with `--no-ff` (no PRs: single developer)
 - [x] `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`, `.claude/settings.json` (Phase 2)
-- [ ] ≥ 3 recorded sessions: plan mode, parallel subagents, worktrees
-- [ ] Headless `claude -p` review running in CI
-- [ ] 7 High gaps closed; app demo of the working features
-- [ ] `ai-dev-log.md` with metrics
+- [ ] ≥ 3 recorded sessions: parallel subagents (Phase 2, in the dev log) and a Claude Code session using the MCP tools ([evidence](evidence/mcp-workbook-server.md)) are recorded; plan mode and worktrees still to record ([sessions/](evidence/sessions/README.md))
+- [ ] Headless `claude -p` review running in CI: not done. CI (G6) runs spec lint, lint, typecheck and tests without a model
+- [x] 7 High gaps closed (7 → 0, [before/after](evidence/before-after.md)); the app demo is in the demo video
+- [x] [`ai-dev-log.md`](evidence/ai-dev-log.md) with metrics (fix-ups, tests, gates, commit per task)
 - [ ] *(Optional)* Claude Code vs Copilot scored comparison

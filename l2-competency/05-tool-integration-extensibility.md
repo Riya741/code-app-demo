@@ -2,7 +2,10 @@
 
 **Top marks (25–30):** *Extended agents via MCP servers, hooks, or custom skills/tools — secure and reusable.*
 
-**Today: 3–6. Target: 26–29.**
+**Status 2026-11-24: estimate 23–26. Target: 26–29.** Evidence:
+[security/security-evidence.md](evidence/security/security-evidence.md),
+[mcp-workbook-server.md](evidence/mcp-workbook-server.md), [mcp/workbook-mcp/](../mcp/workbook-mcp/src/),
+[spec 025](../spec/specs/025-mcp-tooling/requirements.md) (17/17 ✅).
 
 ## 1. Where you stand
 
@@ -50,7 +53,19 @@ Record one demo where the hook blocks an out-of-spec edit and the agent then fol
 Write each `SKILL.md` description so the skill triggers reliably, and test that with the `skill-creator` skill's eval
 loop (a small trigger eval doubles as Topic 3 evidence).
 
-### 5.3 MCP server: `workbook-mcp`  *(Phase 5)*
+### 5.3 MCP server: `workbook-mcp`  *(built 2026-11-24, MCP-T01..T06)*
+
+> **As built:**
+> - **Data tools:** `search_customers`, `get_customer_facts`, `list_use_cases` and `list_events`, plus `get_use_case`
+>   and `get_event` for a full note by ID. The record tools are the runtime agents' `server/ai/tools.ts` definitions,
+>   run through `runTool`; `get_customer_facts` is the Retriever's `retrieve`.
+> - **Spec tools:** `get_requirement`, `list_open_gaps`, `trace_requirement` and `run_spec_lint`.
+> - **Write tool:** `propose_change_request`, registered only when `MCP_ALLOW_WRITE=1`.
+> - **Also:** 2 resources and the `draft-account-brief` prompt. Resource reads and prompt requests are audited too.
+>
+> **Two differences from the table below:**
+> - The audit line has no "caller" field, because stdio has one client per process.
+> - The evidence is an MCP Inspector CLI transcript and a Claude Code session, not a screenshot.
 
 A TypeScript MCP server (`mcp/workbook-mcp/`, `@modelcontextprotocol/sdk`, stdio transport) registered in a
 project-scoped `.mcp.json`. It gives Claude Code (and any MCP client, e.g. Copilot agent mode) **safe, structured**
@@ -102,10 +117,10 @@ reproducible. The [spectree README](../spectree/README.md) already says the gene
 
 ## Evidence checklist for Topic 5
 
-- [x] `.claude/settings.json` with hooks + deny-list; hook scripts with tests (17 tests, `npm run test:hooks`)
+- [x] `.claude/settings.json` with hooks + deny-list; hook scripts with tests (18 tests now, `npm run test:hooks`)
 - [ ] Recording: spec-guard blocks an edit; post-edit lint feeds back a fix
-- [ ] 5 project skills with trigger evals
-- [ ] `mcp/workbook-mcp` with tests, `.mcp.json`, Inspector screenshot, audit log sample
-- [ ] Security table above, each control linked to a test
-- [ ] Shared `server/ai/tools.ts` used by both the MCP server and the runtime agent
+- [ ] 5 project skills ✅ with trigger evals (`.claude/skills/trigger-evals.json` written; the eval run is deferred, DEVA-T14)
+- [x] `mcp/workbook-mcp` with 59 tests, `.mcp.json`, MCP Inspector transcript and Claude Code session, audit log sample ([evidence](evidence/mcp-workbook-server.md))
+- [x] Security table above, each control linked to a test ([security evidence §2](evidence/security/security-evidence.md#2-workbook-mcp-59-tests-pass-mapped-to-each-control))
+- [x] Shared `server/ai/tools.ts` used by both the MCP server and the runtime agent (MCP-SRV-004; a test checks the same schema objects and identical results)
 - [ ] `sdd-toolkit` plugin installed and working in a second repo

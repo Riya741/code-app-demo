@@ -2,7 +2,18 @@
 
 **Top marks (25–30):** *Spec discipline governs agent behaviour and hand-offs, not just a single file.*
 
-**Today: 23–26 after Phase 1 (was 18–21). Target: 27–30.**
+**Status 2026-11-24: estimate 27–29. Target: 27–30.** Evidence:
+[traceability walkthrough](evidence/traceability-walkthrough.md), [before/after](evidence/before-after.md),
+[spec/handoffs/](../spec/handoffs/README.md) (45 hand-offs).
+
+> **Changed since this plan was written:**
+> - CR-20261121-1 cut the roster to 4 agent specs: Analyst, Writer, Spec author and Eval judge. It removed the Critic
+>   and its contracts (`writer-to-critic.v1`, `critic-verdict.v1`); the Writer now hands off `writer-draft.v1` to
+>   the Guard.
+> - Tasks are delivered in the main session, with the review recorded in the hand-off, not by implementer and
+>   reviewer subagents.
+>
+> The tables below show the original design where they mention the removed parts.
 
 ## 1. What already earns marks
 
@@ -131,11 +142,11 @@ Keep the `sdd-spectree` generator in step: it imports `spec_lint.py`'s regexes, 
 
 - [x] CR-20261117-1 and constitution v1.1.0 with Article XII (also qualifies VIII.3, not only III.3); mapping updated
 - [x] `steering/ai-data-policy.md`
-- [ ] Specs 022–026 pass G1 ✅; ADR-0008 Accepted ✅; ADR-0007 *Proposed* until the Phase 4 eval decides it
-- [x] `spec/agents/` (12 agent specs, incl. the eval judge) and `spec/contracts/` (6 schemas, incl. `brief-draft.v1`)
-- [ ] ≥ 5 `spec/handoffs/<TASK>.md` files written by the implementer subagent
+- [ ] Specs 022–026 pass G1 ✅; ADR-0008 Accepted ✅; ADR-0007 still *Proposed*: its decision task, EVAL-T07, is deferred by CR-20261123-2
+- [x] `spec/agents/`: 12 agent specs at first, 4 since CR-20261121-1 (Analyst, Writer, Spec author, Eval judge; the retired ones listed, IDs never reused). `spec/contracts/`: 6 schemas, incl. `writer-draft.v1`, `brief-draft.v1` and `judge-verdict.v1`
+- [x] ≥ 5 `spec/handoffs/<TASK>.md` files: 45, written by the implementer subagent in Phase 2 and by the main session since CR-20261121-1
 - [x] `spec_lint.py` checks 10–12 passing (plus check 13 for contracts); spec tree `--verify` passing
-- [ ] One end-to-end traceability walkthrough (screenshot or video segment)
+- [x] One end-to-end traceability walkthrough: [evidence/traceability-walkthrough.md](evidence/traceability-walkthrough.md), AIB-CITE-002 pulled live through the MCP tools (the video segment is part of the demo)
 
 ## Pitfalls to avoid
 

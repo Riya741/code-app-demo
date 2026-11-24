@@ -15,6 +15,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import type { z } from "zod";
+import type { ReadOnlyStore } from "../../../server/ai/tools";
 import type { McpConfig } from "./config";
 
 /* ------------------------------------------------------------------------------------------- limits */
@@ -39,6 +40,11 @@ export interface JsonInputSchema {
 export interface ToolContext {
   readonly config: McpConfig;
   readonly paths: PathGuard;
+  /**
+   * The workbook read model, opened on first use at the path the allow-list returns. Read side only: `save()` is not
+   * reachable (MCP-SEC-002, Article XII.3).
+   */
+  readonly workbook: () => ReadOnlyStore;
 }
 
 export interface McpTool<S extends z.ZodTypeAny = z.ZodTypeAny> {

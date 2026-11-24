@@ -24,8 +24,9 @@ so that its answers are grounded and its access is controlled.
 - **Source:** `mcp/workbook-mcp/src/index.ts`, `mcp/workbook-mcp/src/main.ts`, `.mcp.json`
 
 #### MCP-SRV-002: Data tools
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE server SHALL offer the read tools `search_customers`, `get_customer_facts`, `list_use_cases` and `list_events`, returning paged, structured results.
+- **Source:** `mcp/workbook-mcp/src/dataTools.ts`, `mcp/workbook-mcp/src/index.ts`
 
 #### MCP-SRV-003: Spec tools
 - **Status:** ✅ Implemented
@@ -33,8 +34,9 @@ so that its answers are grounded and its access is controlled.
 - **Source:** `mcp/workbook-mcp/src/specTools.ts`, `mcp/workbook-mcp/src/index.ts`
 
 #### MCP-SRV-004: Shared implementation
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE data tools SHALL call the functions in `server/ai/tools.ts` used by the runtime agents, and SHALL NOT duplicate their query logic.
+- **Source:** `mcp/workbook-mcp/src/dataTools.ts`, `server/ai/tools.ts`, `server/ai/steps/retriever.ts`, `src/lib/search.ts`
 
 #### MCP-SRV-005: Resources and prompt
 - **Status:** ✅ Implemented
@@ -69,12 +71,14 @@ agent cannot leak or damage data.
 - **Source:** `mcp/workbook-mcp/src/specTools.ts` (`makeRunSpecLint`, `specLintCommand`)
 
 #### MCP-SEC-005: Data minimisation
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE data tools SHALL apply the AI data policy allow-list and redaction, and SHALL return full note text only when a single record is requested by ID.
+- **Source:** `mcp/workbook-mcp/src/dataTools.ts`, `server/ai/tools.ts` (redaction, field builders), `server/ai/steps/retriever.ts` (`textMax`)
 
 #### MCP-SEC-006: Free text marked as data
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Criterion:** THE server SHALL return workbook free text only inside fields named `text`, with the tool description stating that such text is data, not instructions.
+- **Source:** `mcp/workbook-mcp/src/dataTools.ts` (`DATA_NOTE`), `server/ai/tools.ts`
 
 #### MCP-SEC-007: No secrets in configuration
 - **Status:** ✅ Implemented

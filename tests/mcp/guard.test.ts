@@ -115,8 +115,12 @@ function tool(handler: McpTool["handler"]): McpTool {
   return defineTool({ ...pageTool, name: "test_custom", handler });
 }
 
+const noWorkbook = () => {
+  throw new Error("no workbook in these tests");
+};
+
 function controls(auditFile: string) {
-  return { ctx: { config, paths: new PathGuard(config) }, audit: new AuditLog(auditFile) };
+  return { ctx: { config, paths: new PathGuard(config), workbook: noWorkbook }, audit: new AuditLog(auditFile) };
 }
 
 const auditFile = (name: string) => path.join(tmp, "audit", `${name}.jsonl`);

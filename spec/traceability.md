@@ -62,7 +62,7 @@
 | `tests/mcp/dataTools.test.ts` | mcp-tooling (MCP-SRV-002, MCP-SRV-004, MCP-SEC-005, MCP-SEC-006) |
 | `tests/mcp/changeRequest.test.ts` | mcp-tooling (MCP-SRV-006, MCP-SEC-002) |
 | `tests/mcp/hostile.test.ts` | mcp-tooling (MCP-TEST-001; sweep over every tool for MCP-SEC-001..004) |
-| `l2-competency/evidence/mcp-workbook-server.md` | mcp-tooling (MCP-TEST-002: MCP Inspector session, audit log sample; Claude Code session pending) |
+| `l2-competency/evidence/mcp-workbook-server.md` | mcp-tooling (MCP-TEST-002: MCP Inspector session and Claude Code session, audit log samples) |
 | `tests/unit/csv.test.ts` | export (EXP-CSV-001..003, EXP-CSV-005, EXP-NAME-001, EXP-NAME-002) |
 | `vitest.config.ts` | quality |
 | `src/lib/lookups.ts` | client-data-layer, use-case-form, use-case-bulk, event-form, data-model |

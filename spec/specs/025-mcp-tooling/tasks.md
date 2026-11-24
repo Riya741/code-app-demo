@@ -1,7 +1,7 @@
 # Tasks — MCP Tooling (`workbook-mcp`)
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 6 tasks — ✅ 5 · 🔄 1 · ⬜ 0 · ⛔ 0
+**Summary:** 6 tasks — ✅ 6 · 🔄 0 · ⬜ 0 · ⛔ 0
 
 - [x] **MCP-T01** Server scaffold, `.mcp.json`, controls wrapper (validation, allow-list, caps, audit).
   - Status: ✅ Done · Covers: MCP-SRV-001, MCP-SEC-001, MCP-SEC-003, MCP-SEC-007, MCP-AUD-001, MCP-AUD-002 · Files: `mcp/workbook-mcp/`, `.mcp.json`
@@ -20,5 +20,6 @@
 - [x] **MCP-T05** Tool tests and hostile-input tests per control.
   - Status: ✅ Done · Covers: MCP-TEST-001 · Depends on: MCP-T01
   - Verified 2026-11-24: `tests/mcp/hostile.test.ts` (6 tests) checks that every registered tool, the write tool included, is called by name in a test, and sweeps every tool: oversize string in each string field, an unknown field with shell metacharacters, traversal and shell text in each ID / number field, hostile free text in a context where nothing can be read or written, and every listed tool through the real server with each refusal audited. Per-control hostile tests (MCP-SEC-001 traversal + junction, MCP-SEC-002, MCP-SEC-003 oversize, MCP-SEC-004 shell metacharacters) are mapped in the file header; G1, G3, G4 pass; G5 n/a ([hand-off](../../handoffs/MCP-T05.md)).
-- [ ] **MCP-T06** MCP Inspector and Claude Code session evidence.
-  - Status: 🔄 In progress · Covers: MCP-TEST-002 · Depends on: MCP-T03 · MCP Inspector part done 2026-11-24 ([evidence](../../../l2-competency/evidence/mcp-workbook-server.md)); Claude Code session waits for the owner
+- [x] **MCP-T06** MCP Inspector and Claude Code session evidence.
+  - Status: ✅ Done · Covers: MCP-TEST-002 · Depends on: MCP-T03
+  - Verified 2026-11-24: MCP Inspector 2.16.0 session (CLI mode, `.mcp.json` registration: 10 tools, 27 resources, prompt; reads, spec lint run, 4 hostile calls refused; 8 audit lines) and a Claude Code session in VS Code (server loaded from `.mcp.json`, 6 `mcp__workbook__` calls: gaps, trace, search, fact sheet, one record by ID; a cited draft brief, not saved; 6 audit lines), recorded in [evidence](../../../l2-competency/evidence/mcp-workbook-server.md); G1 pass, G3 / G4 unchanged since MCP-T05 (documentation only); G5 n/a ([hand-off](../../handoffs/MCP-T06.md)).

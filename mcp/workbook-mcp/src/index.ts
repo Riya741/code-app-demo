@@ -4,8 +4,9 @@
  * `createServer` registers tools, resources and prompts. Every `tools/call` goes through `withControls` (guard.ts), so
  * validation, the path allow-list, the result cap and the audit line apply to every tool, including a call to a name
  * that is not registered. Resource reads and prompt requests are validated and audited the same way, under the fixed
- * labels "resources/read" and "prompts/get". Spec tools, resources and the prompt come from specTools.ts (MCP-T03);
- * data tools (MCP-T02) and the change-request tool (MCP-T04) are added by their tasks. `main.ts` connects to stdio.
+ * labels "resources/read" and "prompts/get". Data tools come from dataTools.ts (MCP-T02); spec tools, resources and
+ * the prompt from specTools.ts (MCP-T03); the change-request tool (MCP-T04) is added by its task. `main.ts` connects
+ * to stdio.
  */
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import {
@@ -19,7 +20,10 @@ import {
   McpError,
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import { Store } from "../../../server/workbook";
+import type { ReadOnlyStore } from "../../../server/ai/tools";
 import { loadConfig, SERVER_NAME, SERVER_VERSION, type McpConfig } from "./config";
+import { DATA_TOOLS } from "./dataTools";
 import { AuditLog, ControlError, MESSAGES, PathGuard, withControls, writeAudit, type Controls, type McpTool } from "./guard";
 import {
   DRAFT_BRIEF_PROMPT,
@@ -31,14 +35,16 @@ import {
   SPEC_TOOLS,
 } from "./specTools";
 
-/** The tools this server offers. Data tools (MCP-T02) and the change-request tool (MCP-T04) join later. */
-export const TOOLS: readonly McpTool[] = Object.freeze([...SPEC_TOOLS]);
+/** The tools this server offers. The change-request tool (MCP-T04) joins later. */
+export const TOOLS: readonly McpTool[] = Object.freeze([...DATA_TOOLS, ...SPEC_TOOLS]);
 
 export interface ServerOptions {
   config?: McpConfig;
   tools?: readonly McpTool[];
   /** For tests: a fixed clock for audit durations. */
   now?: () => number;
+  /** For tests: a read model to use instead of opening `config.workbookPath`. */
+  workbook?: ReadOnlyStore;
 }
 
 /**
@@ -69,7 +75,11 @@ async function auditedRequest<T>(controls: Controls, label: string, rawArgs: unk
 export function createServer(options: ServerOptions = {}): Server {
   const config = options.config ?? loadConfig();
   const tools = new Map((options.tools ?? TOOLS).map((t) => [t.name, t] as const));
-  const controls: Controls = { ctx: { config, paths: new PathGuard(config) }, audit: new AuditLog(config.auditPath), now: options.now };
+  const paths = new PathGuard(config);
+  let store: ReadOnlyStore | undefined = options.workbook;
+  // Opened on first use, so the server starts without a workbook; the path goes through the allow-list (MCP-SEC-001).
+  const workbook = () => (store ??= new Store(paths.resolve(config.workbookPath, "read")));
+  const controls: Controls = { ctx: { config, paths, workbook }, audit: new AuditLog(config.auditPath), now: options.now };
 
   const server = new Server(
     { name: SERVER_NAME, version: SERVER_VERSION },

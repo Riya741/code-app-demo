@@ -40,6 +40,12 @@ export const FACT_SHEET_ITEMS_MAX = 200;
 
 export interface RetrieveInput {
   readonly customerId: number;
+  /**
+   * Cut for the free text in `text` fields; default `TEXT_MAX` (1 500, ai-data-policy §2). The MCP server's
+   * `get_customer_facts` passes `LIST_TEXT_MAX` so that full note text comes back only for one record asked for by ID
+   * (MCP-SEC-005). Never more than `TEXT_MAX`.
+   */
+  readonly textMax?: number;
 }
 
 /** A subset of the orchestrator's StepContext (024 design) plus the read model; `now` is injectable for tests. */
@@ -92,8 +98,9 @@ export async function retrieve(input: RetrieveInput, ctx: RetrieveContext): Prom
   // Counts below cover every live record, so the numbers stay true when the lists are cut.
   if (useCaseRows.length > FACT_SHEET_ITEMS_MAX) tally.add("truncated");
   if (eventRows.length > FACT_SHEET_ITEMS_MAX) tally.add("truncated");
-  const useCases = useCaseRows.slice(0, FACT_SHEET_ITEMS_MAX).map((r) => toUseCaseFact(r, TEXT_MAX, tally));
-  const events = eventRows.slice(0, FACT_SHEET_ITEMS_MAX).map((r) => toEventFact(r, TEXT_MAX, tally));
+  const textMax = Math.min(TEXT_MAX, Math.max(1, Math.floor(input.textMax ?? TEXT_MAX)));
+  const useCases = useCaseRows.slice(0, FACT_SHEET_ITEMS_MAX).map((r) => toUseCaseFact(r, textMax, tally));
+  const events = eventRows.slice(0, FACT_SHEET_ITEMS_MAX).map((r) => toEventFact(r, textMax, tally));
 
   // Use cases without a status are counted in `use_cases` but under no status name (no invented label). Each distinct
   // status name is redacted and cut once, as a key, the same way as the items' `status` (names that become equal are

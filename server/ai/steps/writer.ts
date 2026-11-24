@@ -1,5 +1,5 @@
 /**
- * Writer step (spec 022-ai-account-brief, task AIB-T03; agent spec AGENT-WRITER, prompt writer.v1). Turns the
+ * Writer step (spec 022-ai-account-brief, task AIB-T03; agent spec AGENT-WRITER, prompt writer.v2 since AIB-T11). Turns the
  * Analyst's insights into plain-text sentences in four fixed sections (writer-draft.v1). No tools: none are offered,
  * and a tool call is rejected as invalid output (agent spec "Tools").
  *
@@ -13,12 +13,13 @@
  *   numbers and dates that the points do not give; measured by the eval graders.
  * - AIB-SAFE-001: the analysis goes in as one escaped `<analysis>` data block, without `contract` and `run_id`.
  * - The 350-word budget (AIB-FMT-002) is asked for in the prompt and enforced by the Guard (AIB-T04).
+ * - AIB-CITE-005: the prompt asks for 1 to 3 fact IDs per sentence; the Guard shows at most 3 markers either way.
  */
 import { SECTION_HEADINGS, validateContract, type AnalystToWriterV1, type WriterDraftV1 } from "../contracts";
 import type { StepContext, StepDefinition, StepInputs } from "../orchestrator";
 import { LlmStepError, WRITER_OUTPUT_SCHEMA, dataBlock, jsonReply, loadPrompt, outputFormat, systemBlocks } from "./llm";
 
-export const WRITER_PROMPT_VERSION = "writer.v1";
+export const WRITER_PROMPT_VERSION = "writer.v2";
 
 const TASK = "Write the executive summary from the analysis above. Reply with JSON only.";
 

@@ -1,7 +1,7 @@
 # Tasks — AI Account Brief
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 10 tasks — ✅ 10 · 🔄 0 · ⬜ 0 · ⛔ 0
+**Summary:** 11 tasks — ✅ 10 · 🔄 1 · ⬜ 0 · ⛔ 0
 
 Build order and dependencies: [024-agent-ops tasks](../024-agent-ops/tasks.md) build the orchestrator these steps run in.
 
@@ -42,6 +42,8 @@ Build order and dependencies: [024-agent-ops tasks](../024-agent-ops/tasks.md) b
   - Step: Reopen button: spinner while running, "AI draft ready — not saved" badge while a draft waits, `aria-live="polite"` announcement when a run finishes while the dialog is closed, no focus move (AIB-HUMAN-011, AIB-GEN-020)
   - Step: G5: both themes, ≥ 1024px and < 1024px, dialog open and closed, with AI on, AI off and breaker open; close the dialog mid-run and reopen it
   - Verified 2026-11-24: G5 by the owner — AI off, replay (progress, cancel, error with Try again) and one live gateway run (`run_939c49a6…`, unverified: over budget, cut to 350 words) showing the draft label, Save/Edit/Discard, unverified banner, markers and reopen-button indicator; light and dark, ≥ 1024px and < 1024px; 15 dialog tests + 3 page tests ([hand-off](../../handoffs/AIB-T07.md)). Quality findings for a follow-up CR: the Writer exceeded 350 words (441), wrote fact IDs into the sentence text, and some sentences carry 6–9 markers.
+- [ ] **AIB-T11** Writer prompt v2 and a cap of 3 markers per sentence in the Guard (CR-20261124-1); one `eval:smoke` run through the gateway to measure it.
+  - Status: 🔄 In progress · Covers: AIB-CITE-005, AIB-CITE-002, AIB-FMT-002 · Files: `server/ai/prompts/writer.v2.md`, `server/ai/steps/writer.ts`, `server/ai/steps/guard.ts`, `server/ai/config.ts`, `spec/agents/writer.md`, `tests/unit/ai-guard.test.ts`, `tests/integration/analyst-writer.test.ts` · Added by CR-20261124-1
 
 ## Test tasks
 - [x] **AIB-T08** Unit and integration tests (replayed model, fixture workbook).

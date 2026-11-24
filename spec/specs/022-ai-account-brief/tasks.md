@@ -1,7 +1,7 @@
 # Tasks — AI Account Brief
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 10 tasks — ✅ 8 · 🔄 1 · ⬜ 1 · ⛔ 0
+**Summary:** 10 tasks — ✅ 9 · 🔄 0 · ⬜ 1 · ⛔ 0
 
 Build order and dependencies: [024-agent-ops tasks](../024-agent-ops/tasks.md) build the orchestrator these steps run in.
 
@@ -35,12 +35,13 @@ Build order and dependencies: [024-agent-ops tasks](../024-agent-ops/tasks.md) b
   - Step: Effect cleanup on customer change or cleared selection closes the EventSource and calls `cancelRun` for an unfinished run; closing the dialog must not run it
   - Step: Expose `{ status, step, revision, draft, error, start, cancel, discard }` and `{ running, draftReady }` for the reopen button; `cancel()` also serves the editor-open path (AIB-GEN-015)
   - Verified 2026-11-23: `useAutoBrief` called from `Customers.tsx`; hook tests in `tests/component/AiBrief.test.tsx` (one run per selection, none with a summary or `auto_draft: false`, none after reopen or discard, closing keeps the run, customer change and cleared selection cancel it) and page tests in `tests/component/Customers.test.tsx`; G1, G3, G4 pass ([hand-off](../../handoffs/AIB-T10.md)).
-- [ ] **AIB-T07** UI in the summary dialog and on the reopen button: automatic-run progress, *Regenerate with AI*, cancel, error, breaker, confirm replace, draft view with *Save* / *Edit* / *Discard*, AI-draft and unverified banners, progress and "draft ready" indicator with a polite live announcement; messages catalog.
-  - Status: 🔄 In progress · Covers: AIB-GEN-004, AIB-GEN-011, AIB-GEN-012, AIB-GEN-017, AIB-GEN-018, AIB-GEN-019, AIB-GEN-020, AIB-HUMAN-012, AIB-HUMAN-003, AIB-HUMAN-005, AIB-HUMAN-006, AIB-HUMAN-007, AIB-HUMAN-009, AIB-HUMAN-010, AIB-HUMAN-011, AIB-CITE-004 · Files: `src/components/customers/CustomerDetails.tsx`, `src/components/customers/AiDraftBanner.tsx`, `src/pages/Customers.tsx` · Depends on: AIB-T06, AIB-T10, LAY-T11, LAY-T12, SUM-T13 · Updated by CR-20261120-1 (was the *Draft with AI* button in the right-hand panel; it was ⛔ Blocked by SUM-T09, which is done) and re-scoped by CR-20261120-2 (the band becomes the dialog; the collapsed-header badge becomes the reopen-button indicator)
+- [x] **AIB-T07** UI in the summary dialog and on the reopen button: automatic-run progress, *Regenerate with AI*, cancel, error, breaker, confirm replace, draft view with *Save* / *Edit* / *Discard*, AI-draft and unverified banners, progress and "draft ready" indicator with a polite live announcement; messages catalog.
+  - Status: ✅ Done · Covers: AIB-GEN-004, AIB-GEN-011, AIB-GEN-012, AIB-GEN-017, AIB-GEN-018, AIB-GEN-019, AIB-GEN-020, AIB-HUMAN-012, AIB-HUMAN-003, AIB-HUMAN-005, AIB-HUMAN-006, AIB-HUMAN-007, AIB-HUMAN-009, AIB-HUMAN-010, AIB-HUMAN-011, AIB-CITE-004 · Files: `src/components/customers/CustomerDetails.tsx`, `src/components/customers/AiDraftBanner.tsx`, `src/pages/Customers.tsx` · Depends on: AIB-T06, AIB-T10, LAY-T11, LAY-T12, SUM-T13 · Updated by CR-20261120-1 (was the *Draft with AI* button in the right-hand panel; it was ⛔ Blocked by SUM-T09, which is done) and re-scoped by CR-20261120-2 (the band becomes the dialog; the collapsed-header badge becomes the reopen-button indicator)
   - Step: Dialog states as in design "Flows — dialog states"; *Regenerate with AI* replaces *Draft with AI*; opening the dialog while a draft waits shows the draft
   - Step: *Save* on the draft goes through `useSaveSummary` (SUM-EDIT-001) with the existing pending and error handling; success closes the dialog (LAY-DLG-009)
   - Step: Reopen button: spinner while running, "AI draft ready — not saved" badge while a draft waits, `aria-live="polite"` announcement when a run finishes while the dialog is closed, no focus move (AIB-HUMAN-011, AIB-GEN-020)
   - Step: G5: both themes, ≥ 1024px and < 1024px, dialog open and closed, with AI on, AI off and breaker open; close the dialog mid-run and reopen it
+  - Verified 2026-11-24: G5 by the owner — AI off, replay (progress, cancel, error with Try again) and one live gateway run (`run_939c49a6…`, unverified: over budget, cut to 350 words) showing the draft label, Save/Edit/Discard, unverified banner, markers and reopen-button indicator; light and dark, ≥ 1024px and < 1024px; 15 dialog tests + 3 page tests ([hand-off](../../handoffs/AIB-T07.md)). Quality findings for a follow-up CR: the Writer exceeded 350 words (441), wrote fact IDs into the sentence text, and some sentences carry 6–9 markers.
 
 ## Test tasks
 - [ ] **AIB-T08** Unit and integration tests (replayed model, fixture workbook).

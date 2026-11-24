@@ -55,7 +55,7 @@ Every string a user can see as feedback. Change wording here first, then in code
 | Server 409 | This use case was already deleted. / This event was already deleted. |
 | Server 423 | Could not save: <file> is open in Excel. Close it and try again. |
 | Server 500 | Workbook not found: <path> · or the raw error message |
-| MCP tool error (`workbook-mcp`, spec 025) | Invalid input: <field>: <reason> (e.g. "id: must match PREFIX-AREA-NNN", "<field>: at most 200 characters", "<field>: not an allowed field", "arguments: must be an object") · Unknown tool. · Path outside allow-list. · The result is too large; ask for a smaller page. · The tool failed. · The audit log could not be written. *(MCP-SEC-001, MCP-SEC-003, MCP-AUD-001)* |
+| MCP tool error (`workbook-mcp`, spec 025) | Invalid input: <field>: <reason> (e.g. "id: must match PREFIX-AREA-NNN", "<field>: at most 200 characters", "<field>: not an allowed field", "arguments: must be an object") · Unknown tool. · Path outside allow-list. · The result is too large; ask for a smaller page. · The tool failed. · The audit log could not be written. *(MCP-SEC-001, MCP-SEC-003, MCP-AUD-001)* · Requirement <id> was not found. · Spec lint could not run. · Unknown resource. · Unknown prompt. *(MCP-SRV-003, MCP-SRV-005, MCP-SEC-004)* |
 
 ## 4. Placeholders and hints (forms)
 

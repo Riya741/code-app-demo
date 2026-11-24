@@ -6,8 +6,8 @@ deterministic code graders. There is no LLM judge in these commands (CR-20261121
 ## Commands
 | Command | What it does | Model calls | Measured cost |
 |---|---|---|---|
-| `npm run eval:smoke` | 8 cases (the `-01` case of each category), then gate G7 against `thresholds.json` | 16 Sonnet calls | not measured yet |
-| `npm run eval:full` | 3-case pilot with its measured and projected cost; add `-- --yes` to run all 32 cases | 6 (pilot) · 64 (all) | not measured yet |
+| `npm run eval:smoke` | 8 cases (the `-01` case of each category), then gate G7 against `thresholds.json` | 16 Sonnet calls | $0.35 (gateway, 2026-11-24, writer.v2; mean 19 s per case) |
+| `npm run eval:full` | 3-case pilot with its measured and projected cost; add `-- --yes` to run all 32 cases | 6 (pilot) · 64 (all) | not measured; about $0.13 (pilot) and $1.40 (all), projected from the smoke run's $0.043 per case |
 | `npm run eval:compare` | The same for each config in `configs/` | 6 · 64 per config | not measured yet |
 | `npm run eval:grade -- <dir>` | Replay: re-grades `results.jsonl` in a results folder | none | $0 |
 | `npm run eval:build-dataset` | Rebuilds `dataset/cases.jsonl` from `dataset/specs.ts` on the seeded fixture | none | $0 |

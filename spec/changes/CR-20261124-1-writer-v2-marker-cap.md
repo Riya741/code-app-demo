@@ -22,12 +22,13 @@ The first live gateway run (AIB-T07 G5, `run_939c49a6…`) gave an unverified dr
   Writer's order. The sentence's other known fact IDs are not shown as markers but stay in the draft's `citations`,
   and the citation check (AIB-CITE-003) still runs on all of them.
 - **Measure** with one `eval:smoke` run through the gateway (16 calls, `AI_GATEWAY_ALLOW_BULK=1`, owner-approved),
-  compared with the replay baseline; gate G7 decides.
+  checked against `evals/thresholds.json`; gate G7 decides. There was no earlier eval report, so this run is the first
+  baseline.
 
 ## 3. Spec impact
 | File | IDs | Change |
 |---|---|---|
-| specs/022-ai-account-brief/requirements.md | AIB-CITE-005 | add (📝 Planned) |
+| specs/022-ai-account-brief/requirements.md | AIB-CITE-005 | add (📝 Planned, then ✅ with AIB-T11) |
 | specs/022-ai-account-brief/requirements.md | AIB-CITE-002, AIB-FMT-002 | Source: `writer.v2.md` |
 | specs/022-ai-account-brief/design.md | — | Guard row: up to 3 markers per sentence; prompt v2 |
 | specs/022-ai-account-brief/tasks.md | AIB-T11 | new task, ⬜ |
@@ -43,4 +44,4 @@ The first live gateway run (AIB-T07 G5, `run_939c49a6…`) gave an unverified dr
 - [x] requirements.md approved by: owner (2026-11-24, in the request)
 - [x] design.md approved by: owner (2026-11-24, in the request)
 - [x] tasks.md approved by: owner (2026-11-24, in the request)
-- [ ] Implementation verified on:
+- [x] Implementation verified on: 2026-11-24 (AIB-T11; G7 passed on the gateway smoke run, [hand-off](../handoffs/AIB-T11.md))

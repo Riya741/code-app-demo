@@ -68,7 +68,7 @@
 | `.claude/hooks/gates_on_stop.py` | dev-agents (DEVA-GATE-002: related tests only, CR-20261121-1) |
 | `server/ai/steps/retriever.ts` | ai-account-brief (retriever code step, `code:retriever`) |
 | `server/ai/steps/analyst.ts`, `server/ai/steps/writer.ts`, `server/ai/steps/llm.ts`, `server/ai/prompts/*.v1.md`, `tests/integration/analyst-writer.test.ts`, `tests/integration/analyst-writer.live.test.ts` | ai-account-brief (AIB-CITE-002, AIB-FAITH-001..003, AIB-FMT-001; agent specs AGENT-ANALYST, AGENT-WRITER) |
-| `server/ai/steps/guard.ts`, `tests/unit/ai-guard.test.ts` | ai-account-brief (AIB-CITE-002, AIB-CITE-003, AIB-CITE-004, AIB-SAFE-002, AIB-FMT-002) |
+| `server/ai/steps/guard.ts`, `tests/unit/ai-guard.test.ts` | ai-account-brief (AIB-CITE-002, AIB-CITE-003, AIB-CITE-004, AIB-CITE-005, AIB-SAFE-002, AIB-FMT-002) |
 | `server/ai/routes.ts`, `server/workbook.ts` (mounts `/api/ai`), `tests/integration/ai-routes.test.ts`, `tests/integration/harness.ts` | ai-account-brief (AIB-API-001..004, AIB-GEN-022); agent-ops (AOPS-FAIL-007, AOPS-REC-002) |
 | `src/lib/aiBrief.ts`, `src/hooks/useAiBrief.ts`, `src/components/customers/AiDraftBanner.tsx`, `src/components/customers/CustomerDetails.tsx`, `src/components/customers/SummaryDialog.tsx`, `src/pages/Customers.tsx`, `tests/component/AiBrief.test.tsx`, `tests/component/Customers.test.tsx` | ai-account-brief (AIB-GEN-004, -008, -011, -012, -015, -017..022, AIB-HUMAN-003, -005..007, -009..012, AIB-CITE-004, AIB-API-004) |
 | `evals/**`, `tests/unit/eval-graders.test.ts`, `tests/integration/eval-harness.test.ts` | ai-evaluation (EVAL-DATA-001..005, EVAL-CODE-001..006, EVAL-GATE-003..005, EVAL-EXP-003); agent-ops (AOPS-ROUTE-008) |

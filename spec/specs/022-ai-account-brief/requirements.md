@@ -161,7 +161,7 @@ trust it and check it quickly.
 - **Criterion:** WHEN the draft opens in the editor THE citations SHALL appear as bracketed markers (`[UC-123]`) after their sentences, which the user may keep or delete before saving.
 
 #### AIB-CITE-005: At most three markers per sentence
-- **Status:** 📝 Planned
+- **Status:** ✅ Implemented
 - **Source:** `server/ai/steps/guard.ts`, `server/ai/prompts/writer.v2.md`
 - **Criterion:** THE draft SHALL show at most 3 citation markers after any one sentence, for the first 3 known fact IDs in the Writer's order; the sentence's other known fact IDs SHALL stay in the draft's `citations` (CR-20261124-1).
 

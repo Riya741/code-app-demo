@@ -48,7 +48,7 @@
   - Verified 2026-11-21: hook test `test_DEVA_GATE_002_runs_only_tests_related_to_changed_files`; G1 0 errors, lint 0 errors, typecheck, `npm test` 300 passed + 1 expected fail; hand-off `spec/handoffs/DEVA-T17.md`.
 
 - [ ] **DEVA-T14** Run the skill trigger evals (`.claude/skills/trigger-evals.json`) with the skill-creator eval loop; record results; tune descriptions that misfire.
-  - Status: ⬜ Not started · Covers: DEVA-SKILL-002 · Depends on: DEVA-T09
+  - Status: ⬜ Not started · Covers: DEVA-SKILL-002 · Depends on: DEVA-T09 · Deferred by CR-20261123-2
 
 
 ## Test tasks

@@ -1,7 +1,7 @@
 # Tasks — AI Account Brief
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 10 tasks — ✅ 9 · 🔄 0 · ⬜ 1 · ⛔ 0
+**Summary:** 10 tasks — ✅ 10 · 🔄 0 · ⬜ 0 · ⛔ 0
 
 Build order and dependencies: [024-agent-ops tasks](../024-agent-ops/tasks.md) build the orchestrator these steps run in.
 
@@ -44,8 +44,9 @@ Build order and dependencies: [024-agent-ops tasks](../024-agent-ops/tasks.md) b
   - Verified 2026-11-24: G5 by the owner — AI off, replay (progress, cancel, error with Try again) and one live gateway run (`run_939c49a6…`, unverified: over budget, cut to 350 words) showing the draft label, Save/Edit/Discard, unverified banner, markers and reopen-button indicator; light and dark, ≥ 1024px and < 1024px; 15 dialog tests + 3 page tests ([hand-off](../../handoffs/AIB-T07.md)). Quality findings for a follow-up CR: the Writer exceeded 350 words (441), wrote fact IDs into the sentence text, and some sentences carry 6–9 markers.
 
 ## Test tasks
-- [ ] **AIB-T08** Unit and integration tests (replayed model, fixture workbook).
-  - Status: ⬜ Not started · Covers: AIB-CITE-001, AIB-CITE-003, AIB-SAFE-002, AIB-SAFE-003, AIB-FMT-002, AIB-API-001..004 · Depends on: QA-T03
+- [x] **AIB-T08** Unit and integration tests (replayed model, fixture workbook).
+  - Status: ✅ Done · Covers: AIB-CITE-001, AIB-CITE-003, AIB-SAFE-002, AIB-SAFE-003, AIB-FMT-002, AIB-API-001..004 · Depends on: QA-T03
+  - Verified 2026-11-24: closed with a note by CR-20261123-2 — the covered criteria are already proven by `tests/unit/ai-guard.test.ts`, `tests/integration/ai-routes.test.ts`, `tests/integration/retriever.test.ts` and `tests/integration/analyst-writer.test.ts` (titles name the IDs); no new code.
 - [x] **AIB-T09** Component tests for every dialog state, titled with the AIB IDs.
   - Status: ✅ Done · Covers: AIB-GEN-004, AIB-GEN-008, AIB-GEN-011, AIB-GEN-012, AIB-GEN-015, AIB-GEN-017..021, AIB-HUMAN-012, AIB-HUMAN-003, AIB-HUMAN-005..007, AIB-HUMAN-009..011 · Depends on: AIB-T07, AIB-T10 · Covers changed by CR-20261120-1 (was AIB-GEN-001..006, AIB-HUMAN-001..003; it was ⛔ Blocked by QA-T02, which is done) and CR-20261120-2 (band IDs → dialog IDs)
   - Verified 2026-11-23: slim set agreed by the owner (competency scope): 15 dialog-state tests in `tests/component/AiBrief.test.tsx` and 3 page tests in `tests/component/Customers.test.tsx`, titled with the AIB IDs; every Covers ID has at least one test ([hand-off](../../handoffs/AIB-T09.md)).

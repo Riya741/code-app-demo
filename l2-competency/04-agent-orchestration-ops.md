@@ -2,7 +2,19 @@
 
 **Top marks (25–30):** *Multi-agent / multi-step orchestration with failure handling, recovery, observability.*
 
-**Today: 0. Target: 25–28.**
+**Status 2026-11-24: estimate 12–16. Target: 25–28.** Evidence:
+[ops/trace-sample.md](evidence/ops/trace-sample.md), [server/ai/](../server/ai/), ADR-0008, ADR-0009.
+
+> **Changed since this plan was written:**
+> - **No Critic (CR-20261121-1).** There is no Critic step or revision loop. The Guard's deterministic citation check
+>   marks a draft *unverified*, listing its issues, and the run still succeeds. Rows below that mention the Critic
+>   describe the original design.
+> - **Second model route (CR-20261123-1, ADR-0009).** The Perficient Portkey gateway is recorded in every trace span.
+> - **Built:** the orchestrator with contract validation at every hand-off, an allow-listed read-only tool loop, and
+>   traces with tokens, cost, latency, versions and route.
+> - **Deferred (CR-20261123-2):** retries and fault injection (AOPS-T03), repair retry (T04), checkpoints and resume
+>   (T05), budgets and breaker (T06), metrics (T07), Run Inspector and runbook (T08), replay fault tests (T09) and the
+>   chaos run (T10).
 
 ## 1. What you build
 
@@ -118,11 +130,11 @@ retries per run and latency added. That table is strong evidence for the rubric'
 
 ## Evidence checklist for Topic 4
 
-- [ ] Architecture diagram + ADR-0008 (why a code-driven workflow with agentic steps)
+- [x] Architecture diagram + ADR-0008 (why a code-driven workflow with agentic steps); ADR-0009 for the gateway route
 - [ ] Specs 022 and 024 with AOPS requirements, all ✅ with tests citing their IDs
 - [ ] Failure-mode table above, with a passing test per row
 - [ ] Chaos-run report (success %, retries, added latency)
 - [ ] Resume-after-crash demo (kill the dev server mid-run, resume)
 - [ ] Run Inspector screenshots: a normal run, a run with retries, an unverified run
-- [ ] Sample trace JSONL (redacted) and metrics summary
+- [ ] Sample trace JSONL ✅ ([ops/trace-sample.md](evidence/ops/trace-sample.md), no free text by design) and metrics summary (deferred, AOPS-T07)
 - [ ] Runbook

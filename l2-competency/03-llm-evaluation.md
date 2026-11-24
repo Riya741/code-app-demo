@@ -2,7 +2,22 @@
 
 **Top marks (25–30):** *Objective evaluation (LLM-as-judge, scored comparisons); data-grounded decisions.*
 
-**Today: 0. Target: 25–28.**
+**Status 2026-11-24: estimate 11–15. Target: 25–28.** Evidence:
+[eval/smoke-2026-11-24.md](evidence/eval/smoke-2026-11-24.md), [evals/README.md](../evals/README.md).
+
+> **Changed since this plan was written:**
+> - **No Critic (CR-20261121-1).** The pipeline is retrieve → analyse → write → guard, so the "critic on/off" axis
+>   below is gone. Schema validity is checked against `writer-draft.v1` and `brief-draft.v1`, not
+>   `writer-to-critic.v1`.
+> - **The judge is eval-only (CR-20261121-2).** AGENT-EVAL-JUDGE scores drafts only inside `eval:full` and
+>   `eval:compare`, and never in the pipeline or in smoke. Its model must differ from the Writer's.
+> - **Deferred (CR-20261123-2):** the judge and κ calibration (EVAL-T11..T13), the experiment (EVAL-T06, now four
+>   setups: Haiku, Sonnet and Opus on prompt v2, plus v1 on the best model), ADR-0007 (EVAL-T07), the CI grader job
+>   (EVAL-T09) and grader unit tests (EVAL-T10).
+>
+> **Built:** a 32-case dataset in the 8 categories below, 6 deterministic graders, `eval:smoke` / `eval:full` /
+> `eval:compare` with replay, thresholds and G7. One measured, data-grounded change: Writer prompt v2
+> (CR-20261124-1), with G7 passing at $0.35 for the smoke run.
 
 ## 1. What to evaluate
 
@@ -137,11 +152,11 @@ numbers. The ADR must cite the report and state the threshold that would reverse
 
 ## Evidence checklist for Topic 3
 
-- [ ] `evals/` harness runnable with one command; README states cost per run
-- [ ] Dataset ≥ 30 cases incl. adversarial; expectations per case
-- [ ] Deterministic graders + LLM judge with structured, evidence-first output
-- [ ] Judge calibration table (κ, ρ) and judge-prompt version history
-- [ ] Experiment report: ≥ 6 configs, CIs, cost, latency, Pareto chart, error taxonomy
-- [ ] ADR-0007 citing the report
-- [ ] G7 gate in CI with thresholds
+- [x] `evals/` harness runnable with one command (`npm run eval:smoke`); README states cost per run ($0.35 smoke, measured)
+- [x] Dataset: 32 cases in 8 categories incl. injection, HTML and non-Latin; machine-checkable expectations per case
+- [ ] Deterministic graders ✅ (6, EVAL-CODE-001..006) + LLM judge with structured, evidence-first output (specified: `judge-verdict.v1`; built: deferred, EVAL-T11)
+- [ ] Judge calibration table (κ, ρ) and judge-prompt version history (deferred, EVAL-T12)
+- [ ] Experiment report: 4 setups after CR-20261121-1, CIs, cost, latency, Pareto chart, error taxonomy (deferred, EVAL-T06)
+- [ ] ADR-0007 citing the report (still *Proposed*; deferred, EVAL-T07)
+- [ ] G7 gate with thresholds ✅ (`evals/thresholds.json`, run by hand before a prompt or model change; passed 2026-11-24). In CI: deferred (EVAL-T09)
 - [ ] *(Stretch)* 3B comparison table

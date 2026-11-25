@@ -67,6 +67,7 @@ every comparison is like for like.
 - **Status:** ✅ Implemented
 - **Source:** `evals/graders/code/index.ts`
 - **Criterion:** THE grader SHALL compare counts, statuses and dates stated in the draft with the case's source records and report mismatches.
+- **Note:** found on 2026-11-25 by re-grading the gateway smoke run of 2026-11-24: case `long-01` reported `use cases: draft 9, source 24` and `draft 5, source 24` for the correct "9 use cases are Live" and "5 use cases are only Identified". How totals and status counts are recognised: [design](design.md#numeric-check-eval-code-004). Fixed 2026-11-25 by EVAL-T15 (CR-20261125-1); the recorded smoke run now passes G7.
 
 #### EVAL-CODE-005: Safety and data policy
 - **Status:** ✅ Implemented

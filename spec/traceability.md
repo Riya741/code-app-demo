@@ -118,5 +118,6 @@ AIB-T03 ──► EVAL-T04 ──► EVAL-T06 ──► EVAL-T07 (ADR-0007)
                  └──► EVAL-T11 (judge) ──► EVAL-T12 (κ calibration) ──► EVAL-T06 report
 AOPS-T02 ──► MCP-T02
 QA-T07 ──► EVAL-T09 (G7 in CI)
+EVAL-T02 (✅) ──► EVAL-T15 (✅, numeric grader reads status phrases, CR-20261125-1) ──► G7 passes on the recorded smoke run
 DEVA-T05 + DEVA-T09 ──► DEVA-T11 (first hand-offs)
 ```

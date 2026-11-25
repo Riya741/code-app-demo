@@ -132,7 +132,8 @@ l2-competency/
 ├─ 04-agent-orchestration-ops.md      Topic 4 plan
 ├─ 05-tool-integration-extensibility.md Topic 5 plan
 ├─ 06-submission-evidence.md          evidence map, demo script, self-assessment template
-└─ evidence/                          (create as you go) screenshots, eval reports, trace samples, session logs
+├─ demo-checklist.md                  step-by-step demo recording checklist
+└─ evidence/                          evidence pack (index: evidence/README.md)
 ```
 
 ## 6. Progress tracker

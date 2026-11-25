@@ -37,7 +37,8 @@ Screen recordings are the owner's step. They are listed in `sessions/README.md`.
 
 ## 3. Demo script (10–12 minutes)
 
-Updated 2026-11-24 to what is built. Deferred features are named as next steps, not shown.
+Updated 2026-11-24 to what is built. Deferred features are named as next steps, not shown. The step-by-step version,
+with commands, what to say and fallbacks, is [demo-checklist.md](demo-checklist.md).
 
 | Min | Segment | Shows |
 |---|---|---|

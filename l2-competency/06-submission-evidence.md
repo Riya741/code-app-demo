@@ -23,7 +23,7 @@ l2-competency/evidence/
 - `eval/smoke-2026-11-24.md`, `ops/trace-sample.md` and `security/security-evidence.md`;
 - `mcp-workbook-server.md` and `sessions/README.md`.
 
-Screen recordings are the owner's step. They are listed in `sessions/README.md`.
+The screenshots and the demo video (recorded 2026-11-25) are in `sessions/` and listed in `sessions/README.md`.
 
 ## 2. Evidence map (what the assessor should open)
 
@@ -37,8 +37,8 @@ Screen recordings are the owner's step. They are listed in `sessions/README.md`.
 
 ## 3. Demo script (10–12 minutes)
 
-Updated 2026-11-24 to what is built. Deferred features are named as next steps, not shown. The step-by-step version,
-with commands, what to say and fallbacks, is [demo-checklist.md](demo-checklist.md).
+Updated 2026-11-24 to what is built. Deferred features are named as next steps, not shown. The recording (2026-11-25,
+29 min 37 s, longer than planned) is [evidence/sessions/codeappdemo.mp4](evidence/sessions/codeappdemo.mp4).
 
 | Min | Segment | Shows |
 |---|---|---|
@@ -71,5 +71,5 @@ State on 2026-11-24 at `e3793a4`, before the final push:
   2026-11-24), and CI green on main: re-check after the push
 - [x] README dashboard and gap register current; High gaps moved to Closed (0 open)
 - [x] No secrets or real customer data in the repo or the evidence folder ([security evidence §3](evidence/security/security-evidence.md#3-repository-scan-no-secrets-no-real-data))
-- [ ] Demo video recorded on the fixture workbook
+- [x] Demo video recorded on the fictional demo workbook (2026-11-25, [sessions/](evidence/sessions/README.md))
 - [ ] Self-assessment written; projected total ≥ 125 / 150 (pass mark 70, ≥ 3 topics)

@@ -47,13 +47,34 @@ CI (every PR touching server/ai/** or evals/**): code graders on recorded output
 - **Pilot first (EVAL-EXP-003):** `eval:full --pilot 3` runs three cases per configuration, prints cost per brief and
   the projected full-run cost, and stops.
 
+## Numeric check (EVAL-CODE-004)
+`gradeNumbers` compares what the draft states with `expect.counts` of the case and the fact sheet:
+| Draft phrase | Checked against | Example |
+|---|---|---|
+| `N use case(s)` + linking phrase + a status name from `by_status` | that status's count | "9 use cases are Live", "5 use cases are only Identified" |
+| `K of (the) N use case(s)` + linking phrase + a status name | N against the total, K against that status's count | "9 of the 24 use cases are Live" |
+| `K of (the) N use case(s)` without a status phrase | N against the total | "3 of the 24 use cases" |
+| `N <Status>` (status name from `by_status`) | that status's count | "9 Live" |
+| any other `N use case(s)` | total use cases | "24 use cases" |
+| `N event(s)` | total events | "15 events" |
+| ISO date `YYYY-MM-DD` | must appear in the fact sheet | "2026-03-14" |
+
+- **Linking phrase:** one verb (`is`, `are`, `remain`, `remains`, `stay`, `stays`) followed by up to two words from
+  `only`, `still`, `now`, `currently`, `already`, `in`, `at`. Status names match case-insensitively and are
+  regex-escaped ("Documented & Validated").
+- A phrase whose status name is not in the case's `by_status` stays a total claim, so an unknown status never hides a
+  wrong number.
+- Events have no per-stage expectations (EVAL-DATA-004), so `N events are <stage>` is checked as a total.
+- Added by CR-20261125-1 (EVAL-T15): until then every `N use case(s)` was read as the total.
+
 ## Error handling
 A case whose pipeline run fails is recorded as a failure with its error type (it is not dropped), so failures count
 against a configuration.
 
 ## Testing approach
 Unit tests for each code grader on hand-made outputs (good, uncited, hallucinated, wrong count, injected, unsafe
-HTML), named by EVAL-CODE IDs. Statistics (bootstrap CI) tested on textbook examples. The harness itself is
+HTML), named by EVAL-CODE IDs. EVAL-CODE-004 also has a regression test for each phrase form in *Numeric check*,
+including a correct noun-first status breakdown and a wrong total (CR-20261125-1). Statistics (bootstrap CI) tested on textbook examples. The harness itself is
 tested in replay mode with no API calls.
 
 ## Alternatives considered
@@ -71,7 +92,7 @@ tested in replay mode with no API calls.
 ## Constitution check
 | Article | Compliance |
 |---|---|
-| I Spec first | Dataset, graders and thresholds are specified before the harness. ✅ |
+| I Spec first | Dataset, graders and thresholds are specified before the harness; the numeric-grader defect is fixed in code against the unchanged EVAL-CODE-004 criterion (CR-20261125-1). ✅ |
 | II Workbook is truth | Uses generated fixtures; never reads or writes the app workbook. ✅ |
 | III Safe by default | Fictional data only; workbooks generated, never committed. ✅ |
 | IV Valid by construction | Every hand-off and draft validated against its contract (EVAL-CODE-001). ✅ |
@@ -80,8 +101,8 @@ tested in replay mode with no API calls.
 | VII Accessible | n/a (no UI). ✅ |
 | VIII Simple & local-first | Plain TypeScript and files; no eval platform. ✅ |
 | IX Layered architecture | Calls the pipeline through `server/ai`, not around it. ✅ |
-| X Testable & traceable | Graders tested; metrics map to requirement IDs. ✅ |
+| X Testable & traceable | Graders tested; metrics map to requirement IDs; EVAL-CODE-004 phrase forms each have a test named by the ID (EVAL-T15). ✅ |
 | XI Performance budget | Latency per step reported (EVAL-CODE-006). ✅ |
-| XII AI agents & data | This spec is how XII.6 is met, with deterministic graders only (no evaluation agent). ✅ |
+| XII AI agents & data | This spec is how XII.6 is met, with deterministic graders only (no evaluation agent); G7 thresholds are not loosened to pass a correct draft, the grader is corrected (CR-20261125-1). ✅ |
 
 **Exceptions:** none.

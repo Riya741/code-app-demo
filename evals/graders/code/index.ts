@@ -104,15 +104,35 @@ export function gradeEntities(result: CaseResult, names: readonly string[]): str
   return [...new Set(names)].filter((n) => n.length >= 4 && mentions(text, n) && !sheet.toLowerCase().includes(n.toLowerCase())).sort();
 }
 
+/** Linking phrase between "N use cases" and a status name, e.g. " are ", " are only ", " are still in " (design, Numeric check). */
+const LINK = String.raw`\s+(?:is|are|remains?|stays?)(?:\s+(?:only|still|now|currently|already|in|at)){0,2}\s+`;
+
 /** EVAL-CODE-004: counts, statuses and ISO dates in the draft against the case's source records. */
 export function gradeNumbers(result: CaseResult, c: Case): string[] {
   const text = draftText(result);
   const sheet = JSON.stringify(result.outputs.retrieve ?? {});
   const problems: string[] = [];
-  const check = (re: RegExp, expected: number, label: string) => {
-    for (const m of text.matchAll(re)) if (Number(m[1]) !== expected) problems.push(`${label}: draft ${m[1]}, source ${expected}`);
+  const compare = (stated: string, expected: number, label: string) => {
+    if (Number(stated) !== expected) problems.push(`${label}: draft ${stated}, source ${expected}`);
   };
-  check(/\b(\d+)\s+use cases?\b/gi, c.expect.counts.use_cases, "use cases");
+  const check = (re: RegExp, expected: number, label: string) => {
+    for (const m of text.matchAll(re)) compare(m[1], expected, label);
+  };
+  // Longest status first, so "Documented & Validated" wins over a shorter name it starts with.
+  const statuses = Object.entries(c.expect.counts.by_status)
+    .sort(([a], [b]) => b.length - a.length)
+    .map(([status, n]) => ({ status, n, re: new RegExp(`^${LINK}${escapeRegex(status)}(?![\\p{L}\\p{N}])`, "iu") }));
+  // "N use cases are <status>" states a status count; "K of (the) N use cases [are <status>]" states the total N
+  // (and K for the status); any other "N use cases" states the total (CR-20261125-1).
+  for (const m of text.matchAll(/\b(?:(\d+)\s+of\s+(?:the\s+)?)?(\d+)\s+use cases?\b/gi)) {
+    const rest = text.slice((m.index ?? 0) + m[0].length);
+    const hit = statuses.find((s) => s.re.test(rest));
+    if (m[1] !== undefined) {
+      compare(m[2], c.expect.counts.use_cases, "use cases");
+      if (hit) compare(m[1], hit.n, `status ${hit.status}`);
+    } else if (hit) compare(m[2], hit.n, `status ${hit.status}`);
+    else compare(m[2], c.expect.counts.use_cases, "use cases");
+  }
   check(/\b(\d+)\s+events?\b/gi, c.expect.counts.events, "events");
   for (const [status, n] of Object.entries(c.expect.counts.by_status)) check(new RegExp(`\\b(\\d+)\\s+${escapeRegex(status)}\\b`, "gi"), n, `status ${status}`);
   for (const m of text.matchAll(/\b\d{4}-\d{2}-\d{2}\b/g)) if (!sheet.includes(m[0])) problems.push(`date ${m[0]} not in the records`);

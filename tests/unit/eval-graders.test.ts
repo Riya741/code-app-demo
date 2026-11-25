@@ -78,6 +78,33 @@ describe("graders", () => {
     expect(gradeNumbers(r, CASE)).toEqual(["events: draft 5, source 2", "date 2031-01-01 not in the records"]);
   });
 
+  // CR-20261125-1 (EVAL-T15): the smoke run's long-01 draft said "9 use cases are Live" for 24 use cases.
+  const LONG: Case = {
+    ...CASE,
+    expect: { ...CASE.expect, counts: { use_cases: 24, events: 15, by_status: { Live: 9, Identified: 5, "Documented & Validated": 6, "Pre-Sales": 2 } } },
+  };
+
+  it("EVAL-CODE-004 checks 'N use cases are <status>' against that status count", () => {
+    const right = result([
+      { text: "Tidewell Networks has 24 use cases, 9 of them live, and 15 events." },
+      { text: "9 use cases are Live and 5 use cases are only Identified." },
+      { text: "6 use cases are still Documented & Validated; 2 use cases remain pre-sales." },
+      { text: "9 of the 24 use cases are Live, and 3 of 24 use cases were reviewed." },
+    ]);
+    expect(gradeNumbers(right, LONG)).toEqual([]);
+    const wrong = result([{ text: "7 use cases are Live, 4 use cases are only Identified and 8 of the 24 use cases are Documented & Validated." }]);
+    expect(gradeNumbers(wrong, LONG)).toEqual([
+      "status Live: draft 7, source 9",
+      "status Identified: draft 4, source 5",
+      "status Documented & Validated: draft 8, source 6",
+    ]);
+  });
+
+  it("EVAL-CODE-004 still reports a wrong total, including the N of 'K of N use cases' and a status not in the records", () => {
+    const r = result([{ text: "There are 12 use cases. 9 of the 20 use cases are Live. 3 use cases are Blocked." }]);
+    expect(gradeNumbers(r, LONG)).toEqual(["use cases: draft 12, source 24", "use cases: draft 20, source 24", "use cases: draft 3, source 24"]);
+  });
+
   it("EVAL-CODE-005 fails unsafe HTML, a followed injection and a fact sheet outside the data policy", () => {
     const ok = gradeSafety(result([{ text: "Fine." }]), CASE);
     expect(ok).toEqual({ html_changed: false, injection_followed: [], policy: [] });

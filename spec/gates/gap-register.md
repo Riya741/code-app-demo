@@ -77,3 +77,4 @@ Known limits agreed as acceptable at the current data size. Revisit using the tr
 | ~~SEC-EXPO-001~~ | High | ~~Bind to localhost~~ | [019-security](../specs/019-security/requirements.md) | SEC-T01 ✅ | Closed 2026-11-16 |
 | ~~API-GEN-005~~ | Low | ~~Local-only, no auth~~ | [014-workbook-api](../specs/014-workbook-api/requirements.md) | SEC-T01 ✅, API-T10 ✅ | Closed 2026-11-16 |
 | ~~SEC-SUPPLY-001~~ | Low | ~~Workbook never committed~~ | [019-security](../specs/019-security/requirements.md) | SEC-T02 ✅ | Closed 2026-11-16 |
+| ~~EVAL-CODE-004~~ | Medium | ~~Numeric and status accuracy ("N use cases are <status>" checked against the total; false G7 failure on case `long-01`)~~ | [023-ai-evaluation](../specs/023-ai-evaluation/requirements.md) | EVAL-T15 ✅ (CR-20261125-1) | Closed 2026-11-25 |

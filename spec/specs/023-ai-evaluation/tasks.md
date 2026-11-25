@@ -1,7 +1,7 @@
 # Tasks — AI Evaluation
 
 **Legend:** ✅ Done · 🔄 In progress · ⬜ Not started · ⛔ Blocked
-**Summary:** 12 tasks — ✅ 5 · 🔄 0 · ⬜ 7 · ⛔ 0
+**Summary:** 13 tasks — ✅ 6 · 🔄 0 · ⬜ 7 · ⛔ 0
 
 **Retired tasks:** EVAL-T03 (judge prompt), EVAL-T05 (judge calibration); removed by CR-20261121-1, IDs not reused.
 
@@ -24,6 +24,11 @@
   - Verified 2026-11-23: `evals/thresholds.json`, gate in `evals/graders/code/index.ts`, G7 active (manual run) in `spec/gates/validation-gates.md`; 2 gate unit tests and the smoke pass/fail harness test; no live smoke run yet (owner: gateway minimal) ([hand-off](../../handoffs/EVAL-T08.md)).
 - [ ] **EVAL-T09** CI job: code graders on recorded outputs for PRs touching `server/ai/**` or `evals/**`.
   - Status: ⬜ Not started · Covers: EVAL-GATE-002 · Deferred by CR-20261123-2
+- [x] **EVAL-T15** Numeric grader: read "N use case(s) <linking phrase> <status>" as a status count, not the total (defect, CR-20261125-1).
+  - Status: ✅ Done · Covers: EVAL-CODE-004 · Files: `evals/graders/code/index.ts`, `tests/unit/eval-graders.test.ts` · Added by CR-20261125-1
+  - Step: in `gradeNumbers`, when `N use case(s)` is followed by a linking phrase (design, *Numeric check*) and a status name from the case's `by_status`, check N against that status's count; for `K of (the) N use case(s)` check N against the total and, with a status phrase, K against that status's count; otherwise keep the total check. `N <Status>`, `N events` and the date check stay as they are; `evals/thresholds.json` is not changed.
+  - Acceptance: a unit test titled starting `EVAL-CODE-004 checks 'N use cases are <status>' against that status count` (covering "are", "are only", "K of the N use cases are <status>" and a status with `&`); a unit test proving a wrong total (`N use cases` with no status) is still reported; `npm run eval:grade ../data/ai-runs/evals/2026-11-24T16-54-29-639Z-smoke/` passes the gate (case `long-01` clean). Close: EVAL-CODE-004 back to ✅ and its gap-register row closed.
+  - Verified 2026-11-25: `gradeNumbers` reads status phrases and "K of N" per the design table; 2 new EVAL-CODE-004 unit tests in `tests/unit/eval-graders.test.ts` (34 related tests pass); `npm run eval:grade ../data/ai-runs/evals/2026-11-24T16-54-29-639Z-smoke/` → gate passed (was `numeric_mismatch_cases = 1`); thresholds unchanged; G1 0 errors, G3 0 errors (8 old warnings), typecheck clean, G4 476 passed, 1 expected fail, 1 skipped ([hand-off](../../handoffs/EVAL-T15.md)).
 
 - [ ] **EVAL-T11** Eval judge: prompt `judge.v1` (header cites AGENT-EVAL-JUDGE), judge step in `eval:full`/`eval:compare` only, Writer-model check, blind inputs.
   - Status: ⬜ Not started · Covers: EVAL-JUDGE-006..009 · Files: `evals/graders/judge/`, `evals/run.ts` · Depends on: EVAL-T04, EVAL-T14 · Added by CR-20261121-2 · Deferred by CR-20261123-2

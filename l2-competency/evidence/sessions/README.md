@@ -11,8 +11,8 @@ This page lists the Claude Code sessions recorded so far (Topics 2 and 5), and w
 | Live AI brief through the gateway (AIB-T07 G5, 2026-11-24) | The owner's manual check of the summary dialog; the run trace | [ops/trace-sample.md](../ops/trace-sample.md) |
 
 ## Still to capture (the owner's step)
-These need a screen recording or screenshots taken by the owner. They are part of the demo video
-([06-submission-evidence.md §3](../../06-submission-evidence.md#3-demo-script-1012-minutes)):
+These need a screen recording or screenshots taken by the owner. They are part of the demo video; follow
+[demo-checklist.md](../../demo-checklist.md):
 - [ ] **Spec guard blocking an edit:** ask Claude to edit a file under `src/` with no task 🔄, then show the block
   message.
 - [ ] **Post-edit lint feedback:** introduce a bad requirement ID in a test title and show the hook's error.

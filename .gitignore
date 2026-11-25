@@ -29,3 +29,6 @@ __pycache__/
 *.log
 .DS_Store
 Thumbs.db
+
+# Personal L2 progress tracker (local reference only, never committed)
+l2-competency/progress-tracker/

@@ -113,7 +113,7 @@ honest view of where the agent needed help. Assessors value candour about limits
 
 - [x] Git history with task-ID commits, one branch per task merged into `main` with `--no-ff` (no PRs: single developer)
 - [x] `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`, `.claude/settings.json` (Phase 2)
-- [ ] ≥ 3 recorded sessions: parallel subagents (Phase 2, in the dev log) and a Claude Code session using the MCP tools ([evidence](evidence/mcp-workbook-server.md)) are recorded; plan mode and worktrees still to record ([sessions/](evidence/sessions/README.md))
+- [ ] ≥ 3 recorded sessions: parallel subagents (Phase 2, in the dev log) and a Claude Code session using the MCP tools ([evidence](evidence/mcp-workbook-server.md)) are recorded; a full task from `/task-implement` to `/task-close`, the spec-guard block and the AI brief were recorded 2026-11-25 (demo video and screenshots, [sessions/](evidence/sessions/README.md)); worktrees still to record
 - [ ] Headless `claude -p` review running in CI: not done. CI (G6) runs spec lint, lint, typecheck and tests without a model
 - [x] 7 High gaps closed (7 → 0, [before/after](evidence/before-after.md)); the app demo is in the demo video
 - [x] [`ai-dev-log.md`](evidence/ai-dev-log.md) with metrics (fix-ups, tests, gates, commit per task)

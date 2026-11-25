@@ -118,7 +118,7 @@ reproducible. The [spectree README](../spectree/README.md) already says the gene
 ## Evidence checklist for Topic 5
 
 - [x] `.claude/settings.json` with hooks + deny-list; hook scripts with tests (18 tests now, `npm run test:hooks`)
-- [ ] Recording: spec-guard blocks an edit; post-edit lint feeds back a fix
+- [x] Recording: spec-guard blocks an edit; post-edit lint feeds back a fix (2026-11-25, [screenshots and demo video](evidence/sessions/README.md))
 - [ ] 5 project skills ✅ with trigger evals (`.claude/skills/trigger-evals.json` written; the eval run is deferred, DEVA-T14)
 - [x] `mcp/workbook-mcp` with 59 tests, `.mcp.json`, MCP Inspector transcript and Claude Code session, audit log sample ([evidence](evidence/mcp-workbook-server.md))
 - [x] Security table above, each control linked to a test ([security evidence §2](evidence/security/security-evidence.md#2-workbook-mcp-59-tests-pass-mapped-to-each-control))

@@ -4,7 +4,8 @@ This is what an assessor should open, by topic. It follows the layout in
 [06-submission-evidence.md §1](../06-submission-evidence.md#1-evidence-folder).
 
 All data in this folder is the project's fictional demo data ([ADR-0006](../../spec/adr/0006-fictional-demo-dataset.md)).
-There are no real customers, people or notes. Last updated **2026-11-24** at `main` `e3793a4`.
+There are no real customers, people or notes. Last updated **2026-11-25** (screenshots and demo video in
+[sessions/](sessions/README.md)); the rest at `main` `e3793a4`.
 
 | Path | Topic | What it shows | State |
 |---|---|---|---|
@@ -15,7 +16,7 @@ There are no real customers, people or notes. Last updated **2026-11-24** at `ma
 | [ops/trace-sample.md](ops/trace-sample.md) | 4 | A real run trace: 7 spans, tokens, cost, latency, route, outcome; no free text | ✅ (sample) · chaos run, Run Inspector, resume deferred |
 | [security/security-evidence.md](security/security-evidence.md) | 5 | Hook tests (18), MCP security tests (59) mapped to each control, audit-log sample, secrets and real-data scan | ✅ |
 | [mcp-workbook-server.md](mcp-workbook-server.md) | 5 | `workbook-mcp` exercised from MCP Inspector and from a Claude Code session, with audit lines | ✅ |
-| [sessions/README.md](sessions/README.md) | 2, 5 | Index of recorded sessions, and what is still to capture (screenshots, demo video) | ⚠️ partly: screen recordings are the owner's step |
+| [sessions/README.md](sessions/README.md) | 2, 5 | The demo video (2026-11-25, 29 min 37 s) and 9 screenshots: spec-guard block, a bad test ID caught, the AI brief in light and dark themes, the `/mcp` panel, an MCP tool call, a hostile MCP call refused, MCP Inspector; plus the sessions written up elsewhere | ✅ |
 
 ## What is deliberately not here
 CR-20261123-2 (owner-approved 2026-11-24) deferred the hardening and research tasks. They are listed as open tasks

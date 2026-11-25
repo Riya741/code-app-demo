@@ -132,7 +132,6 @@ l2-competency/
 ├─ 04-agent-orchestration-ops.md      Topic 4 plan
 ├─ 05-tool-integration-extensibility.md Topic 5 plan
 ├─ 06-submission-evidence.md          evidence map, demo script, self-assessment template
-├─ demo-checklist.md                  step-by-step demo recording checklist
 └─ evidence/                          evidence pack (index: evidence/README.md)
 ```
 
@@ -150,5 +149,5 @@ Tick as you go; each line maps to a section in the topic files.
   calibration, experiment matrix and ADR-0007 deferred by CR-20261123-2
 - [x] Phase 5 — CI on GitHub Actions (QA-T07) and the `workbook-mcp` MCP server (MCP-T01..T06, 2026-11-24). Not done:
   `sdd-toolkit` plugin (optional), headless Claude review in CI
-- [ ] Phase 6 — High gaps closed (API-T08, UCP-T08, 2026-11-24) ✅ · evidence pack ✅ (2026-11-24) · demo video ·
+- [ ] Phase 6 — High gaps closed (API-T08, UCP-T08, 2026-11-24) ✅ · evidence pack ✅ (2026-11-24) · demo video and screenshots ✅ (2026-11-25) ·
   self-assessment · final checks and push
